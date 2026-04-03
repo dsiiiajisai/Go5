@@ -1,0 +1,2646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#000073">
+<title>五 Go · Super Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400&family=Ma+Shan+Zheng&family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<!-- Leaflet for map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+/* ============================================================
+   RESET & VARIABLES
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --navy: #000073;
+  --navy-dark: #00004a;
+  --sky: #00BFFF;
+  --white: #ffffff;
+  --dim: rgba(255,255,255,0.12);
+  --dim2: rgba(255,255,255,0.06);
+  --border: rgba(0,191,255,0.25);
+  --border-dim: rgba(255,255,255,0.08);
+  --text: #ffffff;
+  --text-mid: rgba(255,255,255,0.5);
+  --text-dim: rgba(255,255,255,0.35);
+  --red: #ff0000;
+  --green: #00cc44;
+  --gold: #FFD700;
+  --pink: #F3ABB6;
+  --purple: #E0B0FF;
+  --grey-text: #D0D2CF;
+}
+
+html, body {
+  font-family: 'Crimson Pro', Georgia, serif;
+  background: var(--navy);
+  color: var(--text);
+  min-height: 100dvh;
+  overflow-x: hidden;
+  font-size: 16px;
+}
+
+/* ============================================================
+   SCREEN SYSTEM
+   ============================================================ */
+.screen {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100dvh;
+  padding: 0 20px 60px;
+  background: radial-gradient(ellipse at 50% 20%, rgba(0,191,255,0.12) 0%, transparent 65%),
+              linear-gradient(180deg, var(--navy) 0%, var(--navy-dark) 100%);
+  animation: fadeIn 0.35s ease;
+}
+.screen.active { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================================
+   SHARED COMPONENTS
+   ============================================================ */
+.site-label {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.4);
+  margin: 32px 0 20px;
+  text-align: center;
+}
+
+.logo-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.logo-wrap img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  margin-bottom: 14px;
+  filter: drop-shadow(0 0 18px rgba(0,191,255,0.5));
+}
+.logo-title {
+  font-family: 'Cinzel', serif;
+  font-size: 22px;
+  letter-spacing: 0.2em;
+  color: var(--sky);
+  font-weight: 600;
+}
+.logo-sub {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.4);
+  margin-top: 8px;
+  text-align: center;
+}
+
+.screen-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.7);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 28px;
+}
+
+/* CARDS */
+.cards {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card {
+  background: var(--dim);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px 22px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: background 0.25s, border-color 0.25s, transform 0.15s;
+  -webkit-user-select: none;
+  user-select: none;
+  text-decoration: none;
+  color: inherit;
+}
+.card:active { transform: scale(0.97); background: rgba(0,191,255,0.12); border-color: var(--sky); }
+.card.grayed { opacity: 0.35; pointer-events: none; }
+.card.external { cursor: pointer; }
+
+.card-icon {
+  width: 48px;
+  flex-shrink: 0;
+  text-align: center;
+}
+.card-icon img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+.card-text { flex: 1; }
+.card-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--sky);
+  margin-bottom: 3px;
+}
+.card-desc { font-size: 13px; color: rgba(255,255,255,0.5); }
+.card-desc2 { font-size: 12px; color: var(--sky); margin-top: 4px; opacity: 0.7; }
+.card-arrow { color: var(--sky); font-size: 20px; flex-shrink: 0; }
+
+/* INNER SCREEN HEADER */
+.inner-header {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 20px 0 16px;
+  margin-bottom: 24px;
+}
+.back-btn {
+  background: none;
+  border: none;
+  color: var(--sky);
+  font-size: 26px;
+  cursor: pointer;
+  padding: 0 6px 0 0;
+  flex-shrink: 0;
+  line-height: 1;
+}
+.inner-title {
+  font-family: 'Cinzel', serif;
+  font-size: 14px;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.7);
+  text-transform: uppercase;
+  flex: 1;
+}
+
+/* SECTION DIVIDER */
+.section-divider {
+  width: 100%;
+  max-width: 420px;
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 8px 0;
+}
+
+/* COLLAPSIBLE TOOLS SECTION */
+.tools-section {
+  width: 100%;
+  max-width: 420px;
+}
+.tools-toggle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  padding: 10px 0;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.tools-toggle-label {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: var(--sky);
+  opacity: 0.7;
+  text-transform: uppercase;
+}
+.tools-toggle-arrow {
+  color: var(--sky);
+  font-size: 14px;
+  opacity: 0.7;
+  transition: transform 0.2s;
+}
+.tools-toggle-arrow.open { transform: rotate(90deg); }
+.tools-inner {
+  display: none;
+  flex-direction: column;
+  gap: 14px;
+  padding-top: 8px;
+}
+.tools-inner.open { display: flex; }
+
+/* VISIT COUNTER */
+.visit-counter {
+  margin-top: 60px;
+  text-align: center;
+}
+.visit-label {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: rgba(255,255,255,0.35);
+}
+.visit-num {
+  font-size: 22px;
+  color: rgba(255,255,255,0.6);
+  display: block;
+  margin-top: 4px;
+}
+
+/* USER BADGE */
+.user-badge {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.5);
+  background: rgba(0,191,255,0.1);
+  border: 1px solid rgba(0,191,255,0.25);
+  border-radius: 20px;
+  padding: 6px 14px;
+  margin-bottom: 28px;
+  margin-top: 8px;
+}
+
+/* BUTTONS */
+.btn-primary {
+  width: 75%;
+  height: 56px;
+  border-radius: 12px;
+  background: var(--sky);
+  color: var(--navy);
+  border: none;
+  font-family: 'Cinzel', serif;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.btn-primary:hover { opacity: 0.9; }
+.btn-primary:active { transform: scale(0.98); opacity: 0.8; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-secondary {
+  width: 75%;
+  padding: 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(0,191,255,0.3);
+  background: transparent;
+  color: rgba(255,255,255,0.4);
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  cursor: pointer;
+  margin-top: 12px;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btn-secondary:hover { border-color: var(--sky); color: rgba(255,255,255,0.7); }
+
+/* FORM ELEMENTS */
+.dropdown-wrap {
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 16px;
+}
+.dropdown-label {
+  font-family: 'Roboto', 'Crimson Pro', sans-serif;
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 6px;
+  display: block;
+  text-align: center;
+  letter-spacing: 0.05em;
+}
+.dropdown-wrap select, .search-input {
+  width: 100%;
+  height: 54px;
+  border-radius: 10px;
+  border: 2px solid rgba(0,191,255,0.3);
+  background: rgba(0,0,0,0.35);
+  color: var(--white);
+  font-size: 14px;
+  font-family: 'Crimson Pro', serif;
+  padding: 0 16px;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.dropdown-wrap select:focus, .search-input:focus { border-color: var(--sky); }
+.dropdown-wrap .chevron {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--sky);
+  pointer-events: none;
+  font-size: 14px;
+}
+.dropdown-wrap { position: relative; }
+
+/* RESULT IMAGE DISPLAY */
+.chart-result {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 20px;
+  text-align: center;
+  display: none;
+}
+.chart-result.active { display: block; }
+.chart-result img {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+.chart-na {
+  padding: 40px;
+  background: var(--dim2);
+  border: 1px solid var(--border-dim);
+  border-radius: 12px;
+  color: var(--text-mid);
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+}
+
+/* ============================================================
+   SCREEN 0 — LOGIN
+   ============================================================ */
+#screen-login .id-input {
+  width: 100%;
+  max-width: 420px;
+  padding: 14px 16px;
+  border: 2px solid rgba(0,191,255,0.3);
+  border-radius: 12px;
+  font-size: 16px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.1em;
+  background: rgba(0,0,0,0.3);
+  color: white;
+  outline: none;
+  text-align: center;
+  text-transform: uppercase;
+  display: none;
+  margin-top: 14px;
+}
+#screen-login .id-input::placeholder { color: rgba(255,255,255,0.25); }
+#screen-login .id-input:focus { border-color: var(--sky); }
+#btn-go-id {
+  width: 100%;
+  max-width: 420px;
+  padding: 14px;
+  background: var(--sky);
+  color: var(--navy);
+  border: none;
+  border-radius: 12px;
+  font-family: 'Cinzel', serif;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  display: none;
+  margin-top: 10px;
+}
+.login-note {
+  font-size: 13px;
+  color: var(--text-mid);
+  text-align: center;
+  margin-top: 24px;
+  max-width: 320px;
+  line-height: 1.7;
+}
+
+/* ============================================================
+   SCREEN B4.3 — HOUSE FACING RULER (MAP)
+   ============================================================ */
+#map-container {
+  width: 100%;
+  max-width: 700px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  position: relative;
+}
+#leaflet-map {
+  width: 100%;
+  height: 400px;
+}
+#map-canvas-overlay {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 500;
+}
+#map-draw-layer {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 600;
+  cursor: crosshair;
+  display: none;
+}
+.map-search-wrap {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.map-search-wrap input {
+  flex: 1;
+  height: 50px;
+  border-radius: 10px;
+  border: 2px solid rgba(0,191,255,0.3);
+  background: rgba(0,0,0,0.35);
+  color: white;
+  font-size: 14px;
+  font-family: 'Crimson Pro', serif;
+  padding: 0 16px;
+  outline: none;
+}
+.map-search-wrap input:focus { border-color: var(--sky); }
+.map-search-btn {
+  height: 50px;
+  padding: 0 20px;
+  border-radius: 10px;
+  background: var(--sky);
+  color: var(--navy);
+  border: none;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.map-toolbar {
+  width: 100%;
+  max-width: 700px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(0,191,255,0.2);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-top: 10px;
+}
+.map-tool-btn {
+  background: transparent;
+  border: 1px solid rgba(0,191,255,0.3);
+  color: var(--sky);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.map-tool-btn:hover { background: rgba(0,191,255,0.1); border-color: var(--sky); }
+.map-tool-btn.active { background: rgba(0,191,255,0.15); border-color: var(--sky); }
+.map-tool-btn.danger { border-color: rgba(255,80,80,0.4); color: rgba(255,80,80,0.8); }
+.map-tool-btn.danger:hover { background: rgba(255,80,80,0.1); }
+.map-instr {
+  font-size: 12px;
+  color: var(--text-mid);
+  font-style: italic;
+  flex: 1;
+  min-width: 160px;
+}
+
+/* BEARING RESULT */
+.bearing-result {
+  width: 100%;
+  max-width: 700px;
+  margin-top: 14px;
+  background: rgba(0,0,0,0.4);
+  border: 1px solid rgba(0,191,255,0.25);
+  border-top: 2px solid rgba(200,169,110,0.5);
+  border-radius: 10px;
+  padding: 18px 20px;
+  display: none;
+}
+.bearing-result.active { display: block; }
+.bearing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.b-block { text-align: center; }
+.b-label {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  display: block;
+  margin-bottom: 4px;
+}
+.b-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.2rem;
+  font-weight: 300;
+  color: #c8a96e;
+  line-height: 1;
+}
+.b-val sup { font-size: 1rem; opacity: 0.6; }
+.b-val.sm { font-size: 1.4rem; }
+.b-sub { font-size: 13px; color: var(--text-mid); font-style: italic; margin-top: 2px; }
+
+.bearing-result-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 14px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  padding-top: 14px;
+}
+.result-copy-btn {
+  background: transparent;
+  border: 1px solid rgba(200,169,110,0.5);
+  color: #c8a96e;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.result-copy-btn:hover { background: rgba(200,169,110,0.1); }
+.result-period-btn {
+  background: var(--sky);
+  border: none;
+  color: var(--navy);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.copy-confirm {
+  font-size: 12px;
+  color: var(--sky);
+  font-style: italic;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.copy-confirm.show { opacity: 1; }
+
+/* PERIOD PICKER (for B4.3 flow) */
+.period-picker {
+  width: 100%;
+  max-width: 700px;
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 14px;
+}
+.period-picker.active { display: flex; }
+.period-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+.period-btn {
+  background: var(--dim2);
+  border: 1px solid rgba(0,191,255,0.2);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  padding: 12px 8px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.15s, border-color 0.15s;
+}
+.period-btn:hover { background: rgba(0,191,255,0.1); border-color: var(--sky); }
+.period-btn.selected { background: rgba(0,191,255,0.15); border-color: var(--sky); }
+
+/* MAGNETIC SECTION */
+.magnetic-section {
+  width: 100%;
+  max-width: 700px;
+  margin-top: 16px;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(0,191,255,0.15);
+  border-radius: 10px;
+  padding: 16px 18px;
+  display: none;
+}
+.magnetic-section.active { display: block; }
+.mag-title {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(200,169,110,0.7);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mag-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(200,169,110,0.2);
+}
+.mag-field {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.mag-field label {
+  font-size: 12px;
+  color: var(--text-mid);
+  min-width: 140px;
+  font-style: italic;
+}
+.mag-field input {
+  flex: 1;
+  min-width: 80px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,191,255,0.25);
+  background: rgba(0,0,0,0.35);
+  color: white;
+  font-size: 13px;
+  padding: 0 12px;
+  outline: none;
+}
+.mag-field input:focus { border-color: var(--sky); }
+.mag-calc-btn {
+  width: 100%;
+  margin-top: 10px;
+  height: 46px;
+  border-radius: 10px;
+  background: transparent;
+  border: 1px solid rgba(200,169,110,0.4);
+  color: #c8a96e;
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.mag-calc-btn:hover { background: rgba(200,169,110,0.08); }
+.mag-result-box {
+  margin-top: 12px;
+  padding: 14px;
+  background: rgba(200,169,110,0.06);
+  border: 1px solid rgba(200,169,110,0.15);
+  border-radius: 8px;
+  display: none;
+}
+.mag-result-box.active { display: block; }
+
+/* ============================================================
+   B4.4 — FLYING STAR CHART LOOKUP
+   ============================================================ */
+.fs-result-wrap {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 16px;
+  display: none;
+}
+.fs-result-wrap.active { display: block; }
+.fs-chart-img {
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  display: block;
+}
+
+/* ============================================================
+   B2.1 — DICE ROLLER
+   ============================================================ */
+.dice-setup {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.dice-question {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 4px;
+}
+.dice-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.dice-row .dropdown-wrap { flex: 1; margin-bottom: 0; }
+.die-rep-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+  margin-top: 6px;
+}
+.die-rep-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.die-rep-num {
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  color: var(--sky);
+  min-width: 50px;
+}
+.die-rep-input {
+  flex: 1;
+  height: 42px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,191,255,0.3);
+  background: rgba(0,0,0,0.35);
+  color: white;
+  font-size: 13px;
+  padding: 0 12px;
+  outline: none;
+  font-family: 'Crimson Pro', serif;
+}
+.die-rep-input::placeholder { color: rgba(255,255,255,0.25); }
+.die-rep-input:focus { border-color: var(--sky); }
+
+.dice-instruction-box {
+  background: var(--dim2);
+  border: 1px solid var(--border-dim);
+  border-radius: 12px;
+  padding: 16px 18px;
+  font-size: 13px;
+  color: var(--text-mid);
+  line-height: 1.8;
+  width: 100%;
+  max-width: 420px;
+}
+.dice-instruction-box strong { color: var(--sky); }
+
+.dice-result-screen {
+  width: 100%;
+  max-width: 420px;
+  display: none;
+}
+.dice-result-screen.active { display: block; }
+.dice-result-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--dim2);
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.dice-result-num {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  color: var(--text-dim);
+  min-width: 50px;
+}
+.dice-result-rep {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text-mid);
+  font-style: italic;
+}
+.dice-result-val {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem;
+  font-weight: 300;
+  color: #c8a96e;
+  min-width: 50px;
+  text-align: right;
+}
+
+/* ============================================================
+   B2.2 — KWANYIN
+   ============================================================ */
+#screen-kwanyin {
+  padding-bottom: 60px;
+}
+.kwanyin-title {
+  font-family: 'Ma Shan Zheng', 'KaiTi', cursive;
+  font-size: 72px;
+  font-weight: 400;
+  text-align: center;
+  letter-spacing: 0.12em;
+  color: #f5f0e8;
+  text-shadow: 0 0 4px rgba(255,245,80,0.95), 0 0 22px rgba(255,248,140,0.45), 0 0 80px rgba(255,253,210,0.08);
+  margin: 20px 0 10px;
+}
+.kwanyin-img {
+  display: block;
+  margin: 0 auto 30px;
+  max-height: 180px;
+  width: auto;
+  filter: drop-shadow(0 0 4px rgba(255,245,80,0.95)) drop-shadow(0 0 22px rgba(255,248,140,0.45));
+}
+.kw-methods {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+  margin-bottom: 16px;
+}
+.kw-method-card {
+  flex: 1;
+  background: #ffffff;
+  border: 1.5px solid #ffffff;
+  border-radius: 12px;
+  padding: 14px 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 0.2s, background 0.2s;
+}
+.kw-method-card:hover { background: #e8e8f5; }
+.kw-method-card.active { border: 2.5px solid #000073; background: #e8e8f5; }
+.kw-method-icon { font-size: 26px; display: block; margin-bottom: 6px; }
+.kw-method-name {
+  font-family: 'IM Fell English', serif;
+  font-size: 32px;
+  font-weight: 700;
+  display: block;
+  color: #000073;
+  margin-bottom: 4px;
+}
+.kw-method-desc { font-size: 14px; font-style: italic; color: #000073; }
+
+.kw-stage {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 14px;
+  padding: 24px 20px 28px;
+  text-align: center;
+  width: 100%;
+  max-width: 420px;
+}
+.kw-number {
+  font-family: 'Ma Shan Zheng', 'IM Fell English', serif;
+  font-size: 110px;
+  font-weight: 400;
+  line-height: 1;
+  min-height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f5f0e8;
+  text-shadow: 0 0 4px rgba(255,245,80,0.95), 0 0 22px rgba(255,248,140,0.45);
+}
+.kw-number.rolling { animation: kw-flicker 0.08s infinite; }
+@keyframes kw-flicker {
+  0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; }
+}
+.kw-fate {
+  font-size: 18px;
+  font-style: italic;
+  color: #c8c0b0;
+  min-height: 26px;
+  margin-bottom: 20px;
+}
+.kw-btn {
+  font-family: 'IM Fell English', serif;
+  font-size: 36px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #000073;
+  background: #fffde0;
+  border: 1.5px solid #fff9a0;
+  border-radius: 8px;
+  padding: 14px 0;
+  width: 66%;
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(255,245,80,0.95), 0 0 22px rgba(255,248,140,0.45);
+  transition: background 0.15s, transform 0.1s;
+}
+.kw-btn:hover { background: #fffaaa; }
+.kw-btn:active { transform: scale(0.98); }
+.kw-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.kw-status { margin-top: 10px; font-size: 16px; font-style: italic; color: #a09888; min-height: 20px; }
+.kw-history {
+  width: 100%;
+  max-width: 420px;
+  margin-top: 16px;
+}
+.kw-history-title {
+  font-family: 'IM Fell English', serif;
+  font-size: 16px;
+  letter-spacing: 0.1em;
+  color: #a09888;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.kw-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.kw-chip {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 16px;
+  color: #c8c0b0;
+}
+.kw-chip b { font-family: 'Ma Shan Zheng', serif; font-size: 18px; color: #f5f0e8; font-weight: 700; }
+.kw-chip small { font-size: 12px; opacity: 0.5; margin-left: 3px; }
+
+/* ============================================================
+   B1.4 — HAIRCUT
+   ============================================================ */
+.haircut-box {
+  width: 100%;
+  max-width: 420px;
+  border: 1px solid rgba(0,191,255,0.2);
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  background: var(--dim2);
+}
+.haircut-box-label {
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 10px;
+}
+.haircut-date-display {
+  font-family: 'Cinzel', serif;
+  font-size: 18px;
+  color: var(--sky);
+  margin-bottom: 14px;
+}
+.haircut-advice {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.5;
+  min-height: 30px;
+}
+.haircut-date-input {
+  width: 100%;
+  height: 46px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,191,255,0.3);
+  background: rgba(0,0,0,0.35);
+  color: white;
+  font-size: 14px;
+  padding: 0 14px;
+  outline: none;
+  margin-bottom: 12px;
+}
+.haircut-date-input:focus { border-color: var(--sky); }
+.haircut-note {
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: center;
+  line-height: 1.7;
+  margin-top: 10px;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+.portal-footer {
+  margin-top: 60px;
+  width: 100%;
+  max-width: 420px;
+  padding: 16px 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  text-align: center;
+}
+.footer-credit {
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  font-style: italic;
+  line-height: 1.8;
+}
+.footer-credit strong { color: rgba(0,191,255,0.5); font-style: normal; font-weight: 400; }
+.footer-copy {
+  font-family: 'Cinzel', serif;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  color: rgba(255,255,255,0.2);
+  margin-top: 4px;
+}
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.red-note { color: var(--red); font-size: 13px; text-align: center; margin-top: 8px; }
+.info-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Cinzel', serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--sky);
+  border: 1px solid rgba(0,191,255,0.3);
+  border-radius: 8px;
+  padding: 8px 14px;
+  text-decoration: none;
+  transition: background 0.15s;
+  margin-top: 10px;
+}
+.info-link:hover { background: rgba(0,191,255,0.08); }
+
+.coming-soon-tag {
+  font-size: 10px;
+  font-family: 'Cinzel', serif;
+  letter-spacing: 0.08em;
+  background: rgba(255,215,0,0.1);
+  border: 1px solid rgba(255,215,0,0.3);
+  color: var(--gold);
+  border-radius: 6px;
+  padding: 2px 8px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* Leaflet overrides */
+.leaflet-control-attribution { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     SCREEN 0: LOGIN
+     ============================================================ -->
+<div id="screen-login" class="screen active">
+  <div class="site-label">SUPER PORTAL</div>
+  <div class="logo-wrap">
+    <img src="https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png" alt="Go">
+    <div class="logo-title">五 GO</div>
+    <div class="logo-sub">Welcome to Go, your super portal</div>
+  </div>
+
+  <div class="cards" style="margin-top: 20px;">
+    <div class="card" onclick="showIdInput()">
+      <div class="card-icon">🔑</div>
+      <div class="card-text">
+        <div class="card-title">Do you have an ID?</div>
+        <div class="card-desc">(your personal FS (vi) Kuchinashi portal ID)</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <input class="id-input" id="idInput" type="text" placeholder="ENTER YOUR ID" maxlength="20">
+    <button id="btn-go-id" onclick="loginWithId()">Continue →</button>
+
+    <div class="card" onclick="guestLogin()">
+      <div class="card-icon">👤</div>
+      <div class="card-text">
+        <div class="card-title">Guest Login</div>
+        <div class="card-desc">Limited access — some tools unavailable</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+
+  <p class="login-note">Gmail's required for full login.<br>Login is handled completely by Google OAuth.</p>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN 1: HOMEPAGE
+     ============================================================ -->
+<div id="screen-home" class="screen">
+  <div class="site-label">五 GO</div>
+  <div class="logo-wrap">
+    <img src="https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png" alt="Go">
+    <div class="logo-title">五 GO</div>
+    <div class="logo-sub" id="home-greeting">Welcome to Go, your super portal</div>
+  </div>
+
+  <div class="cards">
+    <!-- B1 -->
+    <div class="card" onclick="goTo('screen-b1')">
+      <div class="card-icon"><img src="https://i.postimg.cc/4dtH6Ncp/Ds_iii_Ajisai_2.png" alt="DS"></div>
+      <div class="card-text">
+        <div class="card-title">擇日 Date Selection DS</div>
+        <div class="card-desc">DS (iii) Ajisai</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <!-- B2 -->
+    <div class="card" onclick="goTo('screen-b2')">
+      <div class="card-icon"><img src="https://i.postimg.cc/SRYGBpwy/QMDJ-i-Botan.png" alt="QMDJ"></div>
+      <div class="card-text">
+        <div class="card-title">奇門遁甲 QMDJ &amp; Divinations</div>
+        <div class="card-desc">QMDJ (i) Botan</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <!-- B3 — locked for guest -->
+    <div class="card" id="card-b3" onclick="goTo('screen-b3')">
+      <div class="card-icon"><img src="https://i.postimg.cc/5NJLmvn2/bazi_i_Bara.png" alt="Life"></div>
+      <div class="card-text">
+        <div class="card-title">八字, ज्योतिष Individual Life Study</div>
+        <div class="card-desc">Bazi, Vedic Astrology</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <!-- B4 — locked for guest -->
+    <div class="card" id="card-b4" onclick="goTo('screen-b4')">
+      <div class="card-icon"><img src="https://i.postimg.cc/13SDRFLD/FS-i-Manju.png" alt="FS"></div>
+      <div class="card-text">
+        <div class="card-title">風水 Fengshui</div>
+        <div class="card-desc">FS (i) Manju, FS (ii) Shage</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <!-- B5 — grayed -->
+    <div class="card grayed">
+      <div class="card-icon"><img src="https://i.postimg.cc/g0MQdmBz/Yijing_I_tenjiku.png" alt="Yijing"></div>
+      <div class="card-text">
+        <div class="card-title">易經 Yijing <span class="coming-soon-tag">Soon</span></div>
+        <div class="card-desc">Yijing (i) Tenjiku</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="section-divider" style="margin: 4px 0;"></div>
+
+    <!-- B6 — personal portal, locked for guest -->
+    <div class="card" id="card-b6" onclick="openPersonalPortal()">
+      <div class="card-icon"><img src="https://i.postimg.cc/ZnmgZHzM/FS-vi-Kuchinashi-2.png" alt="Kuchinashi"></div>
+      <div class="card-text">
+        <div class="card-title">Your Personal Kuchinashi Portal</div>
+        <div class="card-desc-2 card-desc2" id="portal-link-text">🌐 Portal site ↗</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="visit-counter">
+    <div class="visit-label">VISITS</div>
+    <span class="visit-num" id="visit-count">—</span>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B1: DATE SELECTION
+     ============================================================ -->
+<div id="screen-b1" class="screen">
+  <div class="inner-header">
+    <button class="back-btn" onclick="goTo('screen-home')">‹</button>
+    <span class="inner-title">Ajisai · 擇日 Date Selection</span>
+  </div>
+
+  <div class="logo-wrap" style="margin-bottom: 20px;">
+    <img src="https://i.postimg.cc/4dtH6Ncp/Ds_iii_Ajisai_2.png" alt="Ajisai" style="width:60px;height:60px;">
+    <div class="logo-title" style="font-size:16px;">DS (iii) Ajisai</div>
+    <div class="logo-sub">Your DS portal</div>
+  </div>
+
+  <div class="cards">
+    <div class="card grayed">
+      <div class="card-icon">🗓</div>
+      <div class="card-text">
+        <div class="card-title">Today Snapshot <span class="coming-soon-tag">Soon</span></div>
+        <div class="card-desc">...</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card grayed">
+      <div class="card-icon">🕒</div>
+      <div class="card-text">
+        <div class="card-title">Current Hour <span class="coming-soon-tag">Soon</span></div>
+        <div class="card-desc">...</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card grayed">
+      <div class="card-icon">風</div>
+      <div class="card-text">
+        <div class="card-title">Fengshui Charts <span class="coming-soon-tag">Soon</span></div>
+        <div class="card-desc">...</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card" onclick="goTo('screen-haircut')">
+      <div class="card-icon">💇🏻</div>
+      <div class="card-text">
+        <div class="card-title">Haircut Advice</div>
+        <div class="card-desc">Best days for a haircut</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card grayed">
+      <div class="card-icon">📅</div>
+      <div class="card-text">
+        <div class="card-title">Monthly Calendars <span class="coming-soon-tag">Soon</span></div>
+        <div class="card-desc">...</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="section-divider" style="margin: 4px 0;"></div>
+
+    <div class="card grayed">
+      <div class="card-icon">☯</div>
+      <div class="card-text">
+        <div class="card-title">Your Current Bazi Luck Period <span class="coming-soon-tag">Soon</span></div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card grayed">
+      <div class="card-icon">⭐</div>
+      <div class="card-text">
+        <div class="card-title">Planetary Transits <span class="coming-soon-tag">Soon</span></div>
+        <div class="card-desc">Vedic Astrology</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B1.4: HAIRCUT ADVICE
+     ============================================================ -->
+<div id="screen-haircut" class="screen">
+  <div class="inner-header" style="max-width:420px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-b1')">‹</button>
+    <span class="inner-title">💇🏻 Haircut Advice</span>
+  </div>
+
+  <div class="haircut-box">
+    <div class="haircut-box-label">Today's Advice</div>
+    <div class="haircut-date-display" id="haircut-today-date">Loading…</div>
+    <div class="haircut-advice" id="haircut-today-advice">Searching…</div>
+  </div>
+
+  <div class="haircut-box" style="width:100%; max-width:420px;">
+    <div class="haircut-box-label">Check Another Date</div>
+    <input type="date" class="haircut-date-input" id="haircut-date-picker">
+    <button class="btn-primary" style="width:100%; height:46px; font-size:14px;" onclick="checkHaircutDate()">Lookup Date</button>
+    <div id="haircut-custom-result" style="margin-top:12px; display:none;">
+      <div style="font-size:13px; color:var(--text-dim); margin-bottom:6px;" id="haircut-custom-date-label"></div>
+      <div class="haircut-advice" id="haircut-custom-advice"></div>
+    </div>
+  </div>
+
+  <p class="haircut-note">
+    You can look up any date in the current year.<br>
+    Historical data available back to 2025.<br>
+    <br>
+    <em>Thanks to 🌐 Rabten.eu for the Tibetan calendar 🙏</em>
+  </p>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B2: QMDJ & DIVINATIONS
+     ============================================================ -->
+<div id="screen-b2" class="screen">
+  <div class="inner-header">
+    <button class="back-btn" onclick="goTo('screen-home')">‹</button>
+    <span class="inner-title">Botan · QMDJ &amp; Divinations</span>
+  </div>
+
+  <div class="logo-wrap" style="margin-bottom: 20px;">
+    <img src="https://i.postimg.cc/SRYGBpwy/QMDJ-i-Botan.png" alt="Botan" style="width:60px;height:60px;">
+    <div class="logo-title" style="font-size:16px;">QMDJ (i) Botan</div>
+  </div>
+
+  <div class="cards">
+    <div class="card" onclick="goTo('screen-dice')">
+      <div class="card-icon"><img src="https://i.postimg.cc/FsLnyVcZ/D8s-Red-Dices-8-sides.png" alt="Dice"></div>
+      <div class="card-text">
+        <div class="card-title">🛠️ Casting Dice 🎲</div>
+        <div class="card-desc">QMDJ Divination with dice</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card" onclick="goTo('screen-kwanyin')">
+      <div class="card-icon"><img src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin"></div>
+      <div class="card-text">
+        <div class="card-title">🔮 觀音 Kwanyin Oracle</div>
+        <div class="card-desc">Draw a sacred number</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card grayed">
+      <div class="card-icon">奇</div>
+      <div class="card-text">
+        <div class="card-title">奇門遁甲 Charts <span class="coming-soon-tag">Soon</span></div>
+        <div class="card-desc">QMDJ Y/M/D/H charts</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B2.1: DICE ROLLER
+     ============================================================ -->
+<div id="screen-dice" class="screen">
+  <div class="inner-header" style="max-width:420px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-b2')">‹</button>
+    <span class="inner-title">QMDJ Divinity</span>
+  </div>
+
+  <div style="text-align:center; margin-bottom:24px;">
+    <div style="font-size:13px; color:var(--text-mid); font-style:italic;">Backing Chief then roll your dices</div>
+  </div>
+
+  <div id="dice-setup-section" class="dice-setup">
+    <div>
+      <div class="dice-question">How many dice do you need?</div>
+      <div class="dropdown-wrap">
+        <select id="dice-count">
+          <option value="1">1 die</option>
+          <option value="2">2 dice</option>
+          <option value="3">3 dice</option>
+          <option value="4" selected>4 dice</option>
+          <option value="5">5 dice</option>
+          <option value="6">6 dice</option>
+          <option value="7">7 dice</option>
+          <option value="8">8 dice</option>
+        </select>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="dice-question">Die type?</div>
+      <div class="dropdown-wrap">
+        <select id="dice-type">
+          <option value="6">6-sided (d6)</option>
+          <option value="8">8-sided (d8)</option>
+        </select>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="dice-question">Which source of true randomness do you prefer?</div>
+      <div class="dropdown-wrap">
+        <select id="dice-random-src">
+          <option value="crypto">🔐 Crypto (Hardware entropy)</option>
+          <option value="random-org">📡 Atmospheric (random.org)</option>
+          <option value="quantum">⚛️ Quantum (ANU vacuum)</option>
+        </select>
+        <span class="chevron">▾</span>
+      </div>
+    </div>
+
+    <button class="btn-primary" style="margin: 0 auto;" onclick="setupDiceReps()">Set Up Dice →</button>
+  </div>
+
+  <!-- Die representations -->
+  <div id="dice-rep-section" style="width:100%; max-width:420px; display:none;">
+    <div style="font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:var(--text-dim); margin-bottom:14px; text-align:center; text-transform:uppercase;">Name each die (what it represents)</div>
+    <div class="die-rep-grid" id="die-rep-grid"></div>
+
+    <div class="dice-instruction-box" style="margin-top: 20px;">
+      <strong>Back Chief direction</strong><br>
+      Go into manifestation mode — calm down, slow your breath, and focus.<br><br>
+      Recite what you want to ask in your mind &amp; be clear you're asking Chief's wisdom.<br><br>
+      Remember: <strong>6 is highest, 1 is lowest</strong>. Focus and roll just once. Do not roll again if unsatisfied.
+    </div>
+
+    <a class="info-link" href="https://sites.google.com/view/qmdjibotan/03-applications/06-other-tips-tricks/dws-divine-wisdom-sourcing" target="_blank">
+      📖 For more info ↗
+    </a>
+
+    <button class="btn-primary" style="margin: 20px auto 0;" onclick="rollDice()">🎲 Roll the Dice</button>
+  </div>
+
+  <!-- Results -->
+  <div id="dice-result-section" class="dice-result-screen">
+    <div style="font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:var(--text-dim); margin-bottom:16px; text-align:center; text-transform:uppercase;">Your Results</div>
+    <div id="dice-result-rows"></div>
+
+    <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; justify-content:center;">
+      <button class="result-copy-btn" onclick="copyDiceResult()">📋 Copy Results</button>
+      <button class="result-copy-btn" onclick="rollAgain()" style="border-color:rgba(255,80,80,0.4); color:rgba(255,80,80,0.8);">
+        🎲 Roll Another Batch
+      </button>
+    </div>
+    <div style="font-size:11px; color:var(--text-dim); text-align:center; margin-top:6px; font-style:italic;">Do not roll again for the same question</div>
+    <button class="btn-secondary" style="margin: 16px auto 0; display:block;" onclick="goTo('screen-home')">↩ Go back to Homepage</button>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B2.2: KWANYIN ORACLE
+     ============================================================ -->
+<div id="screen-kwanyin" class="screen">
+  <div class="inner-header" style="max-width:420px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-b2')">‹</button>
+    <span class="inner-title">觀音靈簽 Kwanyin Oracle</span>
+  </div>
+
+  <div class="kwanyin-title">觀音靈簽</div>
+  <img class="kwanyin-img" src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin">
+
+  <p style="font-size:16px; font-style:italic; color:#c8c0b0; text-align:center; margin-bottom:18px;">Choose your source of true randomness</p>
+
+  <div class="kw-methods">
+    <div class="kw-method-card active" onclick="kwSelectMethod('crypto')" id="kw-card-crypto">
+      <span class="kw-method-icon">🔐</span>
+      <span class="kw-method-name">Crypto</span>
+      <span class="kw-method-desc">Hardware entropy</span>
+    </div>
+    <div class="kw-method-card" onclick="kwSelectMethod('random-org')" id="kw-card-random-org">
+      <span class="kw-method-icon">📡</span>
+      <span class="kw-method-name">Atm.</span>
+      <span class="kw-method-desc">Atmospheric noise</span>
+    </div>
+    <div class="kw-method-card" onclick="kwSelectMethod('quantum')" id="kw-card-quantum">
+      <span class="kw-method-icon">⚛️</span>
+      <span class="kw-method-name">Quantum</span>
+      <span class="kw-method-desc">Quantum vacuum</span>
+    </div>
+  </div>
+
+  <div class="kw-stage">
+    <div class="kw-number" id="kw-number">—</div>
+    <div class="kw-fate" id="kw-fate">Your fate awaits</div>
+    <button class="kw-btn" id="kw-btn" onclick="kwDraw()">Consult Her Holy's Wisdom<br>🪷</button>
+  </div>
+  <div class="kw-status" id="kw-status"></div>
+
+  <div class="kw-history" id="kw-history-wrap" style="display:none;">
+    <hr style="border:none; border-top:1px solid rgba(255,255,255,0.15); margin: 16px 0 12px;">
+    <div class="kw-history-title">Past Readings</div>
+    <div class="kw-chips" id="kw-chips"></div>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B3: INDIVIDUAL LIFE STUDY
+     ============================================================ -->
+<div id="screen-b3" class="screen">
+  <div class="inner-header">
+    <button class="back-btn" onclick="goTo('screen-home')">‹</button>
+    <span class="inner-title">八字 ज्योतिष Life Study</span>
+  </div>
+
+  <div class="logo-wrap" style="margin-bottom: 20px;">
+    <img src="https://i.postimg.cc/5NJLmvn2/bazi_i_Bara.png" alt="Bara" style="width:60px;height:60px;">
+    <div class="logo-sub">Bazi, Vedic Astrology</div>
+  </div>
+
+  <div class="cards">
+    <div class="card grayed">
+      <div class="card-icon"><img src="https://i.postimg.cc/5NJLmvn2/bazi_i_Bara.png" alt="Bazi"></div>
+      <div class="card-text">
+        <div class="card-title">八字 Bazi <span class="coming-soon-tag">Soon</span></div>
+        <div class="card-desc">Bazi (i) Bara</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card grayed">
+      <div class="card-icon"><img src="https://i.postimg.cc/MZsnjcLC/Blue_Orchid_Web_Email.png" alt="2Hs"></div>
+      <div class="card-text">
+        <div class="card-title">2Hs Portal</div>
+        <div class="card-desc">Bazi (ii) Ran, Bazi (iii) Yuri</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card" onclick="goTo('screen-vedic')">
+      <div class="card-icon"><img src="https://i.postimg.cc/pLs0GpvV/Fuki_2.png" alt="Vedic"></div>
+      <div class="card-text">
+        <div class="card-title">ज्योतिष Vedic Astrology</div>
+        <div class="card-desc">VA (i) Fuki</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B3.3: VEDIC ASTROLOGY
+     ============================================================ -->
+<div id="screen-vedic" class="screen">
+  <div class="inner-header" style="max-width:420px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-b3')">‹</button>
+    <span class="inner-title">ज्योतिष Vedic Astrology</span>
+  </div>
+
+  <div class="logo-wrap" style="margin-bottom: 20px;">
+    <img src="https://i.postimg.cc/pLs0GpvV/Fuki_2.png" alt="Fuki" style="width:60px;height:60px;">
+    <div class="logo-title" style="font-size:16px;">VA (i) Fuki</div>
+  </div>
+
+  <div class="cards">
+    <div class="card" onclick="goTo('screen-vedic-charts')">
+      <div class="card-icon"><img src="https://i.postimg.cc/bwm6CsPv/Fuki_1.png" alt="Charts"></div>
+      <div class="card-text">
+        <div class="card-title">Your Divisional Chart Data</div>
+        <div class="card-desc">Copy your D1, D9, ... chart data to feed to AI for reading</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card grayed">
+      <div class="card-icon">🗺</div>
+      <div class="card-text">
+        <div class="card-title">Your Divisional Charts Images <span class="coming-soon-tag">Soon</span></div>
+        <div class="card-desc">Visual chart display</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B3.3.1: VEDIC CHART DATA
+     ============================================================ -->
+<div id="screen-vedic-charts" class="screen">
+  <div class="inner-header" style="max-width:420px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-vedic')">‹</button>
+    <span class="inner-title">Divisional Chart Data</span>
+  </div>
+
+  <div id="vedic-not-subscribed" style="width:100%; max-width:420px; text-align:center; padding: 20px 0;">
+    <img src="https://i.postimg.cc/pLs0GpvV/Fuki_2.png" alt="Fuki" style="width:60px; margin-bottom:16px; filter:drop-shadow(0 0 14px rgba(0,191,255,0.4));">
+    <div style="font-family:'Cinzel',serif; font-size:16px; color:var(--sky); margin-bottom:10px;">VA (i) FUKI</div>
+    <p class="red-note" style="margin-bottom:16px;">You haven't subscribed to this service yet.</p>
+    <p style="color:var(--text-mid); font-size:13px; line-height:1.7;">Please contact your administrator to subscribe.</p>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B4: FENGSHUI
+     ============================================================ -->
+<div id="screen-b4" class="screen">
+  <div class="inner-header">
+    <button class="back-btn" onclick="goTo('screen-home')">‹</button>
+    <span class="inner-title">曼珠沙華 Fengshui</span>
+  </div>
+
+  <div class="logo-wrap" style="margin-bottom: 20px;">
+    <img src="https://i.postimg.cc/13SDRFLD/FS-i-Manju.png" alt="FS" style="width:60px;height:60px;">
+    <div class="logo-title" style="font-size:16px;">風水 Fengshui</div>
+    <div class="logo-sub">Everything about Fengshui can be found here</div>
+  </div>
+
+  <div class="cards">
+    <!-- FS (i) Manju — external -->
+    <div class="card external" onclick="window.open('https://sites.google.com/view/fsimanju/', '_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/13SDRFLD/FS-i-Manju.png" alt="Manju"></div>
+      <div class="card-text">
+        <div class="card-title">巒頭 FS (i) Manju</div>
+        <div class="card-desc">From Macro to micro fengshui — land forms to house interior</div>
+        <div class="card-desc2">🌐 Go to site ↗</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <!-- FS (ii) Shage — external -->
+    <div class="card external" onclick="window.open('https://sites.google.com/view/fsiishage/', '_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/VsSqKmq5/FS-ii-Shage.png" alt="Shage"></div>
+      <div class="card-text">
+        <div class="card-title">理氣 FS (ii) Shage</div>
+        <div class="card-desc">Calculative Fengshui 飛星, 紫白 — it's all about timing</div>
+        <div class="card-desc2">🌐 Go to site ↗</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <!-- TOOLS — collapsible -->
+    <div class="tools-section">
+      <div class="tools-toggle" onclick="toggleTools()">
+        <span class="tools-toggle-label">🛠️ Your Tools</span>
+        <span class="tools-toggle-arrow" id="tools-arrow">›</span>
+      </div>
+      <div class="tools-inner" id="tools-inner">
+        <!-- B4.3 -->
+        <div class="card" onclick="goTo('screen-facing-ruler')">
+          <div class="card-icon"><img src="https://i.postimg.cc/VsSqKmq5/FS-ii-Shage.png" alt="Ruler"></div>
+          <div class="card-text">
+            <div class="card-title">🧭 House Facing Ruler</div>
+            <div class="card-desc">FINLAY SK · Measure facing direction on live map</div>
+          </div>
+          <div class="card-arrow">›</div>
+        </div>
+
+        <!-- B4.4 -->
+        <div class="card" onclick="goTo('screen-flying-star')">
+          <div class="card-icon">飛</div>
+          <div class="card-text">
+            <div class="card-title">Flying Star Charts</div>
+            <div class="card-desc">All 飛星 fengshui charts lookup</div>
+          </div>
+          <div class="card-arrow">›</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FS (v) Sokei — external -->
+    <div class="card external" onclick="window.open('https://sites.google.com/view/fsvsokei/', '_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/9M0MFXmG/FS-v-Sokei.png" alt="Sokei"></div>
+      <div class="card-text">
+        <div class="card-title">FS (v) Sokei</div>
+        <div class="card-desc">Comprehensive analyses of fengshui cases</div>
+        <div class="card-desc2">🌐 Go to site ↗</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B4.3: HOUSE FACING RULER (FINLAY + SK COMBINED)
+     ============================================================ -->
+<div id="screen-facing-ruler" class="screen" style="padding-bottom: 80px;">
+  <div class="inner-header" style="max-width:700px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-b4')">‹</button>
+    <span class="inner-title">🧭 House Facing Ruler</span>
+  </div>
+
+  <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+    <img src="https://i.postimg.cc/VsSqKmq5/FS-ii-Shage.png" alt="Shage" style="width:44px; height:44px; object-fit:contain; filter:drop-shadow(0 0 10px rgba(0,191,255,0.4));">
+    <div>
+      <div style="font-family:'Cinzel',serif; font-size:13px; color:var(--sky);">FINLAY SK · 羅盤</div>
+      <div style="font-size:12px; color:var(--text-mid); font-style:italic;">Search address → draw arrow → get bearing</div>
+    </div>
+  </div>
+
+  <!-- Map Search -->
+  <div class="map-search-wrap">
+    <input type="text" id="map-search-input" placeholder="Search address or paste GPS coordinates…" onkeydown="if(event.key==='Enter') searchAddress()">
+    <button class="map-search-btn" onclick="searchAddress()">Search</button>
+  </div>
+
+  <!-- MAP -->
+  <div id="map-container">
+    <div id="leaflet-map"></div>
+    <canvas id="map-draw-layer"></canvas>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="map-toolbar">
+    <span class="map-instr" id="map-instr-text">Search for an address, then click "Draw Arrow" to measure facing direction</span>
+    <button class="map-tool-btn" id="btn-draw-mode" onclick="toggleDrawMode()">✏️ Draw Arrow</button>
+    <button class="map-tool-btn danger" onclick="clearArrow()">✕ Clear</button>
+  </div>
+
+  <!-- TRUE NORTH RESULT -->
+  <div class="bearing-result" id="bearing-result">
+    <div class="bearing-grid">
+      <div class="b-block">
+        <span class="b-label">True North Bearing</span>
+        <div class="b-val" id="b-true">—<sup>°</sup></div>
+      </div>
+      <div class="b-block">
+        <span class="b-label">Direction</span>
+        <div class="b-val sm" id="b-dir">—</div>
+        <div class="b-sub" id="b-gua">—</div>
+      </div>
+      <div class="b-block">
+        <span class="b-label">24 Mountains</span>
+        <div class="b-val sm" id="b-sector">—</div>
+      </div>
+    </div>
+
+    <div class="bearing-result-actions">
+      <button class="result-copy-btn" onclick="copyBearingResult()">📋 Copy Result</button>
+      <span class="copy-confirm" id="bear-copy-confirm">Copied!</span>
+      <button class="result-period-btn" onclick="toggleMagneticSection()">🧲 Magnetic North + Period</button>
+    </div>
+  </div>
+
+  <!-- MAGNETIC NORTH SECTION -->
+  <div class="magnetic-section" id="magnetic-section">
+    <div class="mag-title">Magnetic North Correction · Finlay</div>
+    <p style="font-size:12px; color:var(--text-dim); font-style:italic; margin-bottom:14px;">Correct the bearing for the current magnetic pole position (update annually)</p>
+    <div class="mag-field">
+      <label>Pole Lat range (°N)</label>
+      <input type="number" id="pole-lat1" value="85.5" step="0.1" min="60" max="90" style="max-width:90px;">
+      <span style="color:var(--text-dim); font-size:12px;">to</span>
+      <input type="number" id="pole-lat2" value="86.0" step="0.1" min="60" max="90" style="max-width:90px;">
+    </div>
+    <div class="mag-field">
+      <label>Pole Lng range (°E)</label>
+      <input type="number" id="pole-lng1" value="135" step="0.5" min="-180" max="180" style="max-width:90px;">
+      <span style="color:var(--text-dim); font-size:12px;">to</span>
+      <input type="number" id="pole-lng2" value="164" step="0.5" min="-180" max="180" style="max-width:90px;">
+    </div>
+    <button class="mag-calc-btn" onclick="calcMagnetic()">Calculate Magnetic Bearing</button>
+    <div class="mag-result-box" id="mag-result-box">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div><span style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim);">Magnetic Bearing</span><br><span style="font-family:'Cormorant Garamond',serif; font-size:2rem; color:#c8a96e;" id="mag-bearing-val">—°</span></div>
+        <div><span style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim);">Declination</span><br><span style="font-size:14px; color:var(--text-mid);" id="mag-decl-val">—</span></div>
+        <div><span style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim);">24 Mountains (Mag)</span><br><span style="font-size:14px; color:var(--sky);" id="mag-sector-val">—</span></div>
+        <div><span style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim);">Direction (Mag)</span><br><span style="font-size:14px; color:var(--text-mid);" id="mag-dir-val">—</span></div>
+      </div>
+    </div>
+
+    <!-- Period picker -->
+    <div style="margin-top: 20px;">
+      <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(200,169,110,0.7); margin-bottom:12px;">Choose House Period → Get Flying Star Chart</div>
+      <div class="period-grid" id="period-grid-ruler">
+        <!-- populated by JS -->
+      </div>
+      <div class="fs-result-wrap" id="ruler-chart-result">
+        <div class="chart-na" id="ruler-chart-na" style="display:none;">Chart image not yet uploaded — N/A</div>
+        <img id="ruler-chart-img" class="fs-chart-img" src="" alt="Flying Star Chart" style="display:none;" onerror="rulerChartError(this)">
+      </div>
+    </div>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B4.4: FLYING STAR CHART LOOKUP (standalone)
+     ============================================================ -->
+<div id="screen-flying-star" class="screen">
+  <div class="inner-header" style="max-width:420px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-b4')">‹</button>
+    <span class="inner-title">飛 Flying Star Charts</span>
+  </div>
+
+  <div style="text-align:center; margin-bottom:24px;">
+    <div style="font-family:'Cinzel',serif; font-size:13px; color:var(--sky); margin-bottom:6px;">All 飛星 Fengshui Charts</div>
+    <div style="font-size:13px; color:var(--text-mid); font-style:italic;">Select period and house facing to view the chart</div>
+  </div>
+
+  <div class="dropdown-wrap">
+    <label class="dropdown-label">House Period</label>
+    <select id="fs-period-select" onchange="fsLookup()">
+      <option value="">— Select Period —</option>
+    </select>
+    <span class="chevron">▾</span>
+  </div>
+
+  <div class="dropdown-wrap">
+    <label class="dropdown-label">House Facing</label>
+    <select id="fs-facing-select" onchange="fsLookup()">
+      <option value="">— Select Facing —</option>
+      <option value="N1">N1 (壬)</option>
+      <option value="N2">N2 (子)</option>
+      <option value="N3">N3 (癸)</option>
+      <option value="NE1">NE1 (丑)</option>
+      <option value="NE2">NE2 (艮) = NE3</option>
+      <option value="E1">E1 (甲)</option>
+      <option value="E2">E2 (卯) = E3</option>
+      <option value="SE1">SE1 (辰)</option>
+      <option value="SE2">SE2 (巽) = SE3</option>
+      <option value="S1">S1 (丙)</option>
+      <option value="S2">S2 (午)</option>
+      <option value="S3">S3 (丁)</option>
+      <option value="SW1">SW1 (未)</option>
+      <option value="SW2">SW2 (坤) = SW3</option>
+      <option value="W1">W1 (庚)</option>
+      <option value="W2">W2 (酉) = W3</option>
+      <option value="NW1">NW1 (戌)</option>
+      <option value="NW2">NW2 (乾) = NW3</option>
+    </select>
+    <span class="chevron">▾</span>
+  </div>
+
+  <div class="fs-result-wrap" id="fs-chart-wrap">
+    <div class="chart-na" id="fs-chart-na" style="display:none;">Chart image not yet uploaded — N/A</div>
+    <img id="fs-chart-img" class="fs-chart-img" src="" alt="Flying Star Chart" style="display:none;" onerror="fsChartError(this)">
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let currentUser = null; // null = guest, string = user ID
+let isGuest = false;
+let mapInstance = null;
+let drawMode = false;
+let drawnLine = null;
+let drawCanvas = null;
+let drawCtx = null;
+let mapStartPt = null;
+let mapCurrentPt = null;
+let isDrawing = false;
+let currentTrueBearing = null;
+let currentMapLatLng = null; // center of map
+let currentPeriodForRuler = null;
+let kwSelectedMethod = 'crypto';
+let kwIsDrawing = false;
+let kwHistory = [];
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function goTo(screenId) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(screenId);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+  // Init map when entering facing ruler screen
+  if (screenId === 'screen-facing-ruler') initMap();
+  if (screenId === 'screen-haircut') loadTodayHaircut();
+}
+
+// ============================================================
+// LOGIN
+// ============================================================
+function showIdInput() {
+  const inp = document.getElementById('idInput');
+  const btn = document.getElementById('btn-go-id');
+  inp.style.display = 'block';
+  btn.style.display = 'block';
+  inp.focus();
+}
+
+function loginWithId() {
+  const id = document.getElementById('idInput').value.trim().toUpperCase();
+  if (!id) { alert('Please enter your ID code'); return; }
+  currentUser = id;
+  isGuest = false;
+  setHomeState();
+  goTo('screen-home');
+}
+
+function guestLogin() {
+  currentUser = null;
+  isGuest = true;
+  setHomeState();
+  goTo('screen-home');
+}
+
+function setHomeState() {
+  const b3 = document.getElementById('card-b3');
+  const b4 = document.getElementById('card-b4');
+  const b6 = document.getElementById('card-b6');
+
+  if (isGuest) {
+    b3.classList.add('grayed');
+    b4.classList.add('grayed');
+    b6.classList.add('grayed');
+    document.getElementById('home-greeting').textContent = 'Welcome, Guest';
+  } else {
+    b3.classList.remove('grayed');
+    b4.classList.remove('grayed');
+    b6.classList.remove('grayed');
+    document.getElementById('home-greeting').textContent = 'Welcome, ' + currentUser;
+  }
+
+  // Visit counter (localStorage)
+  let visits = parseInt(localStorage.getItem('go_portal_visits') || '0') + 1;
+  localStorage.setItem('go_portal_visits', visits);
+  document.getElementById('visit-count').textContent = visits.toLocaleString() + ' visits';
+}
+
+function openPersonalPortal() {
+  if (!isGuest && currentUser) {
+    window.open('https://sites.google.com/view/fsvi' + currentUser.toLowerCase(), '_blank');
+  }
+}
+
+document.addEventListener('keydown', function(e) {
+  const inp = document.getElementById('idInput');
+  if (inp && inp.style.display === 'block' && e.key === 'Enter') loginWithId();
+});
+
+// ============================================================
+// B4 TOOLS COLLAPSIBLE
+// ============================================================
+function toggleTools() {
+  const inner = document.getElementById('tools-inner');
+  const arrow = document.getElementById('tools-arrow');
+  inner.classList.toggle('open');
+  arrow.classList.toggle('open');
+  arrow.textContent = inner.classList.contains('open') ? '↓' : '›';
+}
+
+// ============================================================
+// FENGSHUI DATA
+// ============================================================
+const OCTANTS = [
+  {name:'North',     zh:'坎', dir:'N',  min:337.5, max:22.5},
+  {name:'Northeast', zh:'艮', dir:'NE', min:22.5,  max:67.5},
+  {name:'East',      zh:'震', dir:'E',  min:67.5,  max:112.5},
+  {name:'Southeast', zh:'巽', dir:'SE', min:112.5, max:157.5},
+  {name:'South',     zh:'離', dir:'S',  min:157.5, max:202.5},
+  {name:'Southwest', zh:'坤', dir:'SW', min:202.5, max:247.5},
+  {name:'West',      zh:'兌', dir:'W',  min:247.5, max:292.5},
+  {name:'Northwest', zh:'乾', dir:'NW', min:292.5, max:337.5},
+];
+
+const M24 = [
+  {n:'壬', code:'N1',  a:337.5, b:352.5},
+  {n:'子', code:'N2',  a:352.5, b:7.5},
+  {n:'癸', code:'N3',  a:7.5,   b:22.5},
+  {n:'丑', code:'NE1', a:22.5,  b:37.5},
+  {n:'艮', code:'NE2', a:37.5,  b:52.5},
+  {n:'寅', code:'NE3', a:52.5,  b:67.5},
+  {n:'甲', code:'E1',  a:67.5,  b:82.5},
+  {n:'卯', code:'E2',  a:82.5,  b:97.5},
+  {n:'乙', code:'E3',  a:97.5,  b:112.5},
+  {n:'辰', code:'SE1', a:112.5, b:127.5},
+  {n:'巽', code:'SE2', a:127.5, b:142.5},
+  {n:'巳', code:'SE3', a:142.5, b:157.5},
+  {n:'丙', code:'S1',  a:157.5, b:172.5},
+  {n:'午', code:'S2',  a:172.5, b:187.5},
+  {n:'丁', code:'S3',  a:187.5, b:202.5},
+  {n:'未', code:'SW1', a:202.5, b:217.5},
+  {n:'坤', code:'SW2', a:217.5, b:232.5},
+  {n:'申', code:'SW3', a:232.5, b:247.5},
+  {n:'庚', code:'W1',  a:247.5, b:262.5},
+  {n:'酉', code:'W2',  a:262.5, b:277.5},
+  {n:'辛', code:'W3',  a:277.5, b:292.5},
+  {n:'戌', code:'NW1', a:292.5, b:307.5},
+  {n:'乾', code:'NW2', a:307.5, b:322.5},
+  {n:'亥', code:'NW3', a:322.5, b:337.5},
+];
+
+// Periods: P9=2024-2043, P8=2004-2023, each 20 years back
+const PERIODS = [
+  {p:1, label:'Period 1 (1864–1883)'},
+  {p:2, label:'Period 2 (1884–1903)'},
+  {p:3, label:'Period 3 (1904–1923)'},
+  {p:4, label:'Period 4 (1924–1943)'},
+  {p:5, label:'Period 5 (1944–1963)'},
+  {p:6, label:'Period 6 (1964–1983)'},
+  {p:7, label:'Period 7 (1984–2003)'},
+  {p:8, label:'Period 8 (2004–2023)'},
+  {p:9, label:'Period 9 (2024–2043)'},
+];
+
+// GitHub base URL for chart images — user will upload here
+const CHART_IMG_BASE = 'https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO/main/charts/';
+
+function norm(b) { b = b % 360; if (b < 0) b += 360; return b; }
+function inRange(b, a, bv) { if (a > bv) return b >= a || b < bv; return b >= a && b < bv; }
+function getOctant(b) { for (const o of OCTANTS) if (inRange(b, o.min, o.max)) return o; return OCTANTS[0]; }
+function getMtn(b) { for (const m of M24) if (inRange(b, m.a, m.b)) return m; return {n:'—', code:'—'}; }
+
+// Normalize facing code for chart lookup (E3→E2, NE3→NE2, etc.)
+function normalizeFacing(code) {
+  const endsWithThree = code.match(/^([A-Z]+)3$/);
+  if (endsWithThree) return endsWithThree[1] + '2';
+  return code;
+}
+
+function getChartUrl(period, facingCode) {
+  const fc = normalizeFacing(facingCode);
+  return CHART_IMG_BASE + 'P' + period + ' ' + fc + '.png';
+}
+
+// ============================================================
+// B4.4 FLYING STAR STANDALONE
+// ============================================================
+(function initFSDropdowns() {
+  const pSel = document.getElementById('fs-period-select');
+  PERIODS.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.p;
+    opt.textContent = p.label;
+    pSel.appendChild(opt);
+  });
+})();
+
+function fsLookup() {
+  const period = document.getElementById('fs-period-select').value;
+  let facing = document.getElementById('fs-facing-select').value;
+  const wrap = document.getElementById('fs-chart-wrap');
+  const img = document.getElementById('fs-chart-img');
+  const na = document.getElementById('fs-chart-na');
+
+  if (!period || !facing) return;
+
+  // Strip display suffix like " = E3"
+  facing = facing.split(' ')[0];
+
+  wrap.classList.add('active');
+  na.style.display = 'none';
+  img.style.display = 'none';
+
+  const url = getChartUrl(parseInt(period), facing);
+  img.src = url;
+  img.style.display = 'block';
+}
+
+function fsChartError(imgEl) {
+  imgEl.style.display = 'none';
+  document.getElementById('fs-chart-na').style.display = 'block';
+}
+
+// ============================================================
+// B4.3 MAP & HOUSE FACING RULER
+// ============================================================
+function initMap() {
+  if (mapInstance) return; // already initialized
+  mapInstance = L.map('leaflet-map', {
+    center: [13.7563, 100.5018], // Bangkok default
+    zoom: 17,
+    zoomControl: true,
+  });
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 20,
+  }).addTo(mapInstance);
+
+  // Set up draw canvas
+  drawCanvas = document.getElementById('map-draw-layer');
+  drawCtx = drawCanvas.getContext('2d');
+  resizeDrawCanvas();
+
+  mapInstance.on('moveend zoomend resize', resizeDrawCanvas);
+  mapInstance.on('move zoom', resizeDrawCanvas);
+
+  // Draw canvas events
+  drawCanvas.addEventListener('mousedown', onDrawStart);
+  drawCanvas.addEventListener('mousemove', onDrawMove);
+  drawCanvas.addEventListener('mouseup', onDrawEnd);
+  drawCanvas.addEventListener('touchstart', e => { e.preventDefault(); onDrawStart(e.touches[0]); }, {passive: false});
+  drawCanvas.addEventListener('touchmove', e => { e.preventDefault(); onDrawMove(e.touches[0]); }, {passive: false});
+  drawCanvas.addEventListener('touchend', e => { e.preventDefault(); onDrawEnd(e.touches[0] || e.changedTouches[0]); }, {passive: false});
+}
+
+function resizeDrawCanvas() {
+  if (!drawCanvas || !mapInstance) return;
+  const container = mapInstance.getContainer();
+  drawCanvas.width = container.offsetWidth;
+  drawCanvas.height = container.offsetHeight;
+  if (drawnLine) redrawLine();
+}
+
+function toggleDrawMode() {
+  drawMode = !drawMode;
+  const btn = document.getElementById('btn-draw-mode');
+  drawCanvas.style.display = drawMode ? 'block' : 'none';
+  if (drawMode) {
+    btn.classList.add('active');
+    document.getElementById('map-instr-text').textContent = 'Click and drag on the map to draw the facing direction arrow';
+    // Disable map drag while drawing
+    mapInstance.dragging.disable();
+    mapInstance.scrollWheelZoom.disable();
+  } else {
+    btn.classList.remove('active');
+    document.getElementById('map-instr-text').textContent = 'Draw mode off. Pan and zoom the map freely.';
+    mapInstance.dragging.enable();
+    mapInstance.scrollWheelZoom.enable();
+  }
+}
+
+function getCanvasPos(e) {
+  const rect = drawCanvas.getBoundingClientRect();
+  return {
+    x: (e.clientX - rect.left) * (drawCanvas.width / rect.width),
+    y: (e.clientY - rect.top) * (drawCanvas.height / rect.height),
+  };
+}
+
+function onDrawStart(e) {
+  if (!drawMode) return;
+  const p = getCanvasPos(e);
+  isDrawing = true;
+  mapStartPt = p;
+  mapCurrentPt = p;
+}
+
+function onDrawMove(e) {
+  if (!drawMode || !isDrawing) return;
+  const p = getCanvasPos(e);
+  mapCurrentPt = p;
+  redrawLine(mapStartPt, p, true);
+}
+
+function onDrawEnd(e) {
+  if (!drawMode || !isDrawing) return;
+  isDrawing = false;
+  const p = getCanvasPos(e);
+  mapCurrentPt = p;
+  const dx = p.x - mapStartPt.x, dy = p.y - mapStartPt.y;
+  if (Math.sqrt(dx*dx + dy*dy) < 10) return;
+  drawnLine = {x1: mapStartPt.x, y1: mapStartPt.y, x2: p.x, y2: p.y};
+  redrawLine(drawnLine.x1, drawnLine.y1, drawnLine.x2, drawnLine.y2, false);
+  showBearingResult();
+}
+
+function redrawLine(x1, y1, x2, y2, preview) {
+  if (!drawCtx) return;
+  drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+  if (x1 === undefined) return;
+  const dx = x2 - x1, dy = y2 - y1;
+  const len = Math.sqrt(dx*dx + dy*dy);
+  if (len < 2) return;
+  const angle = Math.atan2(dy, dx);
+  const headLen = Math.min(24, len * 0.25);
+  const color = preview ? 'rgba(255,80,80,0.7)' : 'rgba(255,80,80,0.95)';
+
+  drawCtx.save();
+  drawCtx.strokeStyle = color;
+  drawCtx.fillStyle = color;
+  drawCtx.lineWidth = 3;
+  drawCtx.lineCap = 'round';
+
+  drawCtx.beginPath();
+  drawCtx.moveTo(x1, y1);
+  drawCtx.lineTo(x2, y2);
+  drawCtx.stroke();
+
+  drawCtx.beginPath();
+  drawCtx.moveTo(x2, y2);
+  drawCtx.lineTo(x2 - headLen * Math.cos(angle - 0.4), y2 - headLen * Math.sin(angle - 0.4));
+  drawCtx.lineTo(x2 - headLen * Math.cos(angle + 0.4), y2 - headLen * Math.sin(angle + 0.4));
+  drawCtx.closePath();
+  drawCtx.fill();
+
+  if (len > 30) {
+    const b = calcCanvasBearing(x1, y1, x2, y2);
+    drawCtx.font = 'bold 14px Cinzel, serif';
+    drawCtx.fillStyle = 'rgba(255,255,255,0.95)';
+    drawCtx.strokeStyle = 'rgba(0,0,0,0.7)';
+    drawCtx.lineWidth = 3;
+    const tx = x2 + 18 * Math.cos(angle);
+    const ty = y2 + 18 * Math.sin(angle);
+    drawCtx.strokeText(b.toFixed(1) + '°', tx, ty);
+    drawCtx.fillText(b.toFixed(1) + '°', tx, ty);
+  }
+  drawCtx.restore();
+}
+
+function calcCanvasBearing(x1, y1, x2, y2) {
+  return norm(Math.atan2(x2 - x1, -(y2 - y1)) * 180 / Math.PI);
+}
+
+function showBearingResult() {
+  if (!drawnLine) return;
+  const b = calcCanvasBearing(drawnLine.x1, drawnLine.y1, drawnLine.x2, drawnLine.y2);
+  currentTrueBearing = b;
+  const oct = getOctant(b);
+  const mtn = getMtn(b);
+
+  document.getElementById('b-true').innerHTML = b.toFixed(1) + '<sup>°</sup>';
+  document.getElementById('b-dir').textContent = oct.dir + ' · ' + oct.zh;
+  document.getElementById('b-gua').textContent = oct.name;
+  document.getElementById('b-sector').textContent = mtn.code + ' · ' + mtn.n;
+  document.getElementById('bearing-result').classList.add('active');
+
+  // Store map center for magnetic calc
+  if (mapInstance) {
+    currentMapLatLng = mapInstance.getCenter();
+  }
+
+  document.getElementById('map-instr-text').textContent =
+    'Arrow: ' + b.toFixed(1) + '° · ' + mtn.code + ' · ' + oct.name + ' — clear and redraw to remeasure';
+}
+
+function clearArrow() {
+  drawnLine = null;
+  currentTrueBearing = null;
+  if (drawCtx) drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+  document.getElementById('bearing-result').classList.remove('active');
+  document.getElementById('magnetic-section').classList.remove('active');
+  document.getElementById('map-instr-text').textContent = 'Arrow cleared. Draw a new arrow.';
+}
+
+function copyBearingResult() {
+  if (!currentTrueBearing) return;
+  const b = currentTrueBearing.toFixed(1);
+  const oct = getOctant(currentTrueBearing);
+  const mtn = getMtn(currentTrueBearing);
+  const text = `House Facing (True North): ${b}° — ${mtn.code} · ${oct.name} (${oct.zh})`;
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById('bear-copy-confirm');
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2000);
+  });
+}
+
+function toggleMagneticSection() {
+  const sec = document.getElementById('magnetic-section');
+  sec.classList.toggle('active');
+  if (sec.classList.contains('active')) {
+    // Populate period grid
+    const grid = document.getElementById('period-grid-ruler');
+    grid.innerHTML = '';
+    PERIODS.forEach(p => {
+      const btn = document.createElement('button');
+      btn.className = 'period-btn';
+      btn.textContent = 'P' + p.p + ' (' + p.label.match(/\((.+)\)/)[1] + ')';
+      btn.onclick = () => selectPeriodForRuler(p.p, btn);
+      grid.appendChild(btn);
+    });
+  }
+}
+
+function selectPeriodForRuler(period, btn) {
+  currentPeriodForRuler = period;
+  document.querySelectorAll('#period-grid-ruler .period-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  loadRulerChart();
+}
+
+function loadRulerChart() {
+  if (!currentPeriodForRuler || !currentTrueBearing) return;
+  const mtn = getMtn(currentTrueBearing);
+  const wrap = document.getElementById('ruler-chart-result');
+  const img = document.getElementById('ruler-chart-img');
+  const na = document.getElementById('ruler-chart-na');
+  wrap.classList.add('active');
+  na.style.display = 'none';
+  img.style.display = 'none';
+  const url = getChartUrl(currentPeriodForRuler, mtn.code);
+  img.src = url;
+  img.style.display = 'block';
+}
+
+function rulerChartError(imgEl) {
+  imgEl.style.display = 'none';
+  document.getElementById('ruler-chart-na').style.display = 'block';
+}
+
+// Magnetic bearing calculation
+function toRad(d) { return d * Math.PI / 180; }
+function toDeg(r) { return r * 180 / Math.PI; }
+function bearing(lat1, lng1, lat2, lng2) {
+  const p1 = toRad(lat1), p2 = toRad(lat2), dl = toRad(lng2 - lng1);
+  const x = Math.sin(dl) * Math.cos(p2);
+  const y = Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl);
+  return norm(toDeg(Math.atan2(x, y)));
+}
+
+function calcMagnetic() {
+  if (!currentTrueBearing) {
+    alert('Please draw a bearing line on the map first.'); return;
+  }
+  if (!currentMapLatLng) {
+    alert('Map location unknown — please search an address first.'); return;
+  }
+  const poleLat = (parseFloat(document.getElementById('pole-lat1').value) + parseFloat(document.getElementById('pole-lat2').value)) / 2;
+  const poleLng = (parseFloat(document.getElementById('pole-lng1').value) + parseFloat(document.getElementById('pole-lng2').value)) / 2;
+  const azToPole = bearing(currentMapLatLng.lat, currentMapLatLng.lng, poleLat, poleLng);
+  let decl = azToPole;
+  if (decl > 180) decl -= 360;
+  const magB = norm(currentTrueBearing - decl);
+  const oct = getOctant(magB);
+  const mtn = getMtn(magB);
+
+  document.getElementById('mag-bearing-val').textContent = magB.toFixed(1) + '°';
+  document.getElementById('mag-decl-val').textContent = (decl >= 0 ? '+' : '') + decl.toFixed(3) + '° ' + (decl >= 0 ? 'East' : 'West');
+  document.getElementById('mag-sector-val').textContent = mtn.code + ' · ' + mtn.n;
+  document.getElementById('mag-dir-val').textContent = oct.dir + ' · ' + oct.zh + ' · ' + oct.name;
+  document.getElementById('mag-result-box').classList.add('active');
+
+  // Update period chart if selected
+  if (currentPeriodForRuler) loadRulerChart();
+}
+
+// Map address search using Nominatim
+async function searchAddress() {
+  const query = document.getElementById('map-search-input').value.trim();
+  if (!query) return;
+  if (!mapInstance) initMap();
+  try {
+    const resp = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`, {
+      headers: { 'Accept-Language': 'en' }
+    });
+    const data = await resp.json();
+    if (data && data.length > 0) {
+      const lat = parseFloat(data[0].lat);
+      const lon = parseFloat(data[0].lon);
+      mapInstance.setView([lat, lon], 18);
+      currentMapLatLng = { lat, lng: lon };
+      document.getElementById('map-instr-text').textContent = 'Map loaded · Click "Draw Arrow" then drag on the map to draw the facing direction';
+    } else {
+      document.getElementById('map-instr-text').textContent = 'Address not found — try different keywords';
+    }
+  } catch (e) {
+    document.getElementById('map-instr-text').textContent = 'Search error — check your connection';
+  }
+}
+
+// ============================================================
+// B2.1 DICE ROLLER
+// ============================================================
+let diceSetup = {};
+let diceReps = [];
+
+function setupDiceReps() {
+  const count = parseInt(document.getElementById('dice-count').value);
+  const type = parseInt(document.getElementById('dice-type').value);
+  const src = document.getElementById('dice-random-src').value;
+  diceSetup = { count, type, src };
+
+  document.getElementById('dice-setup-section').style.display = 'none';
+  document.getElementById('dice-rep-section').style.display = 'block';
+  document.getElementById('dice-result-section').classList.remove('active');
+
+  const grid = document.getElementById('die-rep-grid');
+  grid.innerHTML = '';
+  for (let i = 1; i <= count; i++) {
+    const row = document.createElement('div');
+    row.className = 'die-rep-row';
+    row.innerHTML = `
+      <span class="die-rep-num">Die ${i}</span>
+      <input class="die-rep-input" type="text" placeholder="What does this die represent?" id="die-rep-${i}">
+    `;
+    grid.appendChild(row);
+  }
+}
+
+function cryptoRandN(n) {
+  const a = new Uint32Array(1);
+  crypto.getRandomValues(a);
+  return (a[0] % n) + 1;
+}
+
+async function randomOrgFetchN(n) {
+  const r = await fetch(`https://www.random.org/integers/?num=1&min=1&max=${n}&col=1&base=10&format=plain&rnd=new`, { cache: 'no-store' });
+  if (!r.ok) throw new Error('unavailable');
+  const v = parseInt((await r.text()).trim(), 10);
+  if (isNaN(v) || v < 1 || v > n) throw new Error('bad response');
+  return v;
+}
+
+async function quantumFetchN(n) {
+  const r = await fetch('https://qrng.anu.edu.au/API/jsonI.php?length=1&type=uint8', { cache: 'no-store' });
+  if (!r.ok) throw new Error('unavailable');
+  const j = await r.json();
+  if (!j.success || !j.data) throw new Error('bad response');
+  return (j.data[0] % n) + 1;
+}
+
+async function getRandN(n, src) {
+  if (src === 'crypto') return cryptoRandN(n);
+  if (src === 'random-org') { try { return await randomOrgFetchN(n); } catch { return cryptoRandN(n); } }
+  if (src === 'quantum') { try { return await quantumFetchN(n); } catch { return cryptoRandN(n); } }
+  return cryptoRandN(n);
+}
+
+async function rollDice() {
+  const { count, type, src } = diceSetup;
+  diceReps = [];
+  for (let i = 1; i <= count; i++) {
+    const rep = document.getElementById('die-rep-' + i).value.trim() || '(unnamed)';
+    diceReps.push(rep);
+  }
+
+  const rollBtn = document.querySelector('#dice-rep-section .btn-primary');
+  rollBtn.textContent = 'Rolling…';
+  rollBtn.disabled = true;
+
+  const results = [];
+  for (let i = 0; i < count; i++) {
+    const val = await getRandN(type, src);
+    results.push(val);
+  }
+
+  rollBtn.textContent = '🎲 Roll the Dice';
+  rollBtn.disabled = false;
+
+  // Show result
+  document.getElementById('dice-rep-section').style.display = 'none';
+  const resSection = document.getElementById('dice-result-section');
+  resSection.classList.add('active');
+
+  const rows = document.getElementById('dice-result-rows');
+  rows.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    rows.innerHTML += `
+      <div class="dice-result-row">
+        <span class="dice-result-num">Die ${i+1}</span>
+        <span class="dice-result-rep">${diceReps[i]}</span>
+        <span class="dice-result-val">${results[i]}</span>
+      </div>
+    `;
+  }
+  resSection._results = results;
+}
+
+function copyDiceResult() {
+  const rows = document.getElementById('dice-result-rows');
+  let text = 'QMDJ Dice Roll Results\n';
+  const items = rows.querySelectorAll('.dice-result-row');
+  items.forEach((r, i) => {
+    const rep = r.querySelector('.dice-result-rep').textContent;
+    const val = r.querySelector('.dice-result-val').textContent;
+    text += `Die ${i+1} · ${rep} → ${val}\n`;
+  });
+  navigator.clipboard.writeText(text.trim());
+}
+
+function rollAgain() {
+  document.getElementById('dice-result-section').classList.remove('active');
+  document.getElementById('dice-rep-section').style.display = 'block';
+}
+
+// ============================================================
+// B2.2 KWANYIN ORACLE
+// ============================================================
+function kwSelectMethod(m) {
+  kwSelectedMethod = m;
+  document.querySelectorAll('.kw-method-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('kw-card-' + m).classList.add('active');
+}
+
+async function kwDraw() {
+  if (kwIsDrawing) return;
+  kwIsDrawing = true;
+  const btn = document.getElementById('kw-btn');
+  const numEl = document.getElementById('kw-number');
+  const fateEl = document.getElementById('kw-fate');
+  const statusEl = document.getElementById('kw-status');
+
+  btn.disabled = true;
+  fateEl.textContent = 'Reaching into the void…';
+  statusEl.textContent = '';
+  numEl.textContent = '—';
+
+  let number, sourceUsed = kwSelectedMethod;
+  try {
+    if (kwSelectedMethod === 'crypto') {
+      await new Promise(r => setTimeout(r, 200));
+      number = cryptoRandN(100);
+    } else if (kwSelectedMethod === 'random-org') {
+      statusEl.textContent = 'Contacting random.org…';
+      try { number = await randomOrgFetchN(100); }
+      catch { statusEl.textContent = 'Random.org unreachable — using crypto fallback'; number = cryptoRandN(100); sourceUsed = 'crypto'; }
+    } else {
+      statusEl.textContent = 'Querying quantum vacuum…';
+      try { number = await quantumFetchN(100); }
+      catch { statusEl.textContent = 'ANU unreachable — using crypto fallback'; number = cryptoRandN(100); sourceUsed = 'crypto'; }
+    }
+
+    // Rolling animation
+    numEl.classList.add('rolling');
+    const end = Date.now() + 900;
+    await new Promise(resolve => {
+      const tick = () => {
+        numEl.textContent = Math.floor(Math.random() * 100) + 1;
+        if (Date.now() < end) requestAnimationFrame(tick);
+        else { numEl.classList.remove('rolling'); resolve(); }
+      };
+      requestAnimationFrame(tick);
+    });
+
+    numEl.textContent = number;
+    const fates = { crypto: 'Hardware entropy has spoken', 'random-org': 'The atmosphere has chosen', quantum: 'Quantum chance has decided' };
+    fateEl.textContent = fates[sourceUsed];
+    if (!statusEl.textContent.includes('fallback')) statusEl.textContent = '';
+
+    const labels = { crypto: 'crypto', 'random-org': 'atm', quantum: 'qm' };
+    kwHistory.unshift({ n: number, src: labels[sourceUsed] });
+    if (kwHistory.length > 8) kwHistory.pop();
+    renderKwHistory();
+
+    btn.textContent = "Consult Her Holy's Wisdom Again\n🪷";
+    btn.disabled = false;
+    kwIsDrawing = false;
+  } catch(err) {
+    fateEl.textContent = 'The oracle is silent';
+    statusEl.textContent = 'Error: ' + err.message;
+    btn.disabled = false;
+    kwIsDrawing = false;
+  }
+}
+
+function renderKwHistory() {
+  const wrap = document.getElementById('kw-history-wrap');
+  const chips = document.getElementById('kw-chips');
+  if (kwHistory.length === 0) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block';
+  chips.innerHTML = kwHistory.map(h => `<div class="kw-chip"><b>${h.n}</b><small>${h.src}</small></div>`).join('');
+}
+
+// ============================================================
+// B1.4 HAIRCUT ADVICE
+// ============================================================
+function loadTodayHaircut() {
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById('haircut-today-date').textContent = dateStr;
+  document.getElementById('haircut-today-advice').textContent = 'This tool requires the Google Sheets backend connection. Please connect via Google Apps Script for live data.';
+  document.getElementById('haircut-today-advice').style.color = 'rgba(255,255,255,0.5)';
+  document.getElementById('haircut-today-advice').style.fontSize = '14px';
+}
+
+function checkHaircutDate() {
+  const picker = document.getElementById('haircut-date-picker');
+  if (!picker.value) return;
+  const d = new Date(picker.value);
+  const dateStr = d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  document.getElementById('haircut-custom-date-label').textContent = 'Result for: ' + dateStr;
+  document.getElementById('haircut-custom-advice').textContent = 'Requires Google Sheets backend connection.';
+  document.getElementById('haircut-custom-advice').style.color = 'rgba(255,255,255,0.5)';
+  document.getElementById('haircut-custom-result').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
