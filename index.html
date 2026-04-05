@@ -7,11 +7,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#000073">
 <title>五 Go · Super Portal</title>
+<link rel="icon" type="image/png" href="https://i.postimg.cc/ryZgWswz/Go5_favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400&family=Ma+Shan+Zheng&family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
 <!-- Leaflet for map -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- Google Identity Services (OAuth) -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
 /* ============================================================
@@ -862,7 +865,7 @@ html, body {
 }
 .kwanyin-title {
   font-family: 'Ma Shan Zheng', 'KaiTi', cursive;
-  font-size: 72px;
+  font-size: 24px;
   font-weight: 400;
   text-align: center;
   letter-spacing: 0.12em;
@@ -892,20 +895,28 @@ html, body {
   padding: 14px 4px;
   cursor: pointer;
   text-align: center;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  min-width: 0;
 }
 .kw-method-card:hover { background: #e8e8f5; }
-.kw-method-card.active { border: 2.5px solid #000073; background: #e8e8f5; }
-.kw-method-icon { font-size: 26px; display: block; margin-bottom: 6px; }
+.kw-method-card.active {
+  border: 2.5px solid #000073;
+  background: #e8e8f5;
+  box-shadow: 0 0 0 3px rgba(0,0,115,0.25), inset 0 2px 6px rgba(0,0,0,0.15);
+}
+.kw-method-icon { font-size: 22px; display: block; margin-bottom: 4px; }
 .kw-method-name {
   font-family: 'IM Fell English', serif;
-  font-size: 32px;
+  font-size: clamp(11px, 3vw, 28px);
   font-weight: 700;
   display: block;
   color: #000073;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.kw-method-desc { font-size: 14px; font-style: italic; color: #000073; }
+.kw-method-desc { font-size: clamp(9px, 2.5vw, 14px); font-style: italic; color: #000073; }
 
 .kw-stage {
   background: rgba(255,255,255,0.06);
@@ -1109,34 +1120,43 @@ html, body {
   <div class="site-label">SUPER PORTAL</div>
   <div class="logo-wrap">
     <img src="https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png" alt="Go">
-    <div class="logo-title">五 GO</div>
-    <div class="logo-sub">Welcome to Go, your super portal</div>
+    <div class="logo-title" style="display:flex; flex-direction:column; align-items:center; line-height:1.3;">
+      <span>五</span>
+      <span>Go</span>
+    </div>
   </div>
 
-  <div class="cards" style="margin-top: 20px;">
-    <div class="card" onclick="showIdInput()">
-      <div class="card-icon">🔑</div>
-      <div class="card-text">
-        <div class="card-title">Do you have an ID?</div>
-        <div class="card-desc">(your personal FS (vi) Kuchinashi portal ID)</div>
+  <div class="cards" style="margin-top: 24px;">
+    <div>
+      <!-- Google Sign-In button rendered here -->
+      <div id="g_id_onload"
+        data-client_id="656273496716-j3hhabkjpk7e70uqppoqlrqpsammdjia.apps.googleusercontent.com"
+        data-callback="handleGoogleLogin"
+        data-auto_prompt="false">
       </div>
-      <div class="card-arrow">›</div>
+      <div class="g_id_signin"
+        data-type="standard"
+        data-shape="rectangular"
+        data-theme="outline"
+        data-text="signin_with"
+        data-size="large"
+        data-logo_alignment="left"
+        data-width="360">
+      </div>
+      <p style="font-size:12px; color:var(--text-dim); text-align:center; margin-top:10px; line-height:1.6;">Login is handled completely by Google OAuth.</p>
+      <p id="login-error" style="display:none; color:var(--red); font-size:12px; text-align:center; margin-top:8px; max-width:360px; line-height:1.6;"></p>
+      <p id="login-checking" style="display:none; font-family:'Cinzel',serif; font-size:12px; color:var(--text-dim); text-align:center; margin-top:8px; letter-spacing:0.1em;">Verifying…</p>
     </div>
-
-    <input class="id-input" id="idInput" type="text" placeholder="ENTER YOUR ID" maxlength="20">
-    <button id="btn-go-id" onclick="loginWithId()">Continue →</button>
 
     <div class="card" onclick="guestLogin()">
       <div class="card-icon">👤</div>
       <div class="card-text">
-        <div class="card-title">Guest Login</div>
+        <div class="card-title">Access as guest</div>
         <div class="card-desc">Limited access — some tools unavailable</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
   </div>
-
-  <p class="login-note">Gmail's required for full login.<br>Login is handled completely by Google OAuth.</p>
 
   <div class="portal-footer">
     <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
@@ -1151,7 +1171,10 @@ html, body {
   <div class="site-label">五 GO</div>
   <div class="logo-wrap">
     <img src="https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png" alt="Go">
-    <div class="logo-title">五 GO</div>
+    <div class="logo-title" style="display:flex; flex-direction:column; align-items:center; line-height:1.3;">
+      <span>五</span>
+      <span>Go</span>
+    </div>
     <div class="logo-sub" id="home-greeting">Welcome to Go, your super portal</div>
   </div>
 
@@ -1379,7 +1402,7 @@ html, body {
       <div class="card-arrow">›</div>
     </div>
 
-    <div class="card" onclick="goTo('screen-kwanyin')">
+    <div class="card" onclick="goTo('screen-kwanyin-splash')">
       <div class="card-icon"><img src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin"></div>
       <div class="card-text">
         <div class="card-title">🔮 觀音 Kwanyin Oracle</div>
@@ -1477,7 +1500,7 @@ html, body {
       📖 For more info ↗
     </a>
 
-    <button class="btn-primary" style="margin: 20px auto 0;" onclick="rollDice()">🎲 Roll the Dice</button>
+    <button class="btn-primary" style="margin: 20px auto 0; display:block;" onclick="rollDice()">🎲 Roll the Dice</button>
   </div>
 
   <!-- Results -->
@@ -1502,7 +1525,41 @@ html, body {
 </div>
 
 <!-- ============================================================
-     SCREEN B2.2: KWANYIN ORACLE
+     SCREEN B2.2: KWANYIN ORACLE - SPLASH
+     ============================================================ -->
+<div id="screen-kwanyin-splash" class="screen" style="padding:0; position:relative; overflow:hidden;">
+  <div style="
+    position:absolute; inset:0;
+    background-image: url('https://i.postimg.cc/QNzjqmR1/Draw-AKwan-Yin-Lot.png');
+    background-size: cover;
+    background-position: center;
+    z-index:0;
+  "></div>
+  <div style="
+    position:absolute; inset:0;
+    background: rgba(0,0,50,0.45);
+    z-index:1;
+  "></div>
+  <div style="
+    position:relative; z-index:2;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    min-height:100dvh; padding: 40px 20px;
+    text-align:center;
+  " onclick="goTo('screen-kwanyin')">
+    <div style="font-family:'Ma Shan Zheng',cursive; font-size:52px; color:#f5f0e8;
+      text-shadow: 0 0 8px rgba(255,245,80,0.9), 0 0 30px rgba(255,243,100,0.6);
+      margin-bottom:20px;">觀音靈簽</div>
+    <img src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin"
+      style="max-height:200px; width:auto; filter:drop-shadow(0 0 20px rgba(255,245,80,0.7)); margin-bottom:30px;">
+    <div style="font-family:'IM Fell English',serif; font-size:18px; font-style:italic; color:rgba(255,245,220,0.8); margin-bottom:40px;">
+      Tap anywhere to enter
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B2.2: KWANYIN ORACLE - MAIN
      ============================================================ -->
 <div id="screen-kwanyin" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
@@ -1510,40 +1567,100 @@ html, body {
     <span class="inner-title">觀音靈簽 Kwanyin Oracle</span>
   </div>
 
-  <div class="kwanyin-title">觀音靈簽</div>
-  <img class="kwanyin-img" src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin">
+  <!-- Main consultation view -->
+  <div id="kw-main-view" style="display:flex; flex-direction:column; align-items:center; width:100%;">
+    <div class="kwanyin-title">觀音靈簽</div>
+    <img class="kwanyin-img" src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin">
 
-  <p style="font-size:16px; font-style:italic; color:#c8c0b0; text-align:center; margin-bottom:18px;">Choose your source of true randomness</p>
+    <p style="font-size:15px; font-style:italic; color:#c8c0b0; text-align:center; margin-bottom:18px;">Choose your source of true randomness</p>
 
-  <div class="kw-methods">
-    <div class="kw-method-card active" onclick="kwSelectMethod('crypto')" id="kw-card-crypto">
-      <span class="kw-method-icon">🔐</span>
-      <span class="kw-method-name">Crypto</span>
-      <span class="kw-method-desc">Hardware entropy</span>
+    <div class="kw-methods">
+      <div class="kw-method-card active" onclick="kwSelectMethod('crypto')" id="kw-card-crypto">
+        <span class="kw-method-icon">🔐</span>
+        <span class="kw-method-name">Crypto</span>
+        <span class="kw-method-desc">Hardware entropy</span>
+      </div>
+      <div class="kw-method-card" onclick="kwSelectMethod('random-org')" id="kw-card-random-org">
+        <span class="kw-method-icon">📡</span>
+        <span class="kw-method-name">Atm.</span>
+        <span class="kw-method-desc">Atmospheric noise</span>
+      </div>
+      <div class="kw-method-card" onclick="kwSelectMethod('quantum')" id="kw-card-quantum">
+        <span class="kw-method-icon">⚛️</span>
+        <span class="kw-method-name">Quantum</span>
+        <span class="kw-method-desc">Quantum vacuum</span>
+      </div>
     </div>
-    <div class="kw-method-card" onclick="kwSelectMethod('random-org')" id="kw-card-random-org">
-      <span class="kw-method-icon">📡</span>
-      <span class="kw-method-name">Atm.</span>
-      <span class="kw-method-desc">Atmospheric noise</span>
+
+    <div class="kw-stage">
+      <div class="kw-number" id="kw-number">—</div>
+      <div class="kw-fate" id="kw-fate">Your fate awaits</div>
+      <!-- Message outside button -->
+      <p style="font-size:14px; font-style:italic; color:rgba(255,245,220,0.7); margin-bottom:14px; line-height:1.6; max-width:280px;">
+        Consult Her Holy's Wisdom — focus your mind, then draw a lot
+      </p>
+      <button class="kw-btn" id="kw-btn" onclick="kwDraw()">Draw a lot 🪷</button>
     </div>
-    <div class="kw-method-card" onclick="kwSelectMethod('quantum')" id="kw-card-quantum">
-      <span class="kw-method-icon">⚛️</span>
-      <span class="kw-method-name">Quantum</span>
-      <span class="kw-method-desc">Quantum vacuum</span>
+    <div class="kw-status" id="kw-status"></div>
+
+    <div class="kw-history" id="kw-history-wrap" style="display:none; width:100%; max-width:420px;">
+      <hr style="border:none; border-top:1px solid rgba(255,255,255,0.15); margin: 16px 0 12px;">
+      <div class="kw-history-title">Past Readings</div>
+      <div class="kw-chips" id="kw-chips"></div>
     </div>
   </div>
 
-  <div class="kw-stage">
-    <div class="kw-number" id="kw-number">—</div>
-    <div class="kw-fate" id="kw-fate">Your fate awaits</div>
-    <button class="kw-btn" id="kw-btn" onclick="kwDraw()">Consult Her Holy's Wisdom<br>🪷</button>
-  </div>
-  <div class="kw-status" id="kw-status"></div>
-
-  <div class="kw-history" id="kw-history-wrap" style="display:none;">
-    <hr style="border:none; border-top:1px solid rgba(255,255,255,0.15); margin: 16px 0 12px;">
-    <div class="kw-history-title">Past Readings</div>
-    <div class="kw-chips" id="kw-chips"></div>
+  <!-- Result view (shown after draw) -->
+  <div id="kw-result-view" style="display:none; flex-direction:column; align-items:center; width:100%; position:relative; min-height:80dvh;">
+    <div style="
+      position:fixed; inset:0; z-index:-1;
+      background-image: url('https://i.postimg.cc/QNzjqmR1/Draw-AKwan-Yin-Lot.png');
+      background-size: cover;
+      background-position: center;
+    "></div>
+    <div style="position:fixed; inset:0; z-index:-1; background:rgba(0,0,40,0.55);"></div>
+    <div style="
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      min-height:80dvh; padding: 40px 20px;
+      text-align:center; position:relative; z-index:1;
+    ">
+      <div id="kw-result-number" style="
+        font-family:'Ma Shan Zheng','IM Fell English',serif;
+        font-size:140px;
+        font-weight:400;
+        color: rgba(255,255,255,0.3);
+        line-height:1;
+        text-shadow: 0 0 60px rgba(255,250,200,0.2);
+        margin-bottom: 24px;
+      ">—</div>
+      <div id="kw-result-method" style="font-size:18px; font-style:italic; color:rgba(255,245,220,0.6); margin-bottom:32px;"></div>
+      <button onclick="kwCopyResult()" style="
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: white;
+        font-family:'Cinzel',serif;
+        font-size:13px;
+        letter-spacing:0.12em;
+        padding: 12px 24px;
+        border-radius: 10px;
+        cursor: pointer;
+        backdrop-filter: blur(4px);
+        margin-bottom: 16px;
+      ">📋 Copy Number</button>
+      <span id="kw-result-copy-confirm" style="font-size:12px; color:rgba(255,255,255,0.6); font-style:italic; opacity:0; transition:opacity 0.3s; display:block; margin-bottom:24px;">Copied!</span>
+      <button onclick="kwBackToMain()" style="
+        background: transparent;
+        border: 1px solid rgba(255,255,255,0.2);
+        color: rgba(255,255,255,0.4);
+        font-family:'Cinzel',serif;
+        font-size:11px;
+        letter-spacing:0.15em;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+      ">‹ Back</button>
+    </div>
   </div>
 
   <div class="portal-footer">
@@ -1576,7 +1693,7 @@ html, body {
       <div class="card-arrow">›</div>
     </div>
 
-    <div class="card grayed">
+    <div class="card" onclick="goTo('screen-2hs')">
       <div class="card-icon"><img src="https://i.postimg.cc/MZsnjcLC/Blue_Orchid_Web_Email.png" alt="2Hs"></div>
       <div class="card-text">
         <div class="card-title">2Hs Portal</div>
@@ -1595,6 +1712,31 @@ html, body {
     </div>
   </div>
 
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B3.2: 2Hs PORTAL
+     ============================================================ -->
+<div id="screen-2hs" class="screen">
+  <div class="inner-header" style="max-width:420px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-b3')">‹</button>
+    <span class="inner-title">2Hs Portal</span>
+  </div>
+  <div class="logo-wrap" style="margin-bottom:20px;">
+    <img src="https://i.postimg.cc/MZsnjcLC/Blue_Orchid_Web_Email.png" alt="2Hs" style="width:70px;height:70px;">
+    <div class="logo-sub">Bazi (ii) Ran, Bazi (iii) Yuri</div>
+  </div>
+  <p style="color:var(--text-mid); font-size:14px; text-align:center; max-width:340px; line-height:1.8; margin-bottom:28px;">
+    The 2Hs Portal is a fully developed standalone tool.<br>
+    It will be embedded here. Please paste its URL below to link it, or open it directly.
+  </p>
+  <a href="#" target="_blank" class="btn-primary" style="display:flex; align-items:center; justify-content:center; text-decoration:none; width:75%;">
+    🌐 Open 2Hs Portal ↗
+  </a>
   <div class="portal-footer">
     <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
     <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
@@ -1701,13 +1843,10 @@ html, body {
       <div class="card-arrow">›</div>
     </div>
 
-    <!-- TOOLS — collapsible -->
+    <!-- TOOLS — always visible -->
     <div class="tools-section">
-      <div class="tools-toggle" onclick="toggleTools()">
-        <span class="tools-toggle-label">🛠️ Your Tools</span>
-        <span class="tools-toggle-arrow" id="tools-arrow">›</span>
-      </div>
-      <div class="tools-inner" id="tools-inner">
+      <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(0,191,255,0.6); padding: 10px 0 8px; border-top: 1px solid rgba(255,255,255,0.08);">🛠️ Your Tools</div>
+      <div style="display:flex; flex-direction:column; gap:14px;">
         <!-- B4.3 -->
         <div class="card" onclick="goTo('screen-facing-ruler')">
           <div class="card-icon"><img src="https://i.postimg.cc/VsSqKmq5/FS-ii-Shage.png" alt="Ruler"></div>
@@ -1880,29 +2019,38 @@ html, body {
     <label class="dropdown-label">House Facing</label>
     <select id="fs-facing-select" onchange="fsLookup()">
       <option value="">— Select Facing —</option>
-      <option value="N1">N1 (壬)</option>
-      <option value="N2">N2 (子)</option>
-      <option value="N3">N3 (癸)</option>
-      <option value="NE1">NE1 (丑)</option>
-      <option value="NE2">NE2 (艮) = NE3</option>
-      <option value="E1">E1 (甲)</option>
-      <option value="E2">E2 (卯) = E3</option>
-      <option value="SE1">SE1 (辰)</option>
-      <option value="SE2">SE2 (巽) = SE3</option>
-      <option value="S1">S1 (丙)</option>
-      <option value="S2">S2 (午)</option>
-      <option value="S3">S3 (丁)</option>
-      <option value="SW1">SW1 (未)</option>
-      <option value="SW2">SW2 (坤) = SW3</option>
-      <option value="W1">W1 (庚)</option>
-      <option value="W2">W2 (酉) = W3</option>
-      <option value="NW1">NW1 (戌)</option>
-      <option value="NW2">NW2 (乾) = NW3</option>
+      <option value="N1">N1 壬 (337.5°–352.5°)</option>
+      <option value="N2">N2 子 (352.5°–7.5°)</option>
+      <option value="N3">N3 癸 (7.5°–22.5°)</option>
+      <option value="NE1">NE1 丑 (22.5°–37.5°)</option>
+      <option value="NE2">NE2 艮 (37.5°–52.5°)</option>
+      <option value="NE3">NE3 寅 (52.5°–67.5°)</option>
+      <option value="E1">E1 甲 (67.5°–82.5°)</option>
+      <option value="E2">E2 卯 (82.5°–97.5°)</option>
+      <option value="E3">E3 乙 (97.5°–112.5°)</option>
+      <option value="SE1">SE1 辰 (112.5°–127.5°)</option>
+      <option value="SE2">SE2 巽 (127.5°–142.5°)</option>
+      <option value="SE3">SE3 巳 (142.5°–157.5°)</option>
+      <option value="S1">S1 丙 (157.5°–172.5°)</option>
+      <option value="S2">S2 午 (172.5°–187.5°)</option>
+      <option value="S3">S3 丁 (187.5°–202.5°)</option>
+      <option value="SW1">SW1 未 (202.5°–217.5°)</option>
+      <option value="SW2">SW2 坤 (217.5°–232.5°)</option>
+      <option value="SW3">SW3 申 (232.5°–247.5°)</option>
+      <option value="W1">W1 庚 (247.5°–262.5°)</option>
+      <option value="W2">W2 酉 (262.5°–277.5°)</option>
+      <option value="W3">W3 辛 (277.5°–292.5°)</option>
+      <option value="NW1">NW1 戌 (292.5°–307.5°)</option>
+      <option value="NW2">NW2 乾 (307.5°–322.5°)</option>
+      <option value="NW3">NW3 亥 (322.5°–337.5°)</option>
     </select>
     <span class="chevron">▾</span>
   </div>
 
   <div class="fs-result-wrap" id="fs-chart-wrap">
+    <div style="display:flex; justify-content:center; margin-bottom:10px;">
+      <button id="fs-orient-btn" onclick="fsToggleOrientation()" style="background:transparent; border:1px solid rgba(0,191,255,0.3); color:var(--sky); font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.1em; padding:7px 16px; border-radius:8px; cursor:pointer;">🧭 North at top</button>
+    </div>
     <div class="chart-na" id="fs-chart-na" style="display:none;">Chart image not yet uploaded — N/A</div>
     <img id="fs-chart-img" class="fs-chart-img" src="" alt="Flying Star Chart" style="display:none;" onerror="fsChartError(this)">
   </div>
@@ -1922,6 +2070,7 @@ html, body {
 // STATE
 // ============================================================
 let currentUser = null; // null = guest, string = user ID
+let currentUserName = 'Guest';
 let isGuest = false;
 let mapInstance = null;
 let drawMode = false;
@@ -1939,42 +2088,51 @@ let kwIsDrawing = false;
 let kwHistory = [];
 
 // ============================================================
-// NAVIGATION
+// LOGIN — Google OAuth
 // ============================================================
-function goTo(screenId) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const target = document.getElementById(screenId);
-  if (target) {
-    target.classList.add('active');
-    window.scrollTo(0, 0);
+const AUTH_GAS_URL = 'https://script.google.com/macros/s/AKfycbwayXYaqKaZJ6wRIpCnIlZHR2QRqhX-RijAMDAcqAK2IRqcoMzK05iiGlKwNQ4ViiNu/exec';
+
+// Called automatically by Google after user signs in
+async function handleGoogleLogin(response) {
+  // Decode the JWT token Google returns to get the user's email
+  const payload = JSON.parse(atob(response.credential.split('.')[1]));
+  const email = payload.email;
+
+  document.getElementById('login-checking').style.display = 'block';
+  document.getElementById('login-error').style.display = 'none';
+
+  try {
+    const resp = await fetch(AUTH_GAS_URL + '?action=validateEmail&email=' + encodeURIComponent(email), { mode: 'cors' });
+    const data = await resp.json();
+
+    if (data.valid) {
+      currentUser = data.idCode || email;
+      currentUserName = data.name || email;
+      isGuest = false;
+      setHomeState();
+      goTo('screen-home');
+    } else {
+      document.getElementById('login-checking').style.display = 'none';
+      showLoginError('Your Google account (' + email + ') is not registered. Please contact your administrator.');
+    }
+  } catch(e) {
+    document.getElementById('login-checking').style.display = 'none';
+    showLoginError('Could not reach the login server. Check your connection and try again.');
   }
-  // Init map when entering facing ruler screen
-  if (screenId === 'screen-facing-ruler') initMap();
-  if (screenId === 'screen-haircut') loadTodayHaircut();
 }
 
-// ============================================================
-// LOGIN
-// ============================================================
-function showIdInput() {
-  const inp = document.getElementById('idInput');
-  const btn = document.getElementById('btn-go-id');
-  inp.style.display = 'block';
-  btn.style.display = 'block';
-  inp.focus();
+function showLoginError(msg) {
+  const el = document.getElementById('login-error');
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
 }
 
-function loginWithId() {
-  const id = document.getElementById('idInput').value.trim().toUpperCase();
-  if (!id) { alert('Please enter your ID code'); return; }
-  currentUser = id;
-  isGuest = false;
-  setHomeState();
-  goTo('screen-home');
-}
+function showIdInput() {} // no longer needed, kept to avoid errors
+
+function loginWithId() {} // no longer needed, kept to avoid errors
 
 function guestLogin() {
   currentUser = null;
+  currentUserName = 'Guest';
   isGuest = true;
   setHomeState();
   goTo('screen-home');
@@ -1994,7 +2152,7 @@ function setHomeState() {
     b3.classList.remove('grayed');
     b4.classList.remove('grayed');
     b6.classList.remove('grayed');
-    document.getElementById('home-greeting').textContent = 'Welcome, ' + currentUser;
+    document.getElementById('home-greeting').textContent = 'Welcome, ' + currentUserName;
   }
 
   // Visit counter (localStorage)
@@ -2013,17 +2171,6 @@ document.addEventListener('keydown', function(e) {
   const inp = document.getElementById('idInput');
   if (inp && inp.style.display === 'block' && e.key === 'Enter') loginWithId();
 });
-
-// ============================================================
-// B4 TOOLS COLLAPSIBLE
-// ============================================================
-function toggleTools() {
-  const inner = document.getElementById('tools-inner');
-  const arrow = document.getElementById('tools-arrow');
-  inner.classList.toggle('open');
-  arrow.classList.toggle('open');
-  arrow.textContent = inner.classList.contains('open') ? '↓' : '›';
-}
 
 // ============================================================
 // FENGSHUI DATA
@@ -2079,24 +2226,27 @@ const PERIODS = [
   {p:9, label:'Period 9 (2024–2043)'},
 ];
 
-// GitHub base URL for chart images — user will upload here
-const CHART_IMG_BASE = 'https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO/main/charts/';
+// GitHub base URL for chart images
+const CHART_IMG_BASE = 'https://raw.githubusercontent.com/dsiiiajisai/Go5/main/B4.4/';
 
 function norm(b) { b = b % 360; if (b < 0) b += 360; return b; }
 function inRange(b, a, bv) { if (a > bv) return b >= a || b < bv; return b >= a && b < bv; }
 function getOctant(b) { for (const o of OCTANTS) if (inRange(b, o.min, o.max)) return o; return OCTANTS[0]; }
 function getMtn(b) { for (const m of M24) if (inRange(b, m.a, m.b)) return m; return {n:'—', code:'—'}; }
 
-// Normalize facing code for chart lookup (E3→E2, NE3→NE2, etc.)
+// NE3/E3/SE3/SW3/W3/NW3 share chart with their x2 counterpart
 function normalizeFacing(code) {
-  const endsWithThree = code.match(/^([A-Z]+)3$/);
-  if (endsWithThree) return endsWithThree[1] + '2';
-  return code;
+  const shareMap = { NE3:'NE2', E3:'E2', SE3:'SE2', SW3:'SW2', W3:'W2', NW3:'NW2' };
+  return shareMap[code] || code;
 }
+
+// Format: [Period][Direction].[1 or 2]  — 1=North at top, 2=facing on top
+let fsNorthOnTop = true; // default: North at top
 
 function getChartUrl(period, facingCode) {
   const fc = normalizeFacing(facingCode);
-  return CHART_IMG_BASE + 'P' + period + ' ' + fc + '.png';
+  const suffix = fsNorthOnTop ? '1' : '2';
+  return CHART_IMG_BASE + period + fc + '.' + suffix + '.png';
 }
 
 // ============================================================
@@ -2112,17 +2262,21 @@ function getChartUrl(period, facingCode) {
   });
 })();
 
+function fsToggleOrientation() {
+  fsNorthOnTop = !fsNorthOnTop;
+  const btn = document.getElementById('fs-orient-btn');
+  btn.textContent = fsNorthOnTop ? '🧭 North at top' : '🏠 Facing on top';
+  fsLookup();
+}
+
 function fsLookup() {
   const period = document.getElementById('fs-period-select').value;
-  let facing = document.getElementById('fs-facing-select').value;
+  const facing = document.getElementById('fs-facing-select').value;
   const wrap = document.getElementById('fs-chart-wrap');
   const img = document.getElementById('fs-chart-img');
   const na = document.getElementById('fs-chart-na');
 
   if (!period || !facing) return;
-
-  // Strip display suffix like " = E3"
-  facing = facing.split(' ')[0];
 
   wrap.classList.add('active');
   na.style.display = 'none';
@@ -2204,33 +2358,6 @@ function getCanvasPos(e) {
   };
 }
 
-function onDrawStart(e) {
-  if (!drawMode) return;
-  const p = getCanvasPos(e);
-  isDrawing = true;
-  mapStartPt = p;
-  mapCurrentPt = p;
-}
-
-function onDrawMove(e) {
-  if (!drawMode || !isDrawing) return;
-  const p = getCanvasPos(e);
-  mapCurrentPt = p;
-  redrawLine(mapStartPt, p, true);
-}
-
-function onDrawEnd(e) {
-  if (!drawMode || !isDrawing) return;
-  isDrawing = false;
-  const p = getCanvasPos(e);
-  mapCurrentPt = p;
-  const dx = p.x - mapStartPt.x, dy = p.y - mapStartPt.y;
-  if (Math.sqrt(dx*dx + dy*dy) < 10) return;
-  drawnLine = {x1: mapStartPt.x, y1: mapStartPt.y, x2: p.x, y2: p.y};
-  redrawLine(drawnLine.x1, drawnLine.y1, drawnLine.x2, drawnLine.y2, false);
-  showBearingResult();
-}
-
 function redrawLine(x1, y1, x2, y2, preview) {
   if (!drawCtx) return;
   drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
@@ -2302,6 +2429,7 @@ function showBearingResult() {
 
 function clearArrow() {
   drawnLine = null;
+  selectedNode = null;
   currentTrueBearing = null;
   if (drawCtx) drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
   document.getElementById('bearing-result').classList.remove('active');
@@ -2447,7 +2575,7 @@ function setupDiceReps() {
     const row = document.createElement('div');
     row.className = 'die-rep-row';
     row.innerHTML = `
-      <span class="die-rep-num">Die ${i}</span>
+      <span class="die-rep-num">🎲 ${i}</span>
       <input class="die-rep-input" type="text" placeholder="What does this die represent?" id="die-rep-${i}">
     `;
     grid.appendChild(row);
@@ -2543,6 +2671,9 @@ function rollAgain() {
 // ============================================================
 // B2.2 KWANYIN ORACLE
 // ============================================================
+let kwLastNumber = null;
+let kwLastSource = null;
+
 function kwSelectMethod(m) {
   kwSelectedMethod = m;
   document.querySelectorAll('.kw-method-card').forEach(c => c.classList.remove('active'));
@@ -2577,7 +2708,7 @@ async function kwDraw() {
       catch { statusEl.textContent = 'ANU unreachable — using crypto fallback'; number = cryptoRandN(100); sourceUsed = 'crypto'; }
     }
 
-    // Rolling animation
+    // Rolling animation on main view
     numEl.classList.add('rolling');
     const end = Date.now() + 900;
     await new Promise(resolve => {
@@ -2590,18 +2721,25 @@ async function kwDraw() {
     });
 
     numEl.textContent = number;
+    kwLastNumber = number;
+    kwLastSource = sourceUsed;
+
     const fates = { crypto: 'Hardware entropy has spoken', 'random-org': 'The atmosphere has chosen', quantum: 'Quantum chance has decided' };
     fateEl.textContent = fates[sourceUsed];
     if (!statusEl.textContent.includes('fallback')) statusEl.textContent = '';
 
-    const labels = { crypto: 'crypto', 'random-org': 'atm', quantum: 'qm' };
-    kwHistory.unshift({ n: number, src: labels[sourceUsed] });
+    // Add to history with emoji icon
+    const srcEmoji = { crypto: '🔐', 'random-org': '📡', quantum: '⚛️' };
+    kwHistory.unshift({ n: number, icon: srcEmoji[sourceUsed] });
     if (kwHistory.length > 8) kwHistory.pop();
     renderKwHistory();
 
-    btn.textContent = "Consult Her Holy's Wisdom Again\n🪷";
     btn.disabled = false;
     kwIsDrawing = false;
+
+    // Show result screen after short delay
+    setTimeout(() => kwShowResult(number, sourceUsed), 600);
+
   } catch(err) {
     fateEl.textContent = 'The oracle is silent';
     statusEl.textContent = 'Error: ' + err.message;
@@ -2610,36 +2748,262 @@ async function kwDraw() {
   }
 }
 
+function kwShowResult(number, sourceUsed) {
+  document.getElementById('kw-main-view').style.display = 'none';
+  const rv = document.getElementById('kw-result-view');
+  rv.style.display = 'flex';
+
+  document.getElementById('kw-result-number').textContent = number;
+  const fates = { crypto: '🔐 Hardware entropy has spoken', 'random-org': '📡 The atmosphere has chosen', quantum: '⚛️ Quantum chance has decided' };
+  document.getElementById('kw-result-method').textContent = fates[sourceUsed] || '';
+}
+
+function kwBackToMain() {
+  document.getElementById('kw-result-view').style.display = 'none';
+  document.getElementById('kw-main-view').style.display = 'flex';
+  // Reset button state
+  const btn = document.getElementById('kw-btn');
+  btn.textContent = 'Draw a lot 🪷';
+  btn.disabled = false;
+}
+
+function kwCopyResult() {
+  if (!kwLastNumber) return;
+  navigator.clipboard.writeText(String(kwLastNumber)).then(() => {
+    const el = document.getElementById('kw-result-copy-confirm');
+    el.style.opacity = '1';
+    setTimeout(() => el.style.opacity = '0', 2000);
+  });
+}
+
 function renderKwHistory() {
   const wrap = document.getElementById('kw-history-wrap');
   const chips = document.getElementById('kw-chips');
   if (kwHistory.length === 0) { wrap.style.display = 'none'; return; }
   wrap.style.display = 'block';
-  chips.innerHTML = kwHistory.map(h => `<div class="kw-chip"><b>${h.n}</b><small>${h.src}</small></div>`).join('');
+  chips.innerHTML = kwHistory.map(h => `<div class="kw-chip"><b>${h.n}</b><small>${h.icon}</small></div>`).join('');
 }
 
 // ============================================================
 // B1.4 HAIRCUT ADVICE
+// Uses Google Apps Script backend from B1.4. tab
+// The APPS_SCRIPT_URL below must be set to your deployed GAS web app URL
 // ============================================================
-function loadTodayHaircut() {
+const HAIRCUT_GAS_URL = 'https://script.google.com/macros/s/AKfycbwayXYaqKaZJ6wRIpCnIlZHR2QRqhX-RijAMDAcqAK2IRqcoMzK05iiGlKwNQ4ViiNu/exec';
+
+async function loadTodayHaircut() {
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   document.getElementById('haircut-today-date').textContent = dateStr;
-  document.getElementById('haircut-today-advice').textContent = 'This tool requires the Google Sheets backend connection. Please connect via Google Apps Script for live data.';
-  document.getElementById('haircut-today-advice').style.color = 'rgba(255,255,255,0.5)';
-  document.getElementById('haircut-today-advice').style.fontSize = '14px';
+  document.getElementById('haircut-today-advice').textContent = 'Loading…';
+  document.getElementById('haircut-today-advice').style.color = '';
+  document.getElementById('haircut-today-advice').style.fontSize = '';
+
+  try {
+    const resp = await fetch(HAIRCUT_GAS_URL + '?action=today', { mode: 'cors' });
+    const data = await resp.json();
+    applyHaircutAdvice(document.getElementById('haircut-today-advice'), data.advice);
+  } catch(e) {
+    document.getElementById('haircut-today-advice').innerHTML = 'Connect your Google Apps Script backend:<br><small style="opacity:0.5">Set HAIRCUT_GAS_URL in the JS to your deployed GAS URL</small>';
+    document.getElementById('haircut-today-advice').style.color = 'rgba(255,255,255,0.5)';
+    document.getElementById('haircut-today-advice').style.fontSize = '13px';
+  }
 }
 
-function checkHaircutDate() {
+async function checkHaircutDate() {
   const picker = document.getElementById('haircut-date-picker');
   if (!picker.value) return;
   const d = new Date(picker.value);
   const dateStr = d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   document.getElementById('haircut-custom-date-label').textContent = 'Result for: ' + dateStr;
-  document.getElementById('haircut-custom-advice').textContent = 'Requires Google Sheets backend connection.';
-  document.getElementById('haircut-custom-advice').style.color = 'rgba(255,255,255,0.5)';
+  document.getElementById('haircut-custom-advice').textContent = 'Loading…';
   document.getElementById('haircut-custom-result').style.display = 'block';
+  try {
+    const resp = await fetch(HAIRCUT_GAS_URL + '?action=date&date=' + encodeURIComponent(picker.value), { mode: 'cors' });
+    const data = await resp.json();
+    applyHaircutAdvice(document.getElementById('haircut-custom-advice'), data.advice);
+  } catch(e) {
+    document.getElementById('haircut-custom-advice').textContent = 'Backend not connected.';
+    document.getElementById('haircut-custom-advice').style.color = 'rgba(255,255,255,0.5)';
+  }
 }
+
+function applyHaircutAdvice(el, text) {
+  el.innerHTML = text;
+  if (text && text.includes('⬛')) el.style.color = 'red';
+  else if (text && text.includes('🔵')) el.style.color = 'blue';
+  else el.style.color = '';
+}
+
+// ============================================================
+// NAVIGATION HISTORY + BROWSER BACK + SWIPE
+// ============================================================
+const navStack = ['screen-login'];
+
+function goTo(screenId) {
+  const current = navStack[navStack.length - 1];
+  if (current !== screenId) navStack.push(screenId);
+
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(screenId);
+  if (target) {
+    target.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+
+  // Push browser history state
+  history.pushState({ screenId }, '', '#' + screenId);
+
+  if (screenId === 'screen-facing-ruler') initMap();
+  if (screenId === 'screen-haircut') loadTodayHaircut();
+  if (screenId === 'screen-kwanyin') {
+    // Reset kwanyin state when entering
+    document.getElementById('kw-main-view').style.display = 'flex';
+    document.getElementById('kw-result-view').style.display = 'none';
+  }
+}
+
+function goBack() {
+  if (navStack.length > 1) {
+    navStack.pop();
+    const prev = navStack[navStack.length - 1];
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(prev);
+    if (target) { target.classList.add('active'); window.scrollTo(0, 0); }
+  }
+}
+
+// Browser back button
+window.addEventListener('popstate', function(e) {
+  if (navStack.length > 1) {
+    navStack.pop();
+    const prev = navStack[navStack.length - 1];
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const target = document.getElementById(prev);
+    if (target) { target.classList.add('active'); window.scrollTo(0, 0); }
+  } else {
+    // Stay on the page rather than exiting
+    history.pushState({ screenId: navStack[0] }, '', '#' + navStack[0]);
+  }
+});
+
+// Swipe left-to-right = go back
+let swipeStartX = 0, swipeStartY = 0;
+document.addEventListener('touchstart', e => {
+  swipeStartX = e.touches[0].clientX;
+  swipeStartY = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - swipeStartX;
+  const dy = e.changedTouches[0].clientY - swipeStartY;
+  // Only trigger if horizontal swipe is dominant and large enough
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 2) {
+    // Don't trigger swipe on map canvas
+    const active = document.querySelector('.screen.active');
+    if (active && active.id === 'screen-facing-ruler') return;
+    if (dx > 0) goBack(); // swipe right = back
+  }
+}, { passive: true });
+
+// Push initial state so back button works from the start
+history.replaceState({ screenId: 'screen-login' }, '', '#screen-login');
+
+// ============================================================
+// MAP ARROW NODE EDITING
+// ============================================================
+let selectedNode = null; // 'start' | 'end' | null
+const NODE_RADIUS = 16;
+
+function getNodeAtPos(x, y) {
+  if (!drawnLine) return null;
+  const dxS = x - drawnLine.x1, dyS = y - drawnLine.y1;
+  if (Math.sqrt(dxS*dxS + dyS*dyS) < NODE_RADIUS) return 'start';
+  const dxE = x - drawnLine.x2, dyE = y - drawnLine.y2;
+  if (Math.sqrt(dxE*dxE + dyE*dyE) < NODE_RADIUS) return 'end';
+  return null;
+}
+
+function onDrawStart(e) {
+  if (!drawMode) return;
+  const p = getCanvasPos(e);
+
+  if (drawnLine) {
+    const node = getNodeAtPos(p.x, p.y);
+    if (node) {
+      selectedNode = node;
+      isDrawing = true;
+      return;
+    }
+  }
+
+  // Start fresh line
+  selectedNode = null;
+  isDrawing = true;
+  mapStartPt = p;
+  mapCurrentPt = p;
+}
+
+function onDrawMove(e) {
+  if (!drawMode || !isDrawing) return;
+  const p = getCanvasPos(e);
+
+  if (selectedNode && drawnLine) {
+    if (selectedNode === 'start') {
+      drawnLine.x1 = p.x; drawnLine.y1 = p.y;
+    } else {
+      drawnLine.x2 = p.x; drawnLine.y2 = p.y;
+    }
+    redrawLine(drawnLine.x1, drawnLine.y1, drawnLine.x2, drawnLine.y2, false);
+    drawNodes();
+    showBearingResult();
+    return;
+  }
+
+  mapCurrentPt = p;
+  redrawLine(mapStartPt.x, mapStartPt.y, p.x, p.y, true);
+}
+
+function onDrawEnd(e) {
+  if (!drawMode || !isDrawing) return;
+  isDrawing = false;
+
+  if (selectedNode) {
+    selectedNode = null;
+    drawNodes();
+    return;
+  }
+
+  const p = getCanvasPos(e);
+  mapCurrentPt = p;
+  const dx = p.x - mapStartPt.x, dy = p.y - mapStartPt.y;
+  if (Math.sqrt(dx*dx + dy*dy) < 10) return;
+  drawnLine = { x1: mapStartPt.x, y1: mapStartPt.y, x2: p.x, y2: p.y };
+  redrawLine(drawnLine.x1, drawnLine.y1, drawnLine.x2, drawnLine.y2, false);
+  drawNodes();
+  showBearingResult();
+}
+
+function drawNodes() {
+  if (!drawnLine || !drawCtx) return;
+  // Draw two handle nodes
+  const pts = [
+    { x: drawnLine.x1, y: drawnLine.y1, label: '○' },
+    { x: drawnLine.x2, y: drawnLine.y2, label: '●' },
+  ];
+  pts.forEach(pt => {
+    drawCtx.save();
+    drawCtx.beginPath();
+    drawCtx.arc(pt.x, pt.y, NODE_RADIUS * 0.75, 0, Math.PI * 2);
+    drawCtx.fillStyle = 'rgba(255,80,80,0.25)';
+    drawCtx.fill();
+    drawCtx.strokeStyle = 'rgba(255,255,255,0.9)';
+    drawCtx.lineWidth = 2;
+    drawCtx.stroke();
+    drawCtx.restore();
+  });
+}
+
 </script>
 
 </body>
