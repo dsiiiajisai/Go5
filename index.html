@@ -9,7 +9,7 @@
 <title>五 Go · Super Portal</title>
 <link rel="icon" type="image/png" href="https://i.postimg.cc/ryZgWswz/Go5_favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400&family=Ma+Shan+Zheng&family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400&family=Ma+Shan+Zheng&family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Beau+Rivage&display=swap" rel="stylesheet">
 <!-- Leaflet for map -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -803,6 +803,13 @@ html, body {
   padding: 0 12px;
   outline: none;
   font-family: 'Crimson Pro', serif;
+  -webkit-text-fill-color: white;
+}
+.die-rep-input:-webkit-autofill,
+.die-rep-input:not(:placeholder-shown) {
+  background: rgba(0,0,50,0.8) !important;
+  -webkit-text-fill-color: white !important;
+  color: white !important;
 }
 .die-rep-input::placeholder { color: rgba(255,255,255,0.25); }
 .die-rep-input:focus { border-color: var(--sky); }
@@ -842,6 +849,54 @@ html, body {
   color: var(--text-dim);
   min-width: 50px;
 }
+
+/* Dice rolling animation */
+.dice-rolling-wrap {
+  width: 100%;
+  max-width: 420px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px 0;
+  gap: 12px;
+}
+.dice-rolling-wrap.active { display: flex; }
+.dice-roll-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.die-anim {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  animation: dieRoll 0.15s infinite;
+  font-family: 'Cinzel', serif;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+@keyframes dieRoll {
+  0%   { transform: rotate(0deg) scale(1); }
+  25%  { transform: rotate(15deg) scale(1.1); }
+  50%  { transform: rotate(-10deg) scale(0.95); }
+  75%  { transform: rotate(8deg) scale(1.05); }
+  100% { transform: rotate(0deg) scale(1); }
+}
+.dice-rolling-label {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  animation: pulse 1s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
 .dice-result-rep {
   flex: 1;
   font-size: 14px;
@@ -1107,8 +1162,54 @@ html, body {
   vertical-align: middle;
 }
 
-/* Leaflet overrides */
-.leaflet-control-attribution { display: none !important; }
+/* ============================================================
+   2Hs MODULE STYLES
+   ============================================================ */
+.dob-select {
+  width: 100%;
+  height: 54px;
+  border-radius: 10px;
+  border: 2px solid rgba(0,191,255,0.3);
+  background: rgba(0,0,0,0.35);
+  color: white;
+  font-size: 13px;
+  padding: 0 12px;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='8'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%2300BFFF' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+}
+.dob-select option { background: #000073; color: #fff; }
+.hs-btn {
+  border-radius: 14px;
+  padding: 16px 20px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid rgba(255,255,255,0.1);
+  width: fit-content;
+  min-width: 280px;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.hs-btn:hover { transform: scale(1.04); box-shadow: 0 0 50px rgba(255,255,255,0.6); }
+.hs-btn:active { transform: scale(0.97); }
+.hs-btn-orchid { width: 70px; height: 70px; object-fit: contain; flex-shrink: 0; }
+.hs-btn-body { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.hs-btn-num { font-family: 'Cinzel', serif; font-size: 13px; font-weight: 600; opacity: 0.7; margin-bottom: 4px; text-align: center; }
+.hs-btn-char { font-size: 52px; font-weight: 700; line-height: 1; text-align: center; }
+.hs-btn-hint { font-size: 11px; color: rgba(255,255,255,0.35); text-align: center; margin-top: 8px; display: block; }
+.start-over-btn { margin-top: 32px; width: 75%; padding: 14px; border-radius: 10px; border: 1px solid rgba(0,191,255,0.3); background: transparent; color: rgba(255,255,255,0.4); font-family: 'Cinzel', serif; font-size: 12px; letter-spacing: 0.15em; cursor: pointer; display: block; margin-left: auto; margin-right: auto; }
+
+/* Pillar highlight */
+.hl { color: #FFD700; }
 </style>
 </head>
 <body>
@@ -1132,7 +1233,9 @@ html, body {
       <div id="g_id_onload"
         data-client_id="656273496716-j3hhabkjpk7e70uqppoqlrqpsammdjia.apps.googleusercontent.com"
         data-callback="handleGoogleLogin"
-        data-auto_prompt="false">
+        data-auto_select="false"
+        data-auto_prompt="false"
+        data-cancel_on_tap_outside="true">
       </div>
       <div class="g_id_signin"
         data-type="standard"
@@ -1473,9 +1576,9 @@ html, body {
       <div class="dice-question">Which source of true randomness do you prefer?</div>
       <div class="dropdown-wrap">
         <select id="dice-random-src">
-          <option value="crypto">🔐 Crypto (Hardware entropy)</option>
+          <option value="quantum" selected>⚛️ Quantum (ANU vacuum)</option>
           <option value="random-org">📡 Atmospheric (random.org)</option>
-          <option value="quantum">⚛️ Quantum (ANU vacuum)</option>
+          <option value="crypto">🔐 Crypto (Hardware entropy)</option>
         </select>
         <span class="chevron">▾</span>
       </div>
@@ -1501,6 +1604,12 @@ html, body {
     </a>
 
     <button class="btn-primary" style="margin: 20px auto 0; display:block;" onclick="rollDice()">🎲 Roll the Dice</button>
+  </div>
+
+  <!-- Rolling animation -->
+  <div id="dice-rolling-wrap" class="dice-rolling-wrap">
+    <div class="dice-roll-row" id="dice-roll-row"></div>
+    <div class="dice-rolling-label">Rolling…</div>
   </div>
 
   <!-- Results -->
@@ -1531,7 +1640,8 @@ html, body {
   <div style="
     position:absolute; inset:0;
     background-image: url('https://i.postimg.cc/QNzjqmR1/Draw-AKwan-Yin-Lot.png');
-    background-size: cover;
+    background-size: auto 100%;
+    background-repeat: no-repeat;
     background-position: center;
     z-index:0;
   "></div>
@@ -1575,27 +1685,32 @@ html, body {
     <p style="font-size:15px; font-style:italic; color:#c8c0b0; text-align:center; margin-bottom:18px;">Choose your source of true randomness</p>
 
     <div class="kw-methods">
-      <div class="kw-method-card active" onclick="kwSelectMethod('crypto')" id="kw-card-crypto">
-        <span class="kw-method-icon">🔐</span>
-        <span class="kw-method-name">Crypto</span>
-        <span class="kw-method-desc">Hardware entropy</span>
+      <div class="kw-method-card active" onclick="kwSelectMethod('quantum')" id="kw-card-quantum">
+        <span class="kw-method-icon">⚛️</span>
+        <span class="kw-method-name">Quantum</span>
+        <span class="kw-method-desc">Quantum vacuum</span>
       </div>
       <div class="kw-method-card" onclick="kwSelectMethod('random-org')" id="kw-card-random-org">
         <span class="kw-method-icon">📡</span>
         <span class="kw-method-name">Atm.</span>
         <span class="kw-method-desc">Atmospheric noise</span>
       </div>
-      <div class="kw-method-card" onclick="kwSelectMethod('quantum')" id="kw-card-quantum">
-        <span class="kw-method-icon">⚛️</span>
-        <span class="kw-method-name">Quantum</span>
-        <span class="kw-method-desc">Quantum vacuum</span>
+      <div class="kw-method-card" onclick="kwSelectMethod('crypto')" id="kw-card-crypto">
+        <span class="kw-method-icon">🔐</span>
+        <span class="kw-method-name">Crypto</span>
+        <span class="kw-method-desc">Hardware entropy</span>
       </div>
+    </div>
+
+    <!-- Question input -->
+    <div style="width:100%; max-width:420px; margin-bottom:16px;">
+      <label style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim); display:block; margin-bottom:8px;">Type your question here:</label>
+      <textarea id="kw-question" rows="3" placeholder="What would you like to ask Her Holy's Wisdom?" style="width:100%; border-radius:10px; border:1px solid rgba(0,191,255,0.3); background:rgba(0,0,0,0.35); color:white; font-size:14px; font-family:'Crimson Pro',serif; padding:12px 14px; outline:none; resize:vertical; line-height:1.6;"></textarea>
     </div>
 
     <div class="kw-stage">
       <div class="kw-number" id="kw-number">—</div>
       <div class="kw-fate" id="kw-fate">Your fate awaits</div>
-      <!-- Message outside button -->
       <p style="font-size:14px; font-style:italic; color:rgba(255,245,220,0.7); margin-bottom:14px; line-height:1.6; max-width:280px;">
         Consult Her Holy's Wisdom — focus your mind, then draw a lot
       </p>
@@ -1610,56 +1725,34 @@ html, body {
     </div>
   </div>
 
-  <!-- Result view (shown after draw) -->
+  <!-- Result view -->
   <div id="kw-result-view" style="display:none; flex-direction:column; align-items:center; width:100%; position:relative; min-height:80dvh;">
-    <div style="
-      position:fixed; inset:0; z-index:-1;
-      background-image: url('https://i.postimg.cc/QNzjqmR1/Draw-AKwan-Yin-Lot.png');
-      background-size: cover;
-      background-position: center;
-    "></div>
-    <div style="position:fixed; inset:0; z-index:-1; background:rgba(0,0,40,0.55);"></div>
-    <div style="
-      display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      min-height:80dvh; padding: 40px 20px;
-      text-align:center; position:relative; z-index:1;
-    ">
-      <div id="kw-result-number" style="
-        font-family:'Ma Shan Zheng','IM Fell English',serif;
-        font-size:140px;
-        font-weight:400;
-        color: rgba(255,255,255,0.3);
-        line-height:1;
-        text-shadow: 0 0 60px rgba(255,250,200,0.2);
-        margin-bottom: 24px;
-      ">—</div>
-      <div id="kw-result-method" style="font-size:18px; font-style:italic; color:rgba(255,245,220,0.6); margin-bottom:32px;"></div>
-      <button onclick="kwCopyResult()" style="
-        background: rgba(255,255,255,0.15);
-        border: 1px solid rgba(255,255,255,0.3);
-        color: white;
-        font-family:'Cinzel',serif;
-        font-size:13px;
-        letter-spacing:0.12em;
-        padding: 12px 24px;
-        border-radius: 10px;
-        cursor: pointer;
-        backdrop-filter: blur(4px);
-        margin-bottom: 16px;
-      ">📋 Copy Number</button>
-      <span id="kw-result-copy-confirm" style="font-size:12px; color:rgba(255,255,255,0.6); font-style:italic; opacity:0; transition:opacity 0.3s; display:block; margin-bottom:24px;">Copied!</span>
-      <button onclick="kwBackToMain()" style="
-        background: transparent;
-        border: 1px solid rgba(255,255,255,0.2);
-        color: rgba(255,255,255,0.4);
-        font-family:'Cinzel',serif;
-        font-size:11px;
-        letter-spacing:0.15em;
-        padding: 10px 20px;
-        border-radius: 8px;
-        cursor: pointer;
-      ">‹ Back</button>
+    <div style="position:fixed; inset:0; z-index:-1; background-image:url('https://i.postimg.cc/QNzjqmR1/Draw-AKwan-Yin-Lot.png'); background-size:cover; background-position:center;"></div>
+    <div style="position:fixed; inset:0; z-index:-1; background:rgba(0,0,40,0.6);"></div>
+    <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; padding:40px 24px; text-align:center; width:100%; max-width:420px;">
+
+      <!-- Draw a lot label above result -->
+      <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,245,220,0.5); margin-bottom:8px;">Draw a lot</div>
+
+      <!-- Big number -->
+      <div id="kw-result-number" style="font-family:'Ma Shan Zheng','IM Fell English',serif; font-size:140px; font-weight:400; color:rgba(255,255,255,0.3); line-height:1; text-shadow:0 0 60px rgba(255,250,200,0.2); margin-bottom:32px;">—</div>
+
+      <!-- Question display -->
+      <div style="width:100%; margin-bottom:24px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:20px 22px; text-align:left;">
+        <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,245,220,0.5); margin-bottom:12px;">The answer to your question:</div>
+        <div id="kw-result-question" style="font-family:'Beau Rivage',cursive; font-size:22px; font-style:italic; color:rgba(255,245,220,0.85); line-height:1.6; margin-bottom:12px;"></div>
+        <div style="font-family:'Cinzel',serif; font-size:12px; color:rgba(255,245,220,0.5); margin-bottom:4px;">is:</div>
+        <div id="kw-result-lot-label" style="font-family:'Cormorant Garamond',serif; font-size:28px; color:#c8a96e; font-weight:300;">Lot #—</div>
+      </div>
+
+      <!-- See what lot says button -->
+      <a id="kw-lot-link" href="#" target="_blank" style="display:inline-block; width:100%; padding:14px; background:rgba(255,245,220,0.12); border:1px solid rgba(255,245,220,0.3); border-radius:10px; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:rgba(255,245,220,0.8); text-decoration:none; margin-bottom:12px; text-align:center; cursor:pointer;">See what this Lot says ↗</a>
+
+      <!-- Copy button -->
+      <button onclick="kwCopyResult()" style="width:100%; padding:12px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:white; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; border-radius:10px; cursor:pointer; margin-bottom:8px; backdrop-filter:blur(4px);">📋 Copy Result</button>
+      <span id="kw-result-copy-confirm" style="font-size:12px; color:rgba(255,255,255,0.6); font-style:italic; opacity:0; transition:opacity 0.3s; display:block; margin-bottom:16px;">Copied!</span>
+
+      <button onclick="kwBackToMain()" style="background:transparent; border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.35); font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; padding:10px 20px; border-radius:8px; cursor:pointer;">‹ Back</button>
     </div>
   </div>
 
@@ -1721,26 +1814,222 @@ html, body {
 <!-- ============================================================
      SCREEN B3.2: 2Hs PORTAL
      ============================================================ -->
-<div id="screen-2hs" class="screen">
-  <div class="inner-header" style="max-width:420px; width:100%;">
+<!-- ============================================================
+     SCREEN B3.2: 2Hs HOME
+     ============================================================ -->
+<div id="screen-2hs" class="screen" style="background:radial-gradient(ellipse at 50% 30%,rgba(0,191,255,0.12) 0%,transparent 65%),linear-gradient(180deg,#000073 0%,#00004a 100%); justify-content:center;">
+  <div class="inner-header" style="max-width:420px; width:100%; position:absolute; top:0;">
     <button class="back-btn" onclick="goTo('screen-b3')">‹</button>
     <span class="inner-title">2Hs Portal</span>
   </div>
-  <div class="logo-wrap" style="margin-bottom:20px;">
-    <img src="https://i.postimg.cc/MZsnjcLC/Blue_Orchid_Web_Email.png" alt="2Hs" style="width:70px;height:70px;">
-    <div class="logo-sub">Bazi (ii) Ran, Bazi (iii) Yuri</div>
+  <div style="display:flex; flex-direction:column; align-items:center; padding-top:80px; width:100%;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-bottom:24px;">
+      <div style="font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.2em; color:rgba(255,255,255,0.4);">Bazi (ii) Ran</div>
+      <div style="font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.2em; color:rgba(255,255,255,0.4);">Bazi (iii) Yuri</div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; margin-bottom:36px;">
+      <img src="https://i.postimg.cc/MZsnjcLC/Blue-Orchid-Web-Email.png" alt="Orchid" style="width:80px; height:80px; object-fit:contain; margin-bottom:14px; filter:drop-shadow(0 0 18px rgba(0,191,255,0.5));">
+      <div style="font-family:'Cinzel',serif; font-size:22px; letter-spacing:0.2em; color:var(--sky); font-weight:600;">2Hs PORTAL</div>
+    </div>
+    <div style="font-family:'Cinzel',serif; font-size:14px; letter-spacing:0.18em; color:rgba(255,255,255,0.7); margin-bottom:40px; text-align:center;">What do you want to do?</div>
+    <div class="cards">
+      <div class="card" onclick="goTo('screen-2hs-quick')">
+        <div class="card-icon">⚡</div>
+        <div class="card-text">
+          <div class="card-title">Quickly Locate Your 2Hs</div>
+          <div class="card-desc">Key in your ID code</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </div>
+      <div class="card" onclick="goTo('screen-2hs-find')">
+        <div class="card-icon">🔍</div>
+        <div class="card-text">
+          <div class="card-title">Find Your 2Hs</div>
+          <div class="card-desc">Key in your date of birth</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </div>
+      <div class="card" onclick="goTo('screen-2hs-dir')">
+        <div class="card-icon">📁</div>
+        <div class="card-text">
+          <div class="card-title">Directory</div>
+          <div class="card-desc">Full directory of all 100 2Hs</div>
+        </div>
+        <div class="card-arrow">›</div>
+      </div>
+    </div>
+    <div style="margin-top:60px; text-align:center; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.15em; color:rgba(255,255,255,0.35);">
+      VISITS<br><span id="hs-visit-count" style="font-size:22px; color:rgba(255,255,255,0.6);">—</span>
+    </div>
   </div>
-  <p style="color:var(--text-mid); font-size:14px; text-align:center; max-width:340px; line-height:1.8; margin-bottom:28px;">
-    The 2Hs Portal is a fully developed standalone tool.<br>
-    It will be embedded here. Please paste its URL below to link it, or open it directly.
-  </p>
-  <a href="#" target="_blank" class="btn-primary" style="display:flex; align-items:center; justify-content:center; text-decoration:none; width:75%;">
-    🌐 Open 2Hs Portal ↗
-  </a>
-  <div class="portal-footer">
-    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
-    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+</div>
+
+<!-- ============================================================
+     SCREEN B3.2a: 2Hs QUICK SEARCH
+     ============================================================ -->
+<div id="screen-2hs-quick" class="screen" style="background:radial-gradient(ellipse at 50% 0%,rgba(0,191,255,0.08) 0%,transparent 60%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
+  <div class="inner-header" style="max-width:520px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-2hs')">‹</button>
+    <span class="inner-title">QUICKLY LOCATE YOUR 2Hs</span>
   </div>
+  <div style="width:100%; max-width:480px;">
+    <div style="text-align:center; margin-bottom:40px;">
+      <img src="https://i.postimg.cc/hvw4ZmWx/MOTH-orchid-WHITE-web-email.png" style="width:70px; height:70px; object-fit:contain;">
+    </div>
+    <span style="font-size:13px; letter-spacing:0.12em; color:rgba(255,255,255,0.45); text-transform:uppercase; margin-bottom:8px; display:block;">Enter your ID code</span>
+    <input type="text" id="hs-id-input" style="width:100%; padding:18px 20px; font-size:22px; font-family:'Cinzel',serif; letter-spacing:0.15em; border-radius:12px; border:2px solid rgba(0,191,255,0.4); background:rgba(0,0,0,0.3); color:#fff; text-align:center; text-transform:uppercase; outline:none; margin-bottom:20px;" placeholder="TYPE HERE" autocomplete="off" autocorrect="off" spellcheck="false" oninput="hsFindByID()">
+    <div id="hs-id-no-result" style="color:#ff8a80; text-align:center; font-size:14px; display:none; margin-bottom:12px;">✕ ID CODE NOT FOUND</div>
+    <div id="hs-id-result-wrap" style="display:none; flex-direction:column; align-items:center; gap:12px;">
+      <div style="text-align:center; margin-top:40px; margin-bottom:8px;"><img src="https://i.postimg.cc/MZsnjcLC/Blue-Orchid-Web-Email.png" style="width:60px; height:60px; object-fit:contain; filter:drop-shadow(0 0 18px rgba(0,191,255,0.5));"></div>
+      <div style="font-size:12px; color:#ff0000; text-align:center; margin:20px 0;">⚠️ Accessing any of the 100 2Hs sites—except No. 3 (free demo)—requires a prior subscription.</div>
+      <a id="hs-id-btn-ran" class="hs-btn" target="_blank">
+        <img class="hs-btn-orchid" src="https://i.postimg.cc/MZsnjcLC/Blue-Orchid-Web-Email.png">
+        <div class="hs-btn-body"><div class="hs-btn-num" id="hs-id-num-ran"></div><div class="hs-btn-char" id="hs-id-lbl-ran"></div></div>
+      </a>
+      <span class="hs-btn-hint">Tap to open the 2Hs site ↗</span>
+      <a id="hs-id-btn-yuri" class="hs-btn" target="_blank" style="margin-top:12px;">
+        <img class="hs-btn-orchid" src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png">
+        <div class="hs-btn-body"><div class="hs-btn-num" id="hs-id-num-yuri"></div><div class="hs-btn-char" id="hs-id-lbl-yuri"></div></div>
+      </a>
+      <span class="hs-btn-hint">Tap to open the 2Hs site ↗</span>
+      <button class="start-over-btn" onclick="hsResetID()">↺ START OVER</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B3.2b: 2Hs FIND BY DOB
+     ============================================================ -->
+<div id="screen-2hs-find" class="screen" style="background:radial-gradient(ellipse at 50% 0%,rgba(0,191,255,0.08) 0%,transparent 60%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
+  <div class="inner-header" style="max-width:520px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-2hs')">‹</button>
+    <span class="inner-title">FIND YOUR 2Hs</span>
+  </div>
+  <div style="width:100%; max-width:480px;">
+    <div style="text-align:center; margin-bottom:20px;"><img src="https://i.postimg.cc/5tVbTphW/MOTH-orchid-pink-web-email.png" style="width:70px; height:70px; object-fit:contain;"></div>
+    <span style="font-size:13px; letter-spacing:0.12em; color:rgba(255,255,255,0.45); text-transform:uppercase; margin-bottom:8px; margin-top:20px; display:block;">📅 Date of birth</span>
+    <div style="font-size:12px; color:rgba(255,255,255,0.3); margin-bottom:14px; font-style:italic;">Use your Gregorian (solar) date — do not use the lunar calendar.</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1.4fr; gap:10px; margin-bottom:20px;">
+      <select id="hs-dob-day" class="dob-select">
+        <option value="">Day</option>
+        <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option><option>13</option><option>14</option><option>15</option><option>16</option><option>17</option><option>18</option><option>19</option><option>20</option><option>21</option><option>22</option><option>23</option><option>24</option><option>25</option><option>26</option><option>27</option><option>28</option><option>29</option><option>30</option><option>31</option>
+      </select>
+      <select id="hs-dob-month" class="dob-select">
+        <option value="">Month</option>
+        <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option><option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option><option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option><option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+      </select>
+      <select id="hs-dob-year" class="dob-select"><option value="">Year</option></select>
+    </div>
+    <span style="font-size:13px; letter-spacing:0.12em; color:rgba(255,255,255,0.45); text-transform:uppercase; margin-bottom:8px; display:block;">🕐 Hour of birth</span>
+    <select id="hs-dob-time" class="dob-select" style="width:100%; margin-bottom:24px;">
+      <option value="">Select hour</option>
+      <option value="00:30">00:00 – 01:00 — 🐭 子 (Rat, Tí)</option>
+      <option value="02:00">01:00 – 03:00 — 🐂 丑 (Ox, Sửu)</option>
+      <option value="04:00">03:00 – 05:00 — 🐅 寅 (Tiger, Dần)</option>
+      <option value="06:00">05:00 – 07:00 — 🐇 卯 (Rabbit, Mão)</option>
+      <option value="08:00">07:00 – 09:00 — 🐉 辰 (Dragon, Thìn)</option>
+      <option value="10:00">09:00 – 11:00 — 🐍 巳 (Snake, Tị)</option>
+      <option value="12:00">11:00 – 13:00 — 🐴 午 (Horse, Ngọ)</option>
+      <option value="14:00">13:00 – 15:00 — 🐏 未 (Goat, Mùi)</option>
+      <option value="16:00">15:00 – 17:00 — 🐵 申 (Monkey, Thân)</option>
+      <option value="18:00">17:00 – 19:00 — 🐓 酉 (Rooster, Dậu)</option>
+      <option value="20:00">19:00 – 21:00 — 🐕 戌 (Dog, Tuất)</option>
+      <option value="22:00">21:00 – 23:00 — 🐖 亥 (Pig, Hợi)</option>
+      <option value="23:30">23:00 – 24:00 — 🐭 子 (Rat, Tí)</option>
+    </select>
+    <button id="hs-gen-btn" style="width:75%; height:56px; border-radius:12px; border:none; background:var(--sky); color:var(--navy); font-family:'Cinzel',serif; font-size:16px; font-weight:700; letter-spacing:0.1em; cursor:pointer; display:block; margin:0 auto 10px;" onclick="hsCalculateDOB()">Generate</button>
+    <div id="hs-dob-error" style="color:#ff8a80; font-size:13px; text-align:center; display:none; margin-bottom:12px;">Please fill in all fields.</div>
+    <div id="hs-dob-result" style="display:none; flex-direction:column; align-items:center; margin-top:28px; padding-top:28px; border-top:1px solid rgba(255,255,255,0.12);">
+      <div style="text-align:center; margin-bottom:12px;"><img src="https://i.postimg.cc/hvw4ZmWx/MOTH-orchid-WHITE-web-email.png" style="width:80px; height:80px; object-fit:contain;"></div>
+      <div id="hs-dob-meta" style="font-size:13px; color:rgba(255,255,255,0.4); text-align:center; margin-bottom:20px;"></div>
+      <div style="font-family:'Cinzel',serif; font-size:14px; letter-spacing:0.15em; color:#fff; text-transform:uppercase; text-align:center; margin:40px 0;">Your Bazi:</div>
+      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:24px; width:100%;">
+        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 6px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
+          <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:8px; letter-spacing:0.05em;">年 Year</div>
+          <div style="font-size:32px; font-weight:700; line-height:1; margin-bottom:8px;" id="hs-r-year"></div>
+          <div style="font-size:11px; color:rgba(255,255,255,0.5); font-style:italic;" id="hs-v-year"></div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 6px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
+          <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:8px;">月 Month</div>
+          <div style="font-size:32px; font-weight:700; line-height:1; margin-bottom:8px;" id="hs-r-month"></div>
+          <div style="font-size:11px; color:rgba(255,255,255,0.5); font-style:italic;" id="hs-v-month"></div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 6px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
+          <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:8px;">日 Day</div>
+          <div style="font-size:32px; font-weight:700; line-height:1; margin-bottom:8px;" id="hs-r-day"></div>
+          <div style="font-size:11px; color:rgba(255,255,255,0.5); font-style:italic;" id="hs-v-day"></div>
+        </div>
+        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 6px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
+          <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:8px;">時 Hour</div>
+          <div style="font-size:32px; font-weight:700; line-height:1; margin-bottom:8px;" id="hs-r-hour"></div>
+          <div style="font-size:11px; color:rgba(255,255,255,0.5); font-style:italic;" id="hs-v-hour"></div>
+        </div>
+      </div>
+      <div style="font-family:'Cinzel',serif; font-size:14px; letter-spacing:0.15em; color:#fff; text-transform:uppercase; text-align:center; margin-top:40px; margin-bottom:8px;">Your 2Hs ↓</div>
+      <div style="font-size:12px; color:#ff0000; text-align:center; margin:7px 0 28px;">⚠️ Accessing any of the 100 2Hs sites—except No. 3 (free demo)—requires a prior subscription.</div>
+      <a id="hs-dob-btn-ran" class="hs-btn" target="_blank">
+        <img class="hs-btn-orchid" src="https://i.postimg.cc/MZsnjcLC/Blue-Orchid-Web-Email.png">
+        <div class="hs-btn-body"><div class="hs-btn-num" id="hs-dob-num-ran"></div><div class="hs-btn-char" id="hs-dob-char-ran"></div></div>
+      </a>
+      <span class="hs-btn-hint">Tap to open the 2Hs site ↗</span>
+      <a id="hs-dob-btn-yuri" class="hs-btn" target="_blank" style="margin-top:32px;">
+        <img class="hs-btn-orchid" src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png">
+        <div class="hs-btn-body"><div class="hs-btn-num" id="hs-dob-num-yuri"></div><div class="hs-btn-char" id="hs-dob-char-yuri"></div></div>
+      </a>
+      <span class="hs-btn-hint">Tap to open the 2Hs site ↗</span>
+      <button class="start-over-btn" onclick="hsResetDOB()">↺ START OVER</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B3.2c: 2Hs DIRECTORY
+     ============================================================ -->
+<div id="screen-2hs-dir" class="screen">
+  <div class="inner-header" style="max-width:520px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-2hs')">‹</button>
+    <span class="inner-title">DIRECTORY</span>
+  </div>
+  <div style="text-align:center; margin-bottom:24px;"><img src="https://i.postimg.cc/hvw4ZmWx/MOTH-orchid-WHITE-web-email.png" style="width:70px; height:70px; object-fit:contain;"></div>
+  <div style="font-size:12px; color:#ff0000; text-align:center; margin-bottom:28px; width:100%; max-width:400px;">⚠️ Accessing any site—except No. 3 (free demo)—requires a prior subscription.</div>
+  <div class="cards">
+    <div class="card" onclick="goTo('screen-2hs-dir-ran')">
+      <div class="card-icon"><img src="https://i.postimg.cc/MZsnjcLC/Blue-Orchid-Web-Email.png" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title">Bazi (ii) Ran — 100 2Hs</div>
+        <div class="card-desc">Browse all 100 Bazi (ii) Ran's 2Hs</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+    <div class="card" onclick="goTo('screen-2hs-dir-yuri')">
+      <div class="card-icon"><img src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title">Bazi (iii) Yuri — 100 2Hs</div>
+        <div class="card-desc">Browse all 100 Bazi (iii) Yuri's 2Hs</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- DIRECTORY RAN -->
+<div id="screen-2hs-dir-ran" class="screen">
+  <div class="inner-header" style="max-width:520px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-2hs-dir')">‹</button>
+    <span class="inner-title">BAZI (II) RAN — 100 2Hs</span>
+  </div>
+  <input type="number" min="1" max="100" placeholder="Filter by number..." oninput="hsFilterDir('hs-dir-ran-grid',this.value)" style="width:100%; max-width:520px; padding:14px 18px; font-size:16px; font-family:'Cinzel',serif; border-radius:10px; border:2px solid rgba(0,191,255,0.3); background:rgba(0,0,0,0.3); color:#fff; outline:none; margin-bottom:20px; -webkit-appearance:none;">
+  <div id="hs-dir-ran-grid" style="width:100%; max-width:520px; display:flex; flex-direction:column; gap:16px; padding-bottom:20px;"></div>
+</div>
+
+<!-- DIRECTORY YURI -->
+<div id="screen-2hs-dir-yuri" class="screen">
+  <div class="inner-header" style="max-width:520px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-2hs-dir')">‹</button>
+    <span class="inner-title">BAZI (III) YURI — 100 2Hs</span>
+  </div>
+  <input type="number" min="1" max="100" placeholder="Filter by number..." oninput="hsFilterDir('hs-dir-yuri-grid',this.value)" style="width:100%; max-width:520px; padding:14px 18px; font-size:16px; font-family:'Cinzel',serif; border-radius:10px; border:2px solid rgba(0,191,255,0.3); background:rgba(0,0,0,0.3); color:#fff; outline:none; margin-bottom:20px; -webkit-appearance:none;">
+  <div id="hs-dir-yuri-grid" style="width:100%; max-width:520px; display:flex; flex-direction:column; gap:16px; padding-bottom:20px;"></div>
 </div>
 
 <!-- ============================================================
@@ -1792,11 +2081,33 @@ html, body {
     <span class="inner-title">Divisional Chart Data</span>
   </div>
 
-  <div id="vedic-not-subscribed" style="width:100%; max-width:420px; text-align:center; padding: 20px 0;">
-    <img src="https://i.postimg.cc/pLs0GpvV/Fuki_2.png" alt="Fuki" style="width:60px; margin-bottom:16px; filter:drop-shadow(0 0 14px rgba(0,191,255,0.4));">
-    <div style="font-family:'Cinzel',serif; font-size:16px; color:var(--sky); margin-bottom:10px;">VA (i) FUKI</div>
-    <p class="red-note" style="margin-bottom:16px;">You haven't subscribed to this service yet.</p>
-    <p style="color:var(--text-mid); font-size:13px; line-height:1.7;">Please contact your administrator to subscribe.</p>
+  <div style="width:100%; max-width:420px;">
+    <div class="logo-wrap" style="margin-bottom:16px;">
+      <img src="https://i.postimg.cc/pLs0GpvV/Fuki_2.png" alt="Fuki" style="width:50px;height:50px; filter:drop-shadow(0 0 14px rgba(0,191,255,0.4));">
+      <div style="font-family:'Cinzel',serif; font-size:15px; color:var(--sky);">VA (i) FUKI</div>
+      <div class="user-badge" id="vedic-user-badge"></div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="vedic-loading" style="text-align:center; padding:30px 0; color:var(--text-dim); font-style:italic; font-size:14px;">Loading your charts…</div>
+
+    <!-- Not subscribed -->
+    <div id="vedic-not-subscribed" style="display:none; text-align:center; padding:20px 0;">
+      <p class="red-note" style="margin-bottom:12px;">You haven't subscribed to this service yet.</p>
+      <p style="color:var(--text-mid); font-size:13px; line-height:1.7;">Please contact your administrator to subscribe.</p>
+    </div>
+
+    <!-- Chart list -->
+    <div id="vedic-chart-cards" class="cards" style="display:none;"></div>
+
+    <!-- Data panel -->
+    <div id="vedic-data-panel" style="display:none; margin-top:20px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:10px;">
+        <div style="font-family:'Cinzel',serif; font-size:15px; font-weight:700; color:var(--sky);" id="vedic-data-title"></div>
+        <button id="vedic-copy-btn" onclick="vedicCopyData()" style="background:var(--sky); color:var(--navy); border:none; border-radius:10px; padding:10px 20px; font-family:'Cinzel',serif; font-size:13px; font-weight:700; cursor:pointer;">Copy All</button>
+      </div>
+      <div id="vedic-data-box" style="background:rgba(255,255,255,0.05); border:1px solid rgba(0,191,255,0.15); border-radius:12px; padding:16px; font-family:'Courier New',monospace; font-size:13px; line-height:2; color:rgba(255,255,255,0.85); white-space:pre-wrap; word-break:break-word;"></div>
+    </div>
   </div>
 
   <div class="portal-footer">
@@ -1846,9 +2157,9 @@ html, body {
     <!-- TOOLS — always visible -->
     <div class="tools-section">
       <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(0,191,255,0.6); padding: 10px 0 8px; border-top: 1px solid rgba(255,255,255,0.08);">🛠️ Your Tools</div>
+      <p class="fs-subscriber-note" style="display:none; font-size:12px; color:rgba(255,150,150,0.8); font-style:italic; margin-bottom:10px; padding:8px 12px; background:rgba(255,0,0,0.08); border:1px solid rgba(255,0,0,0.2); border-radius:8px;">For subscribers of FS (ii) Shage only</p>
       <div style="display:flex; flex-direction:column; gap:14px;">
-        <!-- B4.3 -->
-        <div class="card" onclick="goTo('screen-facing-ruler')">
+        <div class="card fs-tool-gated" onclick="goTo('screen-facing-ruler')">
           <div class="card-icon"><img src="https://i.postimg.cc/VsSqKmq5/FS-ii-Shage.png" alt="Ruler"></div>
           <div class="card-text">
             <div class="card-title">🧭 House Facing Ruler</div>
@@ -1856,9 +2167,7 @@ html, body {
           </div>
           <div class="card-arrow">›</div>
         </div>
-
-        <!-- B4.4 -->
-        <div class="card" onclick="goTo('screen-flying-star')">
+        <div class="card fs-tool-gated" onclick="goTo('screen-flying-star')">
           <div class="card-icon">飛</div>
           <div class="card-text">
             <div class="card-title">Flying Star Charts</div>
@@ -1941,17 +2250,17 @@ html, body {
       </div>
     </div>
 
-    <div class="bearing-result-actions">
-      <button class="result-copy-btn" onclick="copyBearingResult()">📋 Copy Result</button>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px;">
+      <button class="result-copy-btn" onclick="copyBearingResult()" style="align-self:flex-start;">📋 Copy Result</button>
       <span class="copy-confirm" id="bear-copy-confirm">Copied!</span>
-      <button class="result-period-btn" onclick="toggleMagneticSection()">🧲 Magnetic North + Period</button>
+      <button class="result-period-btn" onclick="toggleMagneticSection()" style="align-self:flex-start;">🧲 Convert to Magnetic North bearing</button>
     </div>
   </div>
 
   <!-- MAGNETIC NORTH SECTION -->
   <div class="magnetic-section" id="magnetic-section">
-    <div class="mag-title">Magnetic North Correction · Finlay</div>
-    <p style="font-size:12px; color:var(--text-dim); font-style:italic; margin-bottom:14px;">Correct the bearing for the current magnetic pole position (update annually)</p>
+    <div class="mag-title">Magnetic North Correction</div>
+    <p style="font-size:12px; color:var(--text-dim); font-style:italic; margin-bottom:14px;">Magnetic pole drifts yearly — update these values annually for accuracy</p>
     <div class="mag-field">
       <label>Pole Lat range (°N)</label>
       <input type="number" id="pole-lat1" value="85.5" step="0.1" min="60" max="90" style="max-width:90px;">
@@ -1965,24 +2274,48 @@ html, body {
       <input type="number" id="pole-lng2" value="164" step="0.5" min="-180" max="180" style="max-width:90px;">
     </div>
     <button class="mag-calc-btn" onclick="calcMagnetic()">Calculate Magnetic Bearing</button>
+
+    <!-- Magnetic result -->
     <div class="mag-result-box" id="mag-result-box">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:16px;">
         <div><span style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim);">Magnetic Bearing</span><br><span style="font-family:'Cormorant Garamond',serif; font-size:2rem; color:#c8a96e;" id="mag-bearing-val">—°</span></div>
         <div><span style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim);">Declination</span><br><span style="font-size:14px; color:var(--text-mid);" id="mag-decl-val">—</span></div>
         <div><span style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim);">24 Mountains (Mag)</span><br><span style="font-size:14px; color:var(--sky);" id="mag-sector-val">—</span></div>
         <div><span style="font-family:'Cinzel',serif; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim);">Direction (Mag)</span><br><span style="font-size:14px; color:var(--text-mid);" id="mag-dir-val">—</span></div>
       </div>
-    </div>
 
-    <!-- Period picker -->
-    <div style="margin-top: 20px;">
-      <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(200,169,110,0.7); margin-bottom:12px;">Choose House Period → Get Flying Star Chart</div>
-      <div class="period-grid" id="period-grid-ruler">
-        <!-- populated by JS -->
+      <!-- Period dropdown -->
+      <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(200,169,110,0.7); margin-bottom:10px;">Select Period</div>
+      <div style="position:relative; margin-bottom:14px;">
+        <select id="period-select-ruler" onchange="rulerPeriodSelected()" style="width:100%; height:50px; border-radius:10px; border:2px solid rgba(0,191,255,0.3); background:rgba(0,0,0,0.35); color:white; font-size:14px; font-family:'Crimson Pro',serif; padding:0 16px; outline:none; appearance:none; cursor:pointer;">
+          <option value="">— Select Period to get Flying Star chart —</option>
+        </select>
+        <span style="position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--sky); pointer-events:none; font-size:14px;">▾</span>
       </div>
-      <div class="fs-result-wrap" id="ruler-chart-result">
+
+      <!-- Two bearing buttons -->
+      <div id="ruler-bearing-btns" style="display:none; gap:10px; margin-bottom:14px; flex-wrap:wrap;">
+        <button id="ruler-btn-true" onclick="rulerShowChart('true')" style="flex:1; min-width:140px; padding:10px; border-radius:8px; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s; background:rgba(0,191,255,0.2); border:2px solid var(--sky); color:var(--sky);">True North bearing</button>
+        <button id="ruler-btn-mag" onclick="rulerShowChart('mag')" style="flex:1; min-width:140px; padding:10px; border-radius:8px; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s; background:transparent; border:1px solid rgba(0,191,255,0.3); color:var(--text-mid);">Magnetic bearing</button>
+      </div>
+
+      <!-- Chart display -->
+      <div id="ruler-chart-result" style="display:none;">
+        <div style="display:flex; gap:10px; justify-content:center; margin-bottom:10px;">
+          <button id="ruler-btn-north-top" onclick="rulerSetOrientation(true)" style="flex:1; max-width:160px; padding:8px; border-radius:8px; font-family:'Cinzel',serif; font-size:10px; cursor:pointer; transition:all 0.2s; background:rgba(0,191,255,0.2); border:2px solid var(--sky); color:var(--sky); box-shadow:inset 0 2px 6px rgba(0,0,0,0.3);">🧭 North at top</button>
+          <button id="ruler-btn-facing-top" onclick="rulerSetOrientation(false)" style="flex:1; max-width:160px; padding:8px; border-radius:8px; font-family:'Cinzel',serif; font-size:10px; cursor:pointer; transition:all 0.2s; background:transparent; border:1px solid rgba(0,191,255,0.3); color:var(--text-mid);">🏠 Facing on top</button>
+        </div>
         <div class="chart-na" id="ruler-chart-na" style="display:none;">Chart image not yet uploaded — N/A</div>
         <img id="ruler-chart-img" class="fs-chart-img" src="" alt="Flying Star Chart" style="display:none;" onerror="rulerChartError(this)">
+        <div id="ruler-download-wrap" style="display:none; margin-top:10px; text-align:center;">
+          <a id="ruler-download-btn" download style="display:inline-block; padding:10px 24px; background:transparent; border:1px solid rgba(200,169,110,0.5); color:#c8a96e; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.12em; border-radius:8px; text-decoration:none; cursor:pointer;">⬇ Download Chart</a>
+        </div>
+      </div>
+
+      <!-- Copy all results -->
+      <div style="margin-top:16px; border-top:1px solid rgba(255,255,255,0.08); padding-top:14px;">
+        <button class="result-copy-btn" onclick="copyAllBearingResults()" style="width:100%;">📋 Copy All Results (True + Magnetic)</button>
+        <span class="copy-confirm" id="all-copy-confirm" style="display:block; text-align:center; margin-top:6px;">Copied!</span>
       </div>
     </div>
   </div>
@@ -2017,42 +2350,46 @@ html, body {
 
   <div class="dropdown-wrap">
     <label class="dropdown-label">House Facing</label>
-    <select id="fs-facing-select" onchange="fsLookup()">
+    <select id="fs-facing-select" onchange="fsLookup()" style="font-family:'Courier New',monospace; font-size:13px;">
       <option value="">— Select Facing —</option>
-      <option value="N1">N1 壬 (337.5°–352.5°)</option>
-      <option value="N2">N2 子 (352.5°–7.5°)</option>
-      <option value="N3">N3 癸 (7.5°–22.5°)</option>
-      <option value="NE1">NE1 丑 (22.5°–37.5°)</option>
-      <option value="NE2">NE2 艮 (37.5°–52.5°)</option>
-      <option value="NE3">NE3 寅 (52.5°–67.5°)</option>
-      <option value="E1">E1 甲 (67.5°–82.5°)</option>
-      <option value="E2">E2 卯 (82.5°–97.5°)</option>
-      <option value="E3">E3 乙 (97.5°–112.5°)</option>
-      <option value="SE1">SE1 辰 (112.5°–127.5°)</option>
-      <option value="SE2">SE2 巽 (127.5°–142.5°)</option>
-      <option value="SE3">SE3 巳 (142.5°–157.5°)</option>
-      <option value="S1">S1 丙 (157.5°–172.5°)</option>
-      <option value="S2">S2 午 (172.5°–187.5°)</option>
-      <option value="S3">S3 丁 (187.5°–202.5°)</option>
-      <option value="SW1">SW1 未 (202.5°–217.5°)</option>
-      <option value="SW2">SW2 坤 (217.5°–232.5°)</option>
-      <option value="SW3">SW3 申 (232.5°–247.5°)</option>
-      <option value="W1">W1 庚 (247.5°–262.5°)</option>
-      <option value="W2">W2 酉 (262.5°–277.5°)</option>
-      <option value="W3">W3 辛 (277.5°–292.5°)</option>
-      <option value="NW1">NW1 戌 (292.5°–307.5°)</option>
-      <option value="NW2">NW2 乾 (307.5°–322.5°)</option>
-      <option value="NW3">NW3 亥 (322.5°–337.5°)</option>
+      <option value="N1"> N1   337.5° – 352.5°</option>
+      <option value="N2"> N2   352.5° –   7.5°</option>
+      <option value="N3"> N3     7.5° –  22.5°</option>
+      <option value="NE1">NE1   22.5° –  37.5°</option>
+      <option value="NE2">NE2   37.5° –  52.5°</option>
+      <option value="NE3">NE3   52.5° –  67.5°</option>
+      <option value="E1"> E1   67.5° –  82.5°</option>
+      <option value="E2"> E2   82.5° –  97.5°</option>
+      <option value="E3"> E3   97.5° – 112.5°</option>
+      <option value="SE1">SE1  112.5° – 127.5°</option>
+      <option value="SE2">SE2  127.5° – 142.5°</option>
+      <option value="SE3">SE3  142.5° – 157.5°</option>
+      <option value="S1"> S1  157.5° – 172.5°</option>
+      <option value="S2"> S2  172.5° – 187.5°</option>
+      <option value="S3"> S3  187.5° – 202.5°</option>
+      <option value="SW1">SW1  202.5° – 217.5°</option>
+      <option value="SW2">SW2  217.5° – 232.5°</option>
+      <option value="SW3">SW3  232.5° – 247.5°</option>
+      <option value="W1"> W1  247.5° – 262.5°</option>
+      <option value="W2"> W2  262.5° – 277.5°</option>
+      <option value="W3"> W3  277.5° – 292.5°</option>
+      <option value="NW1">NW1  292.5° – 307.5°</option>
+      <option value="NW2">NW2  307.5° – 322.5°</option>
+      <option value="NW3">NW3  322.5° – 337.5°</option>
     </select>
     <span class="chevron">▾</span>
   </div>
 
   <div class="fs-result-wrap" id="fs-chart-wrap">
-    <div style="display:flex; justify-content:center; margin-bottom:10px;">
-      <button id="fs-orient-btn" onclick="fsToggleOrientation()" style="background:transparent; border:1px solid rgba(0,191,255,0.3); color:var(--sky); font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.1em; padding:7px 16px; border-radius:8px; cursor:pointer;">🧭 North at top</button>
+    <div style="display:flex; gap:10px; justify-content:center; margin-bottom:14px;">
+      <button id="fs-btn-north" onclick="fsSetOrientation(true)" style="flex:1; max-width:180px; padding:10px; border-radius:8px; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s; background:rgba(0,191,255,0.2); border:2px solid var(--sky); color:var(--sky); box-shadow:inset 0 2px 6px rgba(0,0,0,0.3);">🧭 North at top</button>
+      <button id="fs-btn-facing" onclick="fsSetOrientation(false)" style="flex:1; max-width:180px; padding:10px; border-radius:8px; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s; background:transparent; border:1px solid rgba(0,191,255,0.3); color:var(--text-mid);">🏠 Facing on top</button>
     </div>
     <div class="chart-na" id="fs-chart-na" style="display:none;">Chart image not yet uploaded — N/A</div>
     <img id="fs-chart-img" class="fs-chart-img" src="" alt="Flying Star Chart" style="display:none;" onerror="fsChartError(this)">
+    <div id="fs-download-wrap" style="display:none; margin-top:12px; text-align:center;">
+      <a id="fs-download-btn" download style="display:inline-block; padding:10px 24px; background:transparent; border:1px solid rgba(200,169,110,0.5); color:#c8a96e; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.12em; border-radius:8px; text-decoration:none; cursor:pointer;">⬇ Download Chart</a>
+    </div>
   </div>
 
   <div class="portal-footer">
@@ -2069,8 +2406,10 @@ html, body {
 // ============================================================
 // STATE
 // ============================================================
-let currentUser = null; // null = guest, string = user ID
+let currentUser = null;
 let currentUserName = 'Guest';
+let currentFsSubscriber = false;
+let currentHasPortal = false;
 let isGuest = false;
 let mapInstance = null;
 let drawMode = false;
@@ -2083,18 +2422,17 @@ let isDrawing = false;
 let currentTrueBearing = null;
 let currentMapLatLng = null; // center of map
 let currentPeriodForRuler = null;
-let kwSelectedMethod = 'crypto';
+let kwSelectedMethod = 'quantum';
 let kwIsDrawing = false;
 let kwHistory = [];
 
 // ============================================================
 // LOGIN — Google OAuth
 // ============================================================
-const AUTH_GAS_URL = 'https://script.google.com/macros/s/AKfycbwayXYaqKaZJ6wRIpCnIlZHR2QRqhX-RijAMDAcqAK2IRqcoMzK05iiGlKwNQ4ViiNu/exec';
+const AUTH_GAS_URL = 'https://script.google.com/macros/s/AKfycbwRMG58HZHlZqF9LIyAPk2iqs4ARXPww9d_U87mU6sVJtQlI7iieaRO5HljHeHpt_gMDA/exec';
 
 // Called automatically by Google after user signs in
 async function handleGoogleLogin(response) {
-  // Decode the JWT token Google returns to get the user's email
   const payload = JSON.parse(atob(response.credential.split('.')[1]));
   const email = payload.email;
 
@@ -2107,7 +2445,9 @@ async function handleGoogleLogin(response) {
 
     if (data.valid) {
       currentUser = data.idCode || email;
-      currentUserName = data.name || email;
+      currentUserName = data.name || data.idCode || email;
+      currentFsSubscriber = data.fsSubscriber === true;
+      currentHasPortal = data.hasPortal === true;
       isGuest = false;
       setHomeState();
       goTo('screen-home');
@@ -2133,9 +2473,19 @@ function loginWithId() {} // no longer needed, kept to avoid errors
 function guestLogin() {
   currentUser = null;
   currentUserName = 'Guest';
+  currentFsSubscriber = false;
+  currentHasPortal = false;
   isGuest = true;
   setHomeState();
   goTo('screen-home');
+}
+
+function getTimeGreeting() {
+  const h = new Date().getHours();
+  if (h >= 5 && h < 12) return 'Good morning';
+  if (h >= 12 && h < 17) return 'Good afternoon';
+  if (h >= 17 && h < 21) return 'Good evening';
+  return 'Good night';
 }
 
 function setHomeState() {
@@ -2151,14 +2501,35 @@ function setHomeState() {
   } else {
     b3.classList.remove('grayed');
     b4.classList.remove('grayed');
-    b6.classList.remove('grayed');
-    document.getElementById('home-greeting').textContent = 'Welcome, ' + currentUserName;
+    // Personal portal: only live if column H = X
+    if (currentHasPortal) {
+      b6.classList.remove('grayed');
+    } else {
+      b6.classList.add('grayed');
+    }
+    document.getElementById('home-greeting').textContent = getTimeGreeting() + ', ' + currentUserName;
   }
+
+  // Gate fengshui tools based on column C subscriber status
+  applyFsSubscriberGating();
 
   // Visit counter (localStorage)
   let visits = parseInt(localStorage.getItem('go_portal_visits') || '0') + 1;
   localStorage.setItem('go_portal_visits', visits);
   document.getElementById('visit-count').textContent = visits.toLocaleString() + ' visits';
+}
+
+function applyFsSubscriberGating() {
+  // Cards inside B4 screen that require FS (ii) Shage subscription
+  const fsToolCards = document.querySelectorAll('.fs-tool-gated');
+  const fsNote = document.querySelectorAll('.fs-subscriber-note');
+  if (!isGuest && currentFsSubscriber) {
+    fsToolCards.forEach(el => el.classList.remove('grayed'));
+    fsNote.forEach(el => el.style.display = 'none');
+  } else {
+    fsToolCards.forEach(el => el.classList.add('grayed'));
+    fsNote.forEach(el => el.style.display = 'block');
+  }
 }
 
 function openPersonalPortal() {
@@ -2789,7 +3160,7 @@ function renderKwHistory() {
 // Uses Google Apps Script backend from B1.4. tab
 // The APPS_SCRIPT_URL below must be set to your deployed GAS web app URL
 // ============================================================
-const HAIRCUT_GAS_URL = 'https://script.google.com/macros/s/AKfycbwayXYaqKaZJ6wRIpCnIlZHR2QRqhX-RijAMDAcqAK2IRqcoMzK05iiGlKwNQ4ViiNu/exec';
+const HAIRCUT_GAS_URL = 'https://script.google.com/macros/s/AKfycbwRMG58HZHlZqF9LIyAPk2iqs4ARXPww9d_U87mU6sVJtQlI7iieaRO5HljHeHpt_gMDA/exec';
 
 async function loadTodayHaircut() {
   const now = new Date();
@@ -2856,6 +3227,7 @@ function goTo(screenId) {
 
   if (screenId === 'screen-facing-ruler') initMap();
   if (screenId === 'screen-haircut') loadTodayHaircut();
+  if (screenId === 'screen-b4') applyFsSubscriberGating();
   if (screenId === 'screen-kwanyin') {
     // Reset kwanyin state when entering
     document.getElementById('kw-main-view').style.display = 'flex';
@@ -3002,9 +3374,704 @@ function drawNodes() {
     drawCtx.stroke();
     drawCtx.restore();
   });
+
+// ============================================================
+// 2Hs MODULE
+// ============================================================
+const HS_BAZI_SCRIPT = "https://script.google.com/macros/s/AKfycbwKMhasSWopAOY2iTTeEzdmpxpXuRw9JsJynkPumHbgukPEwmUtYD8Sp-0JNLA_QPj_Jg/exec";
+const HS_ID_SCRIPT = "https://script.google.com/macros/s/AKfycbwpObh1qbXLW9HYKV2BmqHp5-gVPbA5afxuntzj5gjQMbBZoTvZSoEQSAte74PUB8Kw/exec";
+
+const HS_LABELS = ["甲 甲","甲 乙","甲 丙","甲 丁","甲 戊","甲 己","甲 庚","甲 辛","甲 壬","甲 癸","乙 甲","乙 乙","乙 丙","乙 丁","乙 戊","乙 己","乙 庚","乙 辛","乙 壬","乙 癸","丙 甲","丙 乙","丙 丙","丙 丁","丙 戊","丙 己","丙 庚","丙 辛","丙 壬","丙 癸","丁 甲","丁 乙","丁 丙","丁 丁","丁 戊","丁 己","丁 庚","丁 辛","丁 壬","丁 癸","戊 甲","戊 乙","戊 丙","戊 丁","戊 戊","戊 己","戊 庚","戊 辛","戊 壬","戊 癸","己 甲","己 乙","己 丙","己 丁","己 戊","己 己","己 庚","己 辛","己 壬","己 癸","庚 甲","庚 乙","庚 丙","庚 丁","庚 戊","庚 己","庚 庚","庚 辛","庚 壬","庚 癸","辛 甲","辛 乙","辛 丙","辛 丁","辛 戊","辛 己","辛 庚","辛 辛","辛 壬","辛 癸","壬 甲","壬 乙","壬 丙","壬 丁","壬 戊","壬 己","壬 庚","壬 辛","壬 壬","壬 癸","癸 甲","癸 乙","癸 丙","癸 丁","癸 戊","癸 己","癸 庚","癸 辛","癸 壬","癸 癸"];
+
+const HS_STEMS = {'甲':'Giáp','乙':'Ất','丙':'Bính','丁':'Đinh','戊':'Mậu','己':'Kỉ','庚':'Canh','辛':'Tân','壬':'Nhâm','癸':'Quí'};
+const HS_BRANCHES = {'子':'Tí','丑':'Sửu','寅':'Dần','卯':'Mão','辰':'Thìn','巳':'Tị','午':'Ngọ','未':'Mùi','申':'Thân','酉':'Dậu','戌':'Tuất','亥':'Hợi'};
+const HS_MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+let hsClientGroups = {}, hsStructures = {};
+
+function hsGetColors(n) {
+  if (n<=10) return {bg:"#2B5D34",tx:"#0CDD08",num:"#ffffff"};
+  if (n<=20) return {bg:"#0CDD08",tx:"#2B5D34",num:"#2B5D34"};
+  if (n<=30) return {bg:"#c10000",tx:"#fc6a03",num:"#ffffff"};
+  if (n<=40) return {bg:"#fc6a03",tx:"#c10000",num:"#ffffff"};
+  if (n<=50) return {bg:"#FFE302",tx:"#CA853C",num:"#ffffff"};
+  if (n<=60) return {bg:"#CA853C",tx:"#FFE302",num:"#ffffff"};
+  if (n<=70) return {bg:"#ffffff",tx:"#999999",num:"#999999"};
+  if (n<=80) return {bg:"#999999",tx:"#ffffff",num:"#ffffff"};
+  if (n<=90) return {bg:"#00BFFF",tx:"#0000cc",num:"#0000cc"};
+  return {bg:"#0000cc",tx:"#00BFFF",num:"#00BFFF"};
 }
 
-</script>
+function hsToViet(t) {
+  if (!t || t.length < 2) return '';
+  return (HS_STEMS[t[0]] || HS_BRANCHES[t[0]] || t[0]) + ' ' + (HS_BRANCHES[t[1]] || HS_STEMS[t[1]] || t[1]);
+}
+
+function hsOrdinal(d) {
+  const s = ['th','st','nd','rd'], v = d % 100;
+  return d + (s[(v-20)%10] || s[v] || s[0]);
+}
+
+async function hsLoadClients() {
+  try {
+    const res = await fetch(HS_ID_SCRIPT);
+    const data = await res.json();
+    hsClientGroups = data.clientGroups || data;
+    hsStructures = data.structures || {};
+    hsPopulateYears();
+    hsLoadCount();
+    hsBuildDirGrid('hs-dir-ran-grid', 'https://sites.google.com/view/BaziiiRan', 'https://i.postimg.cc/MZsnjcLC/Blue-Orchid-Web-Email.png', false);
+    hsBuildDirGrid('hs-dir-yuri-grid', 'https://sites.google.com/view/BaziiiiYuri', 'https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png', true);
+  } catch(e) {}
+}
+
+function hsPopulateYears() {
+  const sel = document.getElementById('hs-dob-year');
+  if (!sel || sel.children.length > 1) return;
+  for (let y = 2026; y >= 1920; y--) {
+    const o = document.createElement('option');
+    o.value = o.textContent = y;
+    sel.appendChild(o);
+  }
+}
+
+function hsLoadCount() {
+  const cbName = 'hsCountCB_' + Date.now();
+  const script = document.createElement('script');
+  script.src = HS_BAZI_SCRIPT + '?action=count&callback=' + cbName;
+  window[cbName] = function(data) {
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+    if (data.count !== undefined) {
+      const el = document.getElementById('hs-visit-count');
+      if (el) el.textContent = data.count.toLocaleString();
+    }
+  };
+  document.head.appendChild(script);
+}
+
+function hsFindByID() {
+  const val = document.getElementById('hs-id-input').value.toUpperCase().trim();
+  const wrap = document.getElementById('hs-id-result-wrap');
+  const err = document.getElementById('hs-id-no-result');
+  if (!val) { wrap.style.display = 'none'; err.style.display = 'none'; return; }
+  const entry = Object.entries(hsClientGroups).find(([_, codes]) => codes.some(c => c.toUpperCase() === val));
+  if (entry) {
+    const n = parseInt(entry[0]), c = hsGetColors(n), padded = String(n).padStart(3,'0');
+    err.style.display = 'none'; wrap.style.display = 'flex';
+    const btnRan = document.getElementById('hs-id-btn-ran');
+    const btnYuri = document.getElementById('hs-id-btn-yuri');
+    [btnRan, btnYuri].forEach((btn, i) => {
+      btn.style.backgroundColor = c.bg; btn.style.color = c.tx;
+      btn.href = (i === 0 ? 'https://sites.google.com/view/BaziiiRan' : 'https://sites.google.com/view/BaziiiiYuri') + padded;
+    });
+    document.getElementById('hs-id-num-ran').textContent = 'No. ' + n;
+    document.getElementById('hs-id-num-ran').style.color = c.num;
+    document.getElementById('hs-id-lbl-ran').textContent = HS_LABELS[n-1];
+    document.getElementById('hs-id-num-yuri').textContent = 'No. ' + n;
+    document.getElementById('hs-id-num-yuri').style.color = c.num;
+    document.getElementById('hs-id-lbl-yuri').textContent = HS_LABELS[n-1];
+  } else {
+    wrap.style.display = 'none'; err.style.display = 'block';
+  }
+}
+
+function hsResetID() {
+  document.getElementById('hs-id-input').value = '';
+  document.getElementById('hs-id-result-wrap').style.display = 'none';
+  document.getElementById('hs-id-no-result').style.display = 'none';
+}
+
+function hsCalculateDOB() {
+  const day = document.getElementById('hs-dob-day').value;
+  const month = document.getElementById('hs-dob-month').value;
+  const year = document.getElementById('hs-dob-year').value;
+  const time = document.getElementById('hs-dob-time').value;
+  const errEl = document.getElementById('hs-dob-error');
+  const btn = document.getElementById('hs-gen-btn');
+  if (!day || !month || !year || !time) { errEl.style.display = 'block'; return; }
+  errEl.style.display = 'none'; btn.disabled = true; btn.textContent = 'Calculating...';
+
+  const cbName = 'hsBaziCB_' + Date.now();
+  const script = document.createElement('script');
+  const url = HS_BAZI_SCRIPT + '?day=' + day + '&month=' + month + '&year=' + year + '&time=' + encodeURIComponent(time) + '&callback=' + cbName;
+  const timeout = setTimeout(() => { cleanup(); errEl.textContent = 'Error connecting. Try again.'; errEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Generate'; }, 15000);
+  function cleanup() { clearTimeout(timeout); delete window[cbName]; if (script.parentNode) script.parentNode.removeChild(script); }
+
+  window[cbName] = function(data) {
+    cleanup();
+    if (data.error === 'busy') {
+      btn.textContent = 'Retrying in 2s...';
+      setTimeout(() => hsCalculateDOB(), 2000);
+      return;
+    }
+    if (data.error) { errEl.textContent = 'Error. Try again.'; errEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Generate'; return; }
+
+    const hlFirst = (t, hl) => {
+      if (!t) return t;
+      return hl ? '<span class="hl">' + t[0] + '</span>' + t.slice(1) : t;
+    };
+    document.getElementById('hs-r-year').innerHTML = hlFirst(data.year, true);
+    document.getElementById('hs-r-month').innerHTML = hlFirst(data.month, false);
+    document.getElementById('hs-r-day').innerHTML = hlFirst(data.day, false);
+    document.getElementById('hs-r-hour').innerHTML = hlFirst(data.hour, true);
+    document.getElementById('hs-v-year').textContent = hsToViet(data.year);
+    document.getElementById('hs-v-month').textContent = hsToViet(data.month);
+    document.getElementById('hs-v-day').textContent = hsToViet(data.day);
+    document.getElementById('hs-v-hour').textContent = hsToViet(data.hour);
+
+    const timeOpt = document.getElementById('hs-dob-time');
+    const timeText = timeOpt.options[timeOpt.selectedIndex].text;
+    const emojiMatch = timeText.match(/[\u{1F300}-\u{1F9FF}]/u);
+    const emoji = emojiMatch ? emojiMatch[0] : '';
+    document.getElementById('hs-dob-meta').innerHTML = '📅 ' + HS_MON[parseInt(month)-1] + ' ' + hsOrdinal(parseInt(day)) + ', ' + year + '&emsp;' + emoji;
+
+    const n = parseInt(data.hsNum), c = hsGetColors(n), padded = String(n).padStart(3,'0');
+    [document.getElementById('hs-dob-btn-ran'), document.getElementById('hs-dob-btn-yuri')].forEach((b, i) => {
+      b.style.backgroundColor = c.bg; b.style.color = c.tx;
+      b.href = (i === 0 ? 'https://sites.google.com/view/BaziiiRan' : 'https://sites.google.com/view/BaziiiiYuri') + padded;
+    });
+    document.getElementById('hs-dob-num-ran').textContent = 'No. ' + n;
+    document.getElementById('hs-dob-num-ran').style.color = c.num;
+    document.getElementById('hs-dob-char-ran').textContent = HS_LABELS[n-1];
+    document.getElementById('hs-dob-num-yuri').textContent = 'No. ' + n;
+    document.getElementById('hs-dob-num-yuri').style.color = c.num;
+    document.getElementById('hs-dob-char-yuri').textContent = HS_LABELS[n-1];
+
+    const res = document.getElementById('hs-dob-result');
+    res.style.display = 'flex';
+    res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    btn.disabled = false; btn.textContent = 'Generate';
+  };
+  script.onerror = function() { cleanup(); errEl.textContent = 'Error. Try again.'; errEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Generate'; };
+  script.src = url; document.head.appendChild(script);
+}
+
+function hsResetDOB() {
+  ['hs-dob-day','hs-dob-month','hs-dob-year','hs-dob-time'].forEach(id => { document.getElementById(id).value = ''; });
+  document.getElementById('hs-dob-result').style.display = 'none';
+  document.getElementById('hs-dob-error').style.display = 'none';
+  document.getElementById('hs-gen-btn').disabled = false;
+  document.getElementById('hs-gen-btn').textContent = 'Generate';
+}
+
+function hsBuildDirGrid(gridId, baseUrl, orchid, isYuri) {
+  const grid = document.getElementById(gridId);
+  if (!grid || grid.children.length) return;
+  HS_LABELS.forEach((label, i) => {
+    const n = i + 1, c = hsGetColors(n);
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'display:flex; flex-direction:column; align-items:center; width:100%;';
+    const el = document.createElement('a');
+    el.className = 'hs-btn';
+    el.style.backgroundColor = c.bg; el.style.color = c.tx;
+    el.href = baseUrl + String(n).padStart(3,'0');
+    el.target = '_blank';
+    el.innerHTML = '<img class="hs-btn-orchid" src="' + orchid + '"><div class="hs-btn-body"><div class="hs-btn-num" style="color:' + c.num + '">No. ' + n + '</div><div class="hs-btn-char">' + label + '</div></div>';
+    const hint = document.createElement('span');
+    hint.className = 'hs-btn-hint'; hint.textContent = 'Tap to open the 2Hs site ↗';
+    wrap.appendChild(el); wrap.appendChild(hint);
+    grid.appendChild(wrap);
+  });
+}
+
+function hsFilterDir(gridId, val) {
+  const grid = document.getElementById(gridId);
+  const num = parseInt(val);
+  Array.from(grid.children).forEach((wrap, i) => {
+    wrap.style.display = (!val || (i+1) === num) ? 'flex' : 'none';
+  });
+}
+
+// ============================================================
+// KWANYIN — updated draw with question, smart capitalisation
+// ============================================================
+function kwSmartCapitalise(text) {
+  if (!text) return '';
+  // Capitalise first letter
+  text = text.trim();
+  text = text.charAt(0).toUpperCase() + text.slice(1);
+  // Add period at end if missing
+  if (!/[.!?]$/.test(text)) text += '.';
+  // Capitalise after . ! ?
+  text = text.replace(/([.!?]\s+)([a-z])/g, (m, p1, p2) => p1 + p2.toUpperCase());
+  return text;
+}
+
+async function kwDraw() {
+  if (kwIsDrawing) return;
+  kwIsDrawing = true;
+  const btn = document.getElementById('kw-btn');
+  const numEl = document.getElementById('kw-number');
+  const fateEl = document.getElementById('kw-fate');
+  const statusEl = document.getElementById('kw-status');
+
+  btn.disabled = true;
+  fateEl.textContent = 'Reaching into the void…';
+  statusEl.textContent = '';
+  numEl.textContent = '—';
+
+  let number, sourceUsed = kwSelectedMethod;
+  try {
+    if (kwSelectedMethod === 'crypto') {
+      await new Promise(r => setTimeout(r, 200));
+      number = cryptoRandN(100);
+    } else if (kwSelectedMethod === 'random-org') {
+      statusEl.textContent = 'Contacting random.org…';
+      try { number = await randomOrgFetchN(100); }
+      catch { statusEl.textContent = 'Random.org unreachable — using crypto fallback'; number = cryptoRandN(100); sourceUsed = 'crypto'; }
+    } else {
+      statusEl.textContent = 'Querying quantum vacuum…';
+      try { number = await quantumFetchN(100); }
+      catch { statusEl.textContent = 'ANU unreachable — using crypto fallback'; number = cryptoRandN(100); sourceUsed = 'crypto'; }
+    }
+
+    numEl.classList.add('rolling');
+    const end = Date.now() + 900;
+    await new Promise(resolve => {
+      const tick = () => {
+        numEl.textContent = Math.floor(Math.random() * 100) + 1;
+        if (Date.now() < end) requestAnimationFrame(tick);
+        else { numEl.classList.remove('rolling'); resolve(); }
+      };
+      requestAnimationFrame(tick);
+    });
+
+    numEl.textContent = number;
+    kwLastNumber = number;
+    kwLastSource = sourceUsed;
+
+    const fates = { crypto: 'Hardware entropy has spoken', 'random-org': 'The atmosphere has chosen', quantum: 'Quantum chance has decided' };
+    fateEl.textContent = fates[sourceUsed];
+    if (!statusEl.textContent.includes('fallback')) statusEl.textContent = '';
+
+    const srcEmoji = { crypto: '🔐', 'random-org': '📡', quantum: '⚛️' };
+    kwHistory.unshift({ n: number, icon: srcEmoji[sourceUsed] });
+    if (kwHistory.length > 8) kwHistory.pop();
+    renderKwHistory();
+
+    btn.disabled = false;
+    kwIsDrawing = false;
+    setTimeout(() => kwShowResult(number, sourceUsed), 600);
+
+  } catch(err) {
+    fateEl.textContent = 'The oracle is silent';
+    statusEl.textContent = 'Error: ' + err.message;
+    btn.disabled = false;
+    kwIsDrawing = false;
+  }
+}
+
+function kwShowResult(number, sourceUsed) {
+  document.getElementById('kw-main-view').style.display = 'none';
+  const rv = document.getElementById('kw-result-view');
+  rv.style.display = 'flex';
+
+  document.getElementById('kw-result-number').textContent = number;
+
+  // Get and display question
+  const rawQ = (document.getElementById('kw-question') || {}).value || '';
+  const smartQ = kwSmartCapitalise(rawQ);
+  document.getElementById('kw-result-question').textContent = smartQ || '(No question entered)';
+  document.getElementById('kw-result-lot-label').textContent = 'Lot #' + number;
+
+  // Set lot link
+  const LOT_BASE = 'https://sites.google.com/view/divinationitsutsuji/%E8%A7%80%E9%9F%B3%E9%9D%88%E7%B0%BD-guan-yin-fortune-divination-quan-%C3%A2m-linh-thi%C3%AAm/lots/';
+  document.getElementById('kw-lot-link').href = LOT_BASE + number;
+  document.getElementById('kw-lot-link').textContent = 'See what Lot #' + number + ' says ↗';
+}
+
+function kwCopyResult() {
+  if (!kwLastNumber) return;
+  const rawQ = (document.getElementById('kw-question') || {}).value || '';
+  const smartQ = kwSmartCapitalise(rawQ);
+  const text = 'The answer to your question:\n' + smartQ + '\nis: Lot #' + kwLastNumber;
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById('kw-result-copy-confirm');
+    el.style.opacity = '1';
+    setTimeout(() => el.style.opacity = '0', 2000);
+  });
+}
+
+function kwBackToMain() {
+  document.getElementById('kw-result-view').style.display = 'none';
+  document.getElementById('kw-main-view').style.display = 'flex';
+  const btn = document.getElementById('kw-btn');
+  btn.textContent = 'Draw a lot 🪷';
+  btn.disabled = false;
+}
+
+// ============================================================
+// DICE — rolling animation + emoji labels in results
+// ============================================================
+const DICE_COLORS = ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#1abc9c','#e91e63'];
+
+async function rollDice() {
+  const { count, type, src } = diceSetup;
+  diceReps = [];
+  for (let i = 1; i <= count; i++) {
+    const rep = document.getElementById('die-rep-' + i).value.trim() || '(unnamed)';
+    diceReps.push(rep);
+  }
+
+  // Show rolling animation
+  document.getElementById('dice-rep-section').style.display = 'none';
+  const rollRow = document.getElementById('dice-roll-row');
+  rollRow.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    const die = document.createElement('div');
+    die.className = 'die-anim';
+    die.style.background = DICE_COLORS[i % DICE_COLORS.length];
+    die.style.animationDelay = (i * 0.07) + 's';
+    die.textContent = Math.floor(Math.random() * type) + 1;
+    rollRow.appendChild(die);
+  }
+  const rollWrap = document.getElementById('dice-rolling-wrap');
+  rollWrap.classList.add('active');
+
+  // Keep dice spinning while fetching
+  const updateInterval = setInterval(() => {
+    rollRow.querySelectorAll('.die-anim').forEach(d => {
+      d.textContent = Math.floor(Math.random() * type) + 1;
+    });
+  }, 120);
+
+  const results = [];
+  for (let i = 0; i < count; i++) {
+    const val = await getRandN(type, src);
+    results.push(val);
+  }
+
+  clearInterval(updateInterval);
+
+  // Show final values briefly in dice before switching to results
+  const dieDivs = rollRow.querySelectorAll('.die-anim');
+  dieDivs.forEach((d, i) => { d.textContent = results[i]; d.style.animation = 'none'; });
+  await new Promise(r => setTimeout(r, 800));
+
+  rollWrap.classList.remove('active');
+  const resSection = document.getElementById('dice-result-section');
+  resSection.classList.add('active');
+
+  const rows = document.getElementById('dice-result-rows');
+  rows.innerHTML = '';
+  for (let i = 0; i < count; i++) {
+    rows.innerHTML += `
+      <div class="dice-result-row">
+        <span class="dice-result-num">🎲 ${i+1}</span>
+        <span class="dice-result-rep">${diceReps[i]}</span>
+        <span class="dice-result-val">${results[i]}</span>
+      </div>
+    `;
+  }
+}
+
+function copyDiceResult() {
+  const rows = document.getElementById('dice-result-rows');
+  let text = 'QMDJ Dice Roll Results\n';
+  rows.querySelectorAll('.dice-result-row').forEach((r, i) => {
+    const rep = r.querySelector('.dice-result-rep').textContent;
+    const val = r.querySelector('.dice-result-val').textContent;
+    text += `🎲 ${i+1} · ${rep} → ${val}\n`;
+  });
+  navigator.clipboard.writeText(text.trim());
+}
+
+function rollAgain() {
+  document.getElementById('dice-result-section').classList.remove('active');
+  document.getElementById('dice-rolling-wrap').classList.remove('active');
+  document.getElementById('dice-rep-section').style.display = 'block';
+}
+
+// ============================================================
+// FLYING STAR — orientation toggle fix
+// ============================================================
+function fsSetOrientation(northOnTop) {
+  fsNorthOnTop = northOnTop;
+  const btnN = document.getElementById('fs-btn-north');
+  const btnF = document.getElementById('fs-btn-facing');
+  if (northOnTop) {
+    btnN.style.cssText = 'flex:1; max-width:180px; padding:10px; border-radius:8px; font-family:\'Cinzel\',serif; font-size:11px; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s; background:rgba(0,191,255,0.2); border:2px solid var(--sky); color:var(--sky); box-shadow:inset 0 2px 6px rgba(0,0,0,0.3);';
+    btnF.style.cssText = 'flex:1; max-width:180px; padding:10px; border-radius:8px; font-family:\'Cinzel\',serif; font-size:11px; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s; background:transparent; border:1px solid rgba(0,191,255,0.3); color:var(--text-mid);';
+  } else {
+    btnF.style.cssText = 'flex:1; max-width:180px; padding:10px; border-radius:8px; font-family:\'Cinzel\',serif; font-size:11px; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s; background:rgba(0,191,255,0.2); border:2px solid var(--sky); color:var(--sky); box-shadow:inset 0 2px 6px rgba(0,0,0,0.3);';
+    btnN.style.cssText = 'flex:1; max-width:180px; padding:10px; border-radius:8px; font-family:\'Cinzel\',serif; font-size:11px; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s; background:transparent; border:1px solid rgba(0,191,255,0.3); color:var(--text-mid);';
+  }
+  fsLookup();
+}
+
+function fsChartError(imgEl) {
+  imgEl.style.display = 'none';
+  document.getElementById('fs-chart-na').style.display = 'block';
+  document.getElementById('fs-download-wrap').style.display = 'none';
+}
+
+// Override fsLookup to also handle download button
+const _fsLookupOrig = fsLookup;
+function fsLookup() {
+  const period = document.getElementById('fs-period-select').value;
+  const facing = document.getElementById('fs-facing-select').value;
+  const wrap = document.getElementById('fs-chart-wrap');
+  const img = document.getElementById('fs-chart-img');
+  const na = document.getElementById('fs-chart-na');
+  const dlWrap = document.getElementById('fs-download-wrap');
+
+  if (!period || !facing) return;
+
+  wrap.classList.add('active');
+  na.style.display = 'none';
+  img.style.display = 'none';
+  dlWrap.style.display = 'none';
+
+  const url = getChartUrl(parseInt(period), facing);
+  img.src = url;
+  img.style.display = 'block';
+  img.onload = function() {
+    dlWrap.style.display = 'block';
+    document.getElementById('fs-download-btn').href = url;
+    document.getElementById('fs-download-btn').download = period + facing + '.png';
+  };
+}
+
+// ============================================================
+// RULER — period dropdown init + bearing buttons + ruler orientation
+// ============================================================
+let rulerMagBearing = null;
+let rulerNorthOnTop = true;
+let rulerChartFacing = null;
+
+(function initRulerPeriodDropdown() {
+  // Called when DOM ready - periods array defined earlier
+  const sel = document.getElementById('period-select-ruler');
+  if (!sel) return;
+  PERIODS.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.p;
+    opt.textContent = p.label;
+    sel.appendChild(opt);
+  });
+})();
+
+function rulerPeriodSelected() {
+  const period = document.getElementById('period-select-ruler').value;
+  if (!period) return;
+  document.getElementById('ruler-bearing-btns').style.display = 'flex';
+  currentPeriodForRuler = parseInt(period);
+}
+
+function rulerShowChart(which) {
+  const btnTrue = document.getElementById('ruler-btn-true');
+  const btnMag = document.getElementById('ruler-btn-mag');
+  const selected = 'flex:1; min-width:140px; padding:10px; border-radius:8px; font-family:\'Cinzel\',serif; font-size:11px; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s; background:rgba(0,191,255,0.2); border:2px solid var(--sky); color:var(--sky);';
+  const unselected = 'flex:1; min-width:140px; padding:10px; border-radius:8px; font-family:\'Cinzel\',serif; font-size:11px; letter-spacing:0.08em; cursor:pointer; transition:all 0.2s; background:transparent; border:1px solid rgba(0,191,255,0.3); color:var(--text-mid);';
+
+  if (which === 'true') {
+    btnTrue.style.cssText = selected; btnMag.style.cssText = unselected;
+    rulerChartFacing = getMtn(currentTrueBearing).code;
+  } else {
+    btnMag.style.cssText = selected; btnTrue.style.cssText = unselected;
+    const magB = rulerMagBearing || currentTrueBearing;
+    rulerChartFacing = getMtn(magB).code;
+  }
+  loadRulerChart();
+}
+
+function rulerSetOrientation(northOnTop) {
+  rulerNorthOnTop = northOnTop;
+  const btnN = document.getElementById('ruler-btn-north-top');
+  const btnF = document.getElementById('ruler-btn-facing-top');
+  const sel = 'flex:1; max-width:160px; padding:8px; border-radius:8px; font-family:\'Cinzel\',serif; font-size:10px; cursor:pointer; transition:all 0.2s; background:rgba(0,191,255,0.2); border:2px solid var(--sky); color:var(--sky); box-shadow:inset 0 2px 6px rgba(0,0,0,0.3);';
+  const unsel = 'flex:1; max-width:160px; padding:8px; border-radius:8px; font-family:\'Cinzel\',serif; font-size:10px; cursor:pointer; transition:all 0.2s; background:transparent; border:1px solid rgba(0,191,255,0.3); color:var(--text-mid);';
+  if (northOnTop) { btnN.style.cssText = sel; btnF.style.cssText = unsel; }
+  else { btnF.style.cssText = sel; btnN.style.cssText = unsel; }
+  loadRulerChart();
+}
+
+function loadRulerChart() {
+  if (!currentPeriodForRuler || !rulerChartFacing) return;
+  const wrap = document.getElementById('ruler-chart-result');
+  const img = document.getElementById('ruler-chart-img');
+  const na = document.getElementById('ruler-chart-na');
+  const dlWrap = document.getElementById('ruler-download-wrap');
+  wrap.style.display = 'block';
+  na.style.display = 'none';
+  img.style.display = 'none';
+  dlWrap.style.display = 'none';
+
+  // Use rulerNorthOnTop for orientation
+  const suffix = rulerNorthOnTop ? '1' : '2';
+  const fc = normalizeFacing(rulerChartFacing);
+  const url = CHART_IMG_BASE + currentPeriodForRuler + fc + '.' + suffix + '.png';
+  img.src = url;
+  img.style.display = 'block';
+  img.onload = function() {
+    dlWrap.style.display = 'block';
+    document.getElementById('ruler-download-btn').href = url;
+    document.getElementById('ruler-download-btn').download = currentPeriodForRuler + fc + '.' + suffix + '.png';
+  };
+}
+
+function rulerChartError(imgEl) {
+  imgEl.style.display = 'none';
+  document.getElementById('ruler-chart-na').style.display = 'block';
+  document.getElementById('ruler-download-wrap').style.display = 'none';
+}
+
+// Override calcMagnetic to store mag bearing
+const _calcMagOrig = calcMagnetic;
+function calcMagnetic() {
+  if (!currentTrueBearing) { alert('Please draw a bearing line on the map first.'); return; }
+  if (!currentMapLatLng) { alert('Map location unknown — please search an address first.'); return; }
+  const poleLat = (parseFloat(document.getElementById('pole-lat1').value) + parseFloat(document.getElementById('pole-lat2').value)) / 2;
+  const poleLng = (parseFloat(document.getElementById('pole-lng1').value) + parseFloat(document.getElementById('pole-lng2').value)) / 2;
+  const azToPole = bearing(currentMapLatLng.lat, currentMapLatLng.lng, poleLat, poleLng);
+  let decl = azToPole;
+  if (decl > 180) decl -= 360;
+  const magB = norm(currentTrueBearing - decl);
+  rulerMagBearing = magB;
+
+  const oct = getOctant(magB);
+  const mtn = getMtn(magB);
+  document.getElementById('mag-bearing-val').textContent = magB.toFixed(1) + '°';
+  document.getElementById('mag-decl-val').textContent = (decl >= 0 ? '+' : '') + decl.toFixed(3) + '° ' + (decl >= 0 ? 'East' : 'West');
+  document.getElementById('mag-sector-val').textContent = mtn.code + ' · ' + mtn.n;
+  document.getElementById('mag-dir-val').textContent = oct.dir + ' · ' + oct.zh + ' · ' + oct.name;
+  document.getElementById('mag-result-box').classList.add('active');
+}
+
+function copyAllBearingResults() {
+  if (!currentTrueBearing) return;
+  const oct = getOctant(currentTrueBearing);
+  const mtn = getMtn(currentTrueBearing);
+  let text = '=== House Facing Results ===\n';
+  text += 'True North Bearing: ' + currentTrueBearing.toFixed(1) + '°\n';
+  text += 'Direction: ' + oct.dir + ' · ' + oct.zh + ' (' + oct.name + ')\n';
+  text += '24 Mountains: ' + mtn.code + ' · ' + mtn.n + '\n';
+  if (rulerMagBearing) {
+    const magOct = getOctant(rulerMagBearing);
+    const magMtn = getMtn(rulerMagBearing);
+    const poleLat = (parseFloat(document.getElementById('pole-lat1').value) + parseFloat(document.getElementById('pole-lat2').value)) / 2;
+    const poleLng = (parseFloat(document.getElementById('pole-lng1').value) + parseFloat(document.getElementById('pole-lng2').value)) / 2;
+    text += '\n=== Magnetic North Correction ===\n';
+    text += 'Pole position used: ' + poleLat.toFixed(2) + '°N, ' + poleLng.toFixed(2) + '°E\n';
+    text += 'Magnetic Bearing: ' + rulerMagBearing.toFixed(1) + '°\n';
+    text += 'Direction (Mag): ' + magOct.dir + ' · ' + magOct.zh + ' (' + magOct.name + ')\n';
+    text += '24 Mountains (Mag): ' + magMtn.code + ' · ' + magMtn.n + '\n';
+  }
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById('all-copy-confirm');
+    el.classList.add('show');
+    setTimeout(() => el.classList.remove('show'), 2000);
+  });
+}
+
+// ============================================================
+// VEDIC — load chart list from GAS based on logged-in user ID
+// ============================================================
+const VEDIC_APP_FOLDER_ID = "1zremwI3revG-7JXVrNBbVPIDr2XoD1N7";
+let vedicCurrentData = '';
+
+function loadVedicCharts() {
+  const badge = document.getElementById('vedic-user-badge');
+  const loading = document.getElementById('vedic-loading');
+  const notSub = document.getElementById('vedic-not-subscribed');
+  const cards = document.getElementById('vedic-chart-cards');
+  const panel = document.getElementById('vedic-data-panel');
+
+  if (badge) badge.textContent = currentUser || '—';
+
+  if (!currentUser || isGuest) {
+    loading.style.display = 'none';
+    notSub.style.display = 'block';
+    return;
+  }
+
+  loading.style.display = 'block';
+  notSub.style.display = 'none';
+  cards.style.display = 'none';
+  panel.style.display = 'none';
+
+  // Ask GAS for available charts for this user's ID
+  fetch(AUTH_GAS_URL + '?action=vedicCharts&idCode=' + encodeURIComponent(currentUser), { mode: 'cors' })
+    .then(r => r.json())
+    .then(data => {
+      loading.style.display = 'none';
+      if (!data.charts || data.charts.length === 0) {
+        notSub.style.display = 'block';
+        return;
+      }
+      cards.innerHTML = '';
+      cards.style.display = 'flex';
+      data.charts.forEach(chartName => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `<div class="card-icon"><img src="https://i.postimg.cc/bwm6CsPv/Fuki_1.png" alt="" style="width:42px;height:42px;object-fit:contain;"></div><div class="card-text"><div class="card-title">${chartName}</div><div class="card-desc">Tap to view &amp; copy</div></div><div class="card-arrow">›</div>`;
+        card.onclick = () => loadVedicChart(chartName);
+        cards.appendChild(card);
+      });
+    })
+    .catch(() => {
+      loading.style.display = 'none';
+      notSub.style.display = 'block';
+    });
+}
+
+function loadVedicChart(chartName) {
+  const panel = document.getElementById('vedic-data-panel');
+  const title = document.getElementById('vedic-data-title');
+  const box = document.getElementById('vedic-data-box');
+  const btn = document.getElementById('vedic-copy-btn');
+  panel.style.display = 'block';
+  title.textContent = chartName;
+  box.textContent = 'Loading…';
+  btn.textContent = 'Copy All';
+  btn.style.background = 'var(--sky)';
+  vedicCurrentData = '';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  fetch(AUTH_GAS_URL + '?action=vedicData&idCode=' + encodeURIComponent(currentUser) + '&chart=' + encodeURIComponent(chartName), { mode: 'cors' })
+    .then(r => r.json())
+    .then(data => {
+      vedicCurrentData = data.data || '';
+      box.textContent = vedicCurrentData;
+    })
+    .catch(() => { box.textContent = 'Error loading. Please try again.'; });
+}
+
+function vedicCopyData() {
+  if (!vedicCurrentData) return;
+  navigator.clipboard.writeText(vedicCurrentData).then(() => {
+    const btn = document.getElementById('vedic-copy-btn');
+    btn.textContent = 'Copied!';
+    btn.style.background = '#34a853';
+    setTimeout(() => { btn.textContent = 'Copy All'; btn.style.background = 'var(--sky)'; }, 2000);
+  });
+}
+
+// ============================================================
+// INIT on DOM ready
+// ============================================================
+window.addEventListener('DOMContentLoaded', function() {
+  hsLoadClients();
+  // Init ruler period dropdown after PERIODS is defined
+  const sel = document.getElementById('period-select-ruler');
+  if (sel && sel.options.length <= 1) {
+    PERIODS.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.p;
+      opt.textContent = p.label;
+      sel.appendChild(opt);
+    });
+  }
+});
+
+// Override goTo to also trigger vedic load
+const _goToOrig = goTo;
+function goTo(screenId) {
+  _goToOrig(screenId);
+  if (screenId === 'screen-vedic-charts') loadVedicCharts();
+}
+
 
 </body>
 </html>
