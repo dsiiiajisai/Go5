@@ -1228,27 +1228,35 @@ html, body {
   </div>
 
   <div class="cards" style="margin-top: 24px;">
+
+    <!-- Our own styled button — no Google widget, no auto-prompt interference -->
     <div>
-      <!-- Google Sign-In button rendered here -->
-      <div id="g_id_onload"
-        data-client_id="656273496716-j3hhabkjpk7e70uqppoqlrqpsammdjia.apps.googleusercontent.com"
-        data-callback="handleGoogleLogin"
-        data-auto_select="false"
-        data-auto_prompt="false"
-        data-cancel_on_tap_outside="true">
-      </div>
-      <div class="g_id_signin"
-        data-type="standard"
-        data-shape="rectangular"
-        data-theme="outline"
-        data-text="signin_with"
-        data-size="large"
-        data-logo_alignment="left"
-        data-width="360">
-      </div>
+      <button id="btn-google-login" onclick="startGoogleLogin()" style="
+        width: 100%;
+        max-width: 360px;
+        height: 54px;
+        border-radius: 12px;
+        border: 2px solid rgba(0,191,255,0.4);
+        background: rgba(255,255,255,0.06);
+        color: white;
+        font-family: 'Cinzel', serif;
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        transition: background 0.2s, border-color 0.2s;
+        margin: 0 auto;
+      ">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:22px; height:22px;">
+        Log in with Gmail
+      </button>
       <p style="font-size:12px; color:var(--text-dim); text-align:center; margin-top:10px; line-height:1.6;">Login is handled completely by Google OAuth.</p>
       <p id="login-error" style="display:none; color:var(--red); font-size:12px; text-align:center; margin-top:8px; max-width:360px; line-height:1.6;"></p>
-      <p id="login-checking" style="display:none; font-family:'Cinzel',serif; font-size:12px; color:var(--text-dim); text-align:center; margin-top:8px; letter-spacing:0.1em;">Verifying…</p>
+      <p id="login-checking" style="display:none; font-family:'Cinzel',serif; font-size:12px; color:var(--sky); text-align:center; margin-top:8px; letter-spacing:0.1em;">Verifying…</p>
     </div>
 
     <div class="card" onclick="guestLogin()">
@@ -2427,22 +2435,65 @@ let kwIsDrawing = false;
 let kwHistory = [];
 
 // ============================================================
-// LOGIN — Google OAuth
+// LOGIN — Google OAuth (explicit popup, no widget/auto-prompt)
 // ============================================================
 const AUTH_GAS_URL = 'https://script.google.com/macros/s/AKfycbwRMG58HZHlZqF9LIyAPk2iqs4ARXPww9d_U87mU6sVJtQlI7iieaRO5HljHeHpt_gMDA/exec';
+const GOOGLE_CLIENT_ID = '656273496716-j3hhabkjpk7e70uqppoqlrqpsammdjia.apps.googleusercontent.com';
 
-// Called automatically by Google after user signs in
-async function handleGoogleLogin(response) {
-  const payload = JSON.parse(atob(response.credential.split('.')[1]));
-  const email = payload.email;
+let googleTokenClient = null;
 
-  document.getElementById('login-checking').style.display = 'block';
+function initGoogleAuth() {
+  if (!window.google || !google.accounts || !google.accounts.oauth2) return;
+  googleTokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: GOOGLE_CLIENT_ID,
+    scope: 'email profile',
+    callback: handleOAuthToken,
+    error_callback: function(err) {
+      showLoginError('Google sign-in was cancelled. Please try again.');
+      document.getElementById('login-checking').style.display = 'none';
+      document.getElementById('btn-google-login').disabled = false;
+    }
+  });
+}
+
+function startGoogleLogin() {
+  const btn = document.getElementById('btn-google-login');
+  btn.disabled = true;
   document.getElementById('login-error').style.display = 'none';
+  document.getElementById('login-checking').style.display = 'none';
 
+  if (!googleTokenClient) {
+    initGoogleAuth();
+    if (!googleTokenClient) {
+      showLoginError('Google sign-in is not ready. Please refresh and try again.');
+      btn.disabled = false;
+      return;
+    }
+  }
+  googleTokenClient.requestAccessToken({ prompt: 'select_account' });
+}
+
+async function handleOAuthToken(tokenResponse) {
+  if (tokenResponse.error) {
+    showLoginError('Google sign-in failed. Please try again.');
+    document.getElementById('btn-google-login').disabled = false;
+    return;
+  }
+  document.getElementById('login-checking').style.display = 'block';
   try {
+    const infoResp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: 'Bearer ' + tokenResponse.access_token }
+    });
+    const userInfo = await infoResp.json();
+    const email = userInfo.email;
+    if (!email) {
+      showLoginError('Could not retrieve your email. Please try again.');
+      document.getElementById('btn-google-login').disabled = false;
+      document.getElementById('login-checking').style.display = 'none';
+      return;
+    }
     const resp = await fetch(AUTH_GAS_URL + '?action=validateEmail&email=' + encodeURIComponent(email), { mode: 'cors' });
     const data = await resp.json();
-
     if (data.valid) {
       currentUser = data.idCode || email;
       currentUserName = data.name || data.idCode || email;
@@ -2453,10 +2504,12 @@ async function handleGoogleLogin(response) {
       goTo('screen-home');
     } else {
       document.getElementById('login-checking').style.display = 'none';
+      document.getElementById('btn-google-login').disabled = false;
       showLoginError('Your Google account (' + email + ') is not registered. Please contact your administrator.');
     }
   } catch(e) {
     document.getElementById('login-checking').style.display = 'none';
+    document.getElementById('btn-google-login').disabled = false;
     showLoginError('Could not reach the login server. Check your connection and try again.');
   }
 }
@@ -2466,9 +2519,9 @@ function showLoginError(msg) {
   if (el) { el.textContent = msg; el.style.display = 'block'; }
 }
 
-function showIdInput() {} // no longer needed, kept to avoid errors
-
-function loginWithId() {} // no longer needed, kept to avoid errors
+function showIdInput() {}
+function loginWithId() {}
+function handleGoogleLogin() {} // legacy stub
 
 function guestLogin() {
   currentUser = null;
@@ -2479,6 +2532,19 @@ function guestLogin() {
   setHomeState();
   goTo('screen-home');
 }
+
+// Init once GSI library loads
+window.addEventListener('load', function() {
+  let attempts = 0;
+  const timer = setInterval(function() {
+    attempts++;
+    if (window.google && google.accounts && google.accounts.oauth2) {
+      clearInterval(timer);
+      initGoogleAuth();
+    }
+    if (attempts > 20) clearInterval(timer);
+  }, 250);
+});
 
 function getTimeGreeting() {
   const h = new Date().getHours();
