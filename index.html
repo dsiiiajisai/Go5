@@ -13,8 +13,6 @@
 <!-- Leaflet for map -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<!-- Google Identity Services -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
 /* ============================================================
@@ -2419,83 +2417,39 @@ let kwIsDrawing = false;
 let kwHistory = [];
 
 // ============================================================
-// LOGIN — Google OAuth (ID token flow, button-triggered only)
+// LOGIN — Direct OAuth redirect (no library, guaranteed to work)
 // ============================================================
 const AUTH_GAS_URL = 'https://script.google.com/macros/s/AKfycbwRMG58HZHlZqF9LIyAPk2iqs4ARXPww9d_U87mU6sVJtQlI7iieaRO5HljHeHpt_gMDA/exec';
 const GOOGLE_CLIENT_ID = '656273496716-j3hhabkjpk7e70uqppoqlrqpsammdjia.apps.googleusercontent.com';
 
-let googleReady = false;
-
-// Initialize Google ID — auto_select OFF, no prompt on page load
-function initGoogleAuth() {
-  if (!window.google || !google.accounts || !google.accounts.id) return;
-  google.accounts.id.initialize({
-    client_id: GOOGLE_CLIENT_ID,
-    callback: handleGoogleCredential,
-    auto_select: false,
-    cancel_on_tap_outside: true,
-    itp_support: true
-  });
-  // Explicitly cancel any pending One Tap so Chrome doesn't show the bar
-  google.accounts.id.cancel();
-  googleReady = true;
-}
-
-// User clicks our button — open the account chooser
-function startGoogleLogin() {
-  const btn = document.getElementById('btn-google-login');
-  btn.style.opacity = '0.6';
-  btn.style.pointerEvents = 'none';
-  document.getElementById('login-error').style.display = 'none';
-  document.getElementById('login-checking').style.display = 'none';
-
-  if (!googleReady) {
-    initGoogleAuth();
-    if (!googleReady) {
-      showLoginError('Google sign-in not ready. Please refresh the page.');
-      btn.style.opacity = '1';
-      btn.style.pointerEvents = 'auto';
-      return;
-    }
+// On page load — check if we're returning from Google OAuth redirect
+(function checkOAuthReturn() {
+  const params = new URLSearchParams(window.location.hash.replace('#','?').replace('?screen-login',''));
+  // OAuth returns as hash fragment: #access_token=...&token_type=Bearer
+  const token = params.get('access_token');
+  if (token) {
+    // Clean up URL immediately
+    history.replaceState({}, '', window.location.pathname);
+    // Validate with the token
+    validateWithToken(token);
   }
-  // prompt() opens the Google account chooser
-  google.accounts.id.prompt(function(notification) {
-    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-      // Fallback: open popup via renderButton approach
-      const div = document.createElement('div');
-      div.style.display = 'none';
-      document.body.appendChild(div);
-      google.accounts.id.renderButton(div, {
-        type: 'standard', size: 'large', theme: 'outline'
-      });
-      const innerBtn = div.querySelector('div[role="button"]');
-      if (innerBtn) innerBtn.click();
-      setTimeout(() => document.body.removeChild(div), 1000);
-    }
-  });
-}
+})();
 
-// Called by GSI after user picks account
-async function handleGoogleCredential(response) {
-  const btn = document.getElementById('btn-google-login');
-  btn.style.opacity = '1';
-  btn.style.pointerEvents = 'auto';
-
-  if (!response || !response.credential) {
-    showLoginError('Sign-in failed. Please try again.');
-    return;
-  }
-
-  document.getElementById('login-checking').style.display = 'block';
+async function validateWithToken(token) {
+  // Show checking state on login screen
+  const checking = document.getElementById('login-checking');
+  if (checking) checking.style.display = 'block';
 
   try {
-    // Decode JWT to get email (no server call needed for this part)
-    const payload = JSON.parse(atob(response.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
-    const email = payload.email;
+    const infoResp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const userInfo = await infoResp.json();
+    const email = userInfo.email;
 
     if (!email) {
-      showLoginError('Could not get your email. Please try again.');
-      document.getElementById('login-checking').style.display = 'none';
+      if (checking) checking.style.display = 'none';
+      showLoginError('Could not get your email from Google. Please try again.');
       return;
     }
 
@@ -2511,13 +2465,27 @@ async function handleGoogleCredential(response) {
       setHomeState();
       goTo('screen-home');
     } else {
-      document.getElementById('login-checking').style.display = 'none';
+      if (checking) checking.style.display = 'none';
       showLoginError('Your account (' + email + ') is not registered. Please contact your administrator.');
     }
   } catch(e) {
-    document.getElementById('login-checking').style.display = 'none';
-    showLoginError('Connection error. Please check your internet and try again.');
+    if (checking) checking.style.display = 'none';
+    showLoginError('Connection error. Check your internet and try again.');
   }
+}
+
+function startGoogleLogin() {
+  // Build Google OAuth URL — implicit flow, returns access_token in hash
+  const redirectUri = window.location.origin + window.location.pathname;
+  const params = new URLSearchParams({
+    client_id: GOOGLE_CLIENT_ID,
+    redirect_uri: redirectUri,
+    response_type: 'token',
+    scope: 'email profile',
+    prompt: 'select_account'
+  });
+  // Redirect to Google — user picks account, Google redirects back with token
+  window.location.href = 'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString();
 }
 
 function showLoginError(msg) {
@@ -2527,6 +2495,8 @@ function showLoginError(msg) {
 
 function showIdInput() {}
 function loginWithId() {}
+function handleGoogleLogin() {}
+function initGoogleAuth() {}
 
 function guestLogin() {
   currentUser = null;
@@ -2537,19 +2507,6 @@ function guestLogin() {
   setHomeState();
   goTo('screen-home');
 }
-
-// Init as soon as GSI script loads — but do NOT auto-prompt
-window.addEventListener('load', function() {
-  let tries = 0;
-  const t = setInterval(function() {
-    tries++;
-    if (window.google && google.accounts && google.accounts.id) {
-      clearInterval(t);
-      initGoogleAuth();
-    }
-    if (tries > 30) clearInterval(t);
-  }, 200);
-});
 
 function getTimeGreeting() {
   const h = new Date().getHours();
