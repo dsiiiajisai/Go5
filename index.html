@@ -13,7 +13,7 @@
 <!-- Leaflet for map -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<!-- Google Identity Services (OAuth) -->
+<!-- Google Identity Services -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <style>
@@ -1229,35 +1229,19 @@ html, body {
 
   <div class="cards" style="margin-top: 24px;">
 
-    <!-- Our own styled button — no Google widget, no auto-prompt interference -->
-    <div>
-      <button id="btn-google-login" onclick="startGoogleLogin()" style="
-        width: 100%;
-        max-width: 360px;
-        height: 54px;
-        border-radius: 12px;
-        border: 2px solid rgba(0,191,255,0.4);
-        background: rgba(255,255,255,0.06);
-        color: white;
-        font-family: 'Cinzel', serif;
-        font-size: 15px;
-        font-weight: 600;
-        letter-spacing: 0.08em;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 12px;
-        transition: background 0.2s, border-color 0.2s;
-        margin: 0 auto;
-      ">
-        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:22px; height:22px;">
-        Log in with Gmail
-      </button>
-      <p style="font-size:12px; color:var(--text-dim); text-align:center; margin-top:10px; line-height:1.6;">Login is handled completely by Google OAuth.</p>
-      <p id="login-error" style="display:none; color:var(--red); font-size:12px; text-align:center; margin-top:8px; max-width:360px; line-height:1.6;"></p>
-      <p id="login-checking" style="display:none; font-family:'Cinzel',serif; font-size:12px; color:var(--sky); text-align:center; margin-top:8px; letter-spacing:0.1em;">Verifying…</p>
+    <div class="card" id="btn-google-login" onclick="startGoogleLogin()">
+      <div class="card-icon">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" style="width:32px; height:32px; object-fit:contain; display:block; margin:0 auto;">
+      </div>
+      <div class="card-text">
+        <div class="card-title">Log in with Gmail</div>
+        <div class="card-desc">Login is handled completely by Google OAuth.</div>
+      </div>
+      <div class="card-arrow">›</div>
     </div>
+
+    <p id="login-error" style="display:none; color:var(--red); font-size:12px; text-align:center; margin-top:-4px; max-width:360px; line-height:1.6;"></p>
+    <p id="login-checking" style="display:none; font-family:'Cinzel',serif; font-size:12px; color:var(--sky); text-align:center; letter-spacing:0.1em;">Verifying…</p>
 
     <div class="card" onclick="guestLogin()">
       <div class="card-icon">👤</div>
@@ -2435,65 +2419,89 @@ let kwIsDrawing = false;
 let kwHistory = [];
 
 // ============================================================
-// LOGIN — Google OAuth (explicit popup, no widget/auto-prompt)
+// LOGIN — Google OAuth (ID token flow, button-triggered only)
 // ============================================================
 const AUTH_GAS_URL = 'https://script.google.com/macros/s/AKfycbwRMG58HZHlZqF9LIyAPk2iqs4ARXPww9d_U87mU6sVJtQlI7iieaRO5HljHeHpt_gMDA/exec';
 const GOOGLE_CLIENT_ID = '656273496716-j3hhabkjpk7e70uqppoqlrqpsammdjia.apps.googleusercontent.com';
 
-let googleTokenClient = null;
+let googleReady = false;
 
+// Initialize Google ID — auto_select OFF, no prompt on page load
 function initGoogleAuth() {
-  if (!window.google || !google.accounts || !google.accounts.oauth2) return;
-  googleTokenClient = google.accounts.oauth2.initTokenClient({
+  if (!window.google || !google.accounts || !google.accounts.id) return;
+  google.accounts.id.initialize({
     client_id: GOOGLE_CLIENT_ID,
-    scope: 'email profile',
-    callback: handleOAuthToken,
-    error_callback: function(err) {
-      showLoginError('Google sign-in was cancelled. Please try again.');
-      document.getElementById('login-checking').style.display = 'none';
-      document.getElementById('btn-google-login').disabled = false;
+    callback: handleGoogleCredential,
+    auto_select: false,
+    cancel_on_tap_outside: true,
+    itp_support: true
+  });
+  // Explicitly cancel any pending One Tap so Chrome doesn't show the bar
+  google.accounts.id.cancel();
+  googleReady = true;
+}
+
+// User clicks our button — open the account chooser
+function startGoogleLogin() {
+  const btn = document.getElementById('btn-google-login');
+  btn.style.opacity = '0.6';
+  btn.style.pointerEvents = 'none';
+  document.getElementById('login-error').style.display = 'none';
+  document.getElementById('login-checking').style.display = 'none';
+
+  if (!googleReady) {
+    initGoogleAuth();
+    if (!googleReady) {
+      showLoginError('Google sign-in not ready. Please refresh the page.');
+      btn.style.opacity = '1';
+      btn.style.pointerEvents = 'auto';
+      return;
+    }
+  }
+  // prompt() opens the Google account chooser
+  google.accounts.id.prompt(function(notification) {
+    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+      // Fallback: open popup via renderButton approach
+      const div = document.createElement('div');
+      div.style.display = 'none';
+      document.body.appendChild(div);
+      google.accounts.id.renderButton(div, {
+        type: 'standard', size: 'large', theme: 'outline'
+      });
+      const innerBtn = div.querySelector('div[role="button"]');
+      if (innerBtn) innerBtn.click();
+      setTimeout(() => document.body.removeChild(div), 1000);
     }
   });
 }
 
-function startGoogleLogin() {
+// Called by GSI after user picks account
+async function handleGoogleCredential(response) {
   const btn = document.getElementById('btn-google-login');
-  btn.disabled = true;
-  document.getElementById('login-error').style.display = 'none';
-  document.getElementById('login-checking').style.display = 'none';
+  btn.style.opacity = '1';
+  btn.style.pointerEvents = 'auto';
 
-  if (!googleTokenClient) {
-    initGoogleAuth();
-    if (!googleTokenClient) {
-      showLoginError('Google sign-in is not ready. Please refresh and try again.');
-      btn.disabled = false;
-      return;
-    }
-  }
-  googleTokenClient.requestAccessToken({ prompt: 'select_account' });
-}
-
-async function handleOAuthToken(tokenResponse) {
-  if (tokenResponse.error) {
-    showLoginError('Google sign-in failed. Please try again.');
-    document.getElementById('btn-google-login').disabled = false;
+  if (!response || !response.credential) {
+    showLoginError('Sign-in failed. Please try again.');
     return;
   }
+
   document.getElementById('login-checking').style.display = 'block';
+
   try {
-    const infoResp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-      headers: { Authorization: 'Bearer ' + tokenResponse.access_token }
-    });
-    const userInfo = await infoResp.json();
-    const email = userInfo.email;
+    // Decode JWT to get email (no server call needed for this part)
+    const payload = JSON.parse(atob(response.credential.split('.')[1].replace(/-/g,'+').replace(/_/g,'/')));
+    const email = payload.email;
+
     if (!email) {
-      showLoginError('Could not retrieve your email. Please try again.');
-      document.getElementById('btn-google-login').disabled = false;
+      showLoginError('Could not get your email. Please try again.');
       document.getElementById('login-checking').style.display = 'none';
       return;
     }
+
     const resp = await fetch(AUTH_GAS_URL + '?action=validateEmail&email=' + encodeURIComponent(email), { mode: 'cors' });
     const data = await resp.json();
+
     if (data.valid) {
       currentUser = data.idCode || email;
       currentUserName = data.name || data.idCode || email;
@@ -2504,13 +2512,11 @@ async function handleOAuthToken(tokenResponse) {
       goTo('screen-home');
     } else {
       document.getElementById('login-checking').style.display = 'none';
-      document.getElementById('btn-google-login').disabled = false;
-      showLoginError('Your Google account (' + email + ') is not registered. Please contact your administrator.');
+      showLoginError('Your account (' + email + ') is not registered. Please contact your administrator.');
     }
   } catch(e) {
     document.getElementById('login-checking').style.display = 'none';
-    document.getElementById('btn-google-login').disabled = false;
-    showLoginError('Could not reach the login server. Check your connection and try again.');
+    showLoginError('Connection error. Please check your internet and try again.');
   }
 }
 
@@ -2521,7 +2527,6 @@ function showLoginError(msg) {
 
 function showIdInput() {}
 function loginWithId() {}
-function handleGoogleLogin() {} // legacy stub
 
 function guestLogin() {
   currentUser = null;
@@ -2533,17 +2538,17 @@ function guestLogin() {
   goTo('screen-home');
 }
 
-// Init once GSI library loads
+// Init as soon as GSI script loads — but do NOT auto-prompt
 window.addEventListener('load', function() {
-  let attempts = 0;
-  const timer = setInterval(function() {
-    attempts++;
-    if (window.google && google.accounts && google.accounts.oauth2) {
-      clearInterval(timer);
+  let tries = 0;
+  const t = setInterval(function() {
+    tries++;
+    if (window.google && google.accounts && google.accounts.id) {
+      clearInterval(t);
       initGoogleAuth();
     }
-    if (attempts > 20) clearInterval(timer);
-  }, 250);
+    if (tries > 30) clearInterval(t);
+  }, 200);
 });
 
 function getTimeGreeting() {
