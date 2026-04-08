@@ -2668,28 +2668,9 @@ function fsToggleOrientation() {
   fsLookup();
 }
 
-function fsLookup() {
-  const period = document.getElementById('fs-period-select').value;
-  const facing = document.getElementById('fs-facing-select').value;
-  const wrap = document.getElementById('fs-chart-wrap');
-  const img = document.getElementById('fs-chart-img');
-  const na = document.getElementById('fs-chart-na');
 
-  if (!period || !facing) return;
 
-  wrap.classList.add('active');
-  na.style.display = 'none';
-  img.style.display = 'none';
 
-  const url = getChartUrl(parseInt(period), facing);
-  img.src = url;
-  img.style.display = 'block';
-}
-
-function fsChartError(imgEl) {
-  imgEl.style.display = 'none';
-  document.getElementById('fs-chart-na').style.display = 'block';
-}
 
 // ============================================================
 // B4.3 MAP & HOUSE FACING RULER
@@ -2873,24 +2854,9 @@ function selectPeriodForRuler(period, btn) {
   loadRulerChart();
 }
 
-function loadRulerChart() {
-  if (!currentPeriodForRuler || !currentTrueBearing) return;
-  const mtn = getMtn(currentTrueBearing);
-  const wrap = document.getElementById('ruler-chart-result');
-  const img = document.getElementById('ruler-chart-img');
-  const na = document.getElementById('ruler-chart-na');
-  wrap.classList.add('active');
-  na.style.display = 'none';
-  img.style.display = 'none';
-  const url = getChartUrl(currentPeriodForRuler, mtn.code);
-  img.src = url;
-  img.style.display = 'block';
-}
 
-function rulerChartError(imgEl) {
-  imgEl.style.display = 'none';
-  document.getElementById('ruler-chart-na').style.display = 'block';
-}
+
+
 
 // Magnetic bearing calculation
 function toRad(d) { return d * Math.PI / 180; }
@@ -2902,31 +2868,7 @@ function bearing(lat1, lng1, lat2, lng2) {
   return norm(toDeg(Math.atan2(x, y)));
 }
 
-function calcMagnetic() {
-  if (!currentTrueBearing) {
-    alert('Please draw a bearing line on the map first.'); return;
-  }
-  if (!currentMapLatLng) {
-    alert('Map location unknown — please search an address first.'); return;
-  }
-  const poleLat = (parseFloat(document.getElementById('pole-lat1').value) + parseFloat(document.getElementById('pole-lat2').value)) / 2;
-  const poleLng = (parseFloat(document.getElementById('pole-lng1').value) + parseFloat(document.getElementById('pole-lng2').value)) / 2;
-  const azToPole = bearing(currentMapLatLng.lat, currentMapLatLng.lng, poleLat, poleLng);
-  let decl = azToPole;
-  if (decl > 180) decl -= 360;
-  const magB = norm(currentTrueBearing - decl);
-  const oct = getOctant(magB);
-  const mtn = getMtn(magB);
 
-  document.getElementById('mag-bearing-val').textContent = magB.toFixed(1) + '°';
-  document.getElementById('mag-decl-val').textContent = (decl >= 0 ? '+' : '') + decl.toFixed(3) + '° ' + (decl >= 0 ? 'East' : 'West');
-  document.getElementById('mag-sector-val').textContent = mtn.code + ' · ' + mtn.n;
-  document.getElementById('mag-dir-val').textContent = oct.dir + ' · ' + oct.zh + ' · ' + oct.name;
-  document.getElementById('mag-result-box').classList.add('active');
-
-  // Update period chart if selected
-  if (currentPeriodForRuler) loadRulerChart();
-}
 
 // Map address search using Nominatim
 async function searchAddress() {
@@ -3050,22 +2992,9 @@ async function rollDice() {
   resSection._results = results;
 }
 
-function copyDiceResult() {
-  const rows = document.getElementById('dice-result-rows');
-  let text = 'QMDJ Dice Roll Results\n';
-  const items = rows.querySelectorAll('.dice-result-row');
-  items.forEach((r, i) => {
-    const rep = r.querySelector('.dice-result-rep').textContent;
-    const val = r.querySelector('.dice-result-val').textContent;
-    text += `Die ${i+1} · ${rep} → ${val}\n`;
-  });
-  navigator.clipboard.writeText(text.trim());
-}
 
-function rollAgain() {
-  document.getElementById('dice-result-section').classList.remove('active');
-  document.getElementById('dice-rep-section').style.display = 'block';
-}
+
+
 
 // ============================================================
 // B2.2 KWANYIN ORACLE
@@ -3147,33 +3076,11 @@ async function kwDraw() {
   }
 }
 
-function kwShowResult(number, sourceUsed) {
-  document.getElementById('kw-main-view').style.display = 'none';
-  const rv = document.getElementById('kw-result-view');
-  rv.style.display = 'flex';
 
-  document.getElementById('kw-result-number').textContent = number;
-  const fates = { crypto: '🔐 Hardware entropy has spoken', 'random-org': '📡 The atmosphere has chosen', quantum: '⚛️ Quantum chance has decided' };
-  document.getElementById('kw-result-method').textContent = fates[sourceUsed] || '';
-}
 
-function kwBackToMain() {
-  document.getElementById('kw-result-view').style.display = 'none';
-  document.getElementById('kw-main-view').style.display = 'flex';
-  // Reset button state
-  const btn = document.getElementById('kw-btn');
-  btn.textContent = 'Draw a lot 🪷';
-  btn.disabled = false;
-}
 
-function kwCopyResult() {
-  if (!kwLastNumber) return;
-  navigator.clipboard.writeText(String(kwLastNumber)).then(() => {
-    const el = document.getElementById('kw-result-copy-confirm');
-    el.style.opacity = '1';
-    setTimeout(() => el.style.opacity = '0', 2000);
-  });
-}
+
+
 
 function renderKwHistory() {
   const wrap = document.getElementById('kw-history-wrap');
@@ -3256,8 +3163,8 @@ function goTo(screenId) {
   if (screenId === 'screen-facing-ruler') initMap();
   if (screenId === 'screen-haircut') loadTodayHaircut();
   if (screenId === 'screen-b4') applyFsSubscriberGating();
+  if (screenId === 'screen-vedic-charts') loadVedicCharts();
   if (screenId === 'screen-kwanyin') {
-    // Reset kwanyin state when entering
     document.getElementById('kw-main-view').style.display = 'flex';
     document.getElementById('kw-result-view').style.display = 'none';
   }
@@ -4092,13 +3999,6 @@ window.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
-
-// Override goTo to also trigger vedic load
-const _goToOrig = goTo;
-function goTo(screenId) {
-  _goToOrig(screenId);
-  if (screenId === 'screen-vedic-charts') loadVedicCharts();
-}
 
 
 </body>
