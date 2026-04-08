@@ -2422,18 +2422,20 @@ let kwHistory = [];
 const AUTH_GAS_URL = 'https://script.google.com/macros/s/AKfycbwRMG58HZHlZqF9LIyAPk2iqs4ARXPww9d_U87mU6sVJtQlI7iieaRO5HljHeHpt_gMDA/exec';
 const GOOGLE_CLIENT_ID = '656273496716-j3hhabkjpk7e70uqppoqlrqpsammdjia.apps.googleusercontent.com';
 
-// On page load — check if we're returning from Google OAuth redirect
-(function checkOAuthReturn() {
-  const params = new URLSearchParams(window.location.hash.replace('#','?').replace('?screen-login',''));
-  // OAuth returns as hash fragment: #access_token=...&token_type=Bearer
-  const token = params.get('access_token');
-  if (token) {
-    // Clean up URL immediately
-    history.replaceState({}, '', window.location.pathname);
-    // Validate with the token
-    validateWithToken(token);
-  }
-})();
+// On page load — check if returning from Google OAuth redirect
+// (runs after all functions are defined)
+function checkOAuthReturn() {
+  try {
+    const hash = window.location.hash;
+    if (!hash || !hash.includes('access_token')) return;
+    const params = new URLSearchParams(hash.replace('#', ''));
+    const token = params.get('access_token');
+    if (token) {
+      history.replaceState({}, '', window.location.pathname);
+      validateWithToken(token);
+    }
+  } catch(e) {}
+}
 
 async function validateWithToken(token) {
   // Show checking state on login screen
@@ -3309,6 +3311,7 @@ function drawNodes() {
     drawCtx.stroke();
     drawCtx.restore();
   });
+}
 
 // ============================================================
 // 2Hs MODULE
@@ -3987,6 +3990,7 @@ function vedicCopyData() {
 // INIT on DOM ready
 // ============================================================
 window.addEventListener('DOMContentLoaded', function() {
+  checkOAuthReturn();
   hsLoadClients();
   // Init ruler period dropdown after PERIODS is defined
   const sel = document.getElementById('period-select-ruler');
@@ -4000,6 +4004,8 @@ window.addEventListener('DOMContentLoaded', function() {
   }
 });
 
+
+</script>
 
 </body>
 </html>
