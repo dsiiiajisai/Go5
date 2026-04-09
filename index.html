@@ -3216,7 +3216,10 @@ document.addEventListener('touchend', e => {
 }, { passive: true });
 
 // Push initial state so back button works from the start
-history.replaceState({ screenId: 'screen-login' }, '', '#screen-login');
+// BUT only if NOT returning from Google OAuth (which puts access_token in the hash)
+if (!window.location.hash.includes('access_token')) {
+  history.replaceState({ screenId: 'screen-login' }, '', '#screen-login');
+}
 
 // ============================================================
 // MAP ARROW NODE EDITING
