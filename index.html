@@ -68,6 +68,26 @@ html, body {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+@keyframes verifyPulse {
+  0%,100% { opacity:0.7; transform:scale(1); filter:drop-shadow(0 0 14px rgba(0,191,255,0.5)); }
+  50%      { opacity:1;   transform:scale(1.08); filter:drop-shadow(0 0 28px rgba(0,191,255,0.9)); }
+}
+@keyframes verifyDots {
+  0%  { content:'Verifying'; }
+  25% { content:'Verifying.'; }
+  50% { content:'Verifying..'; }
+  75% { content:'Verifying...'; }
+}
+#verify-text::after {
+  content:'';
+  animation: dotsAnim 1.2s steps(4,end) infinite;
+}
+@keyframes dotsAnim {
+  0%  { content:''; }
+  25% { content:'.'; }
+  50% { content:'..'; }
+  75% { content:'...'; }
+}
 
 /* ============================================================
    SHARED COMPONENTS
@@ -795,17 +815,17 @@ html, body {
   height: 42px;
   border-radius: 8px;
   border: 1px solid rgba(0,191,255,0.3);
-  background: rgba(0,0,0,0.35);
-  color: white;
+  background: rgba(0,0,60,0.85) !important;
+  color: #ffffff !important;
   font-size: 13px;
   padding: 0 12px;
   outline: none;
   font-family: 'Crimson Pro', serif;
-  -webkit-text-fill-color: white;
+  -webkit-text-fill-color: #ffffff !important;
 }
 .die-rep-input:-webkit-autofill,
 .die-rep-input:not(:placeholder-shown) {
-  background: rgba(0,0,50,0.8) !important;
+  background: rgba(0,0,60,0.9) !important;
   -webkit-text-fill-color: white !important;
   color: white !important;
 }
@@ -1302,7 +1322,6 @@ html, body {
     </div>
 
     <p id="login-error" style="display:none; color:var(--red); font-size:12px; text-align:center; margin-top:-4px; max-width:360px; line-height:1.6;"></p>
-    <p id="login-checking" style="display:none; font-family:'Cinzel',serif; font-size:12px; color:var(--sky); text-align:center; letter-spacing:0.1em;">Verifying…</p>
 
     <div class="card" onclick="guestLogin()">
       <div class="card-icon">👤</div>
@@ -1320,11 +1339,18 @@ html, body {
   </div>
 </div>
 
+<!-- VERIFYING OVERLAY (shown during OAuth check) -->
+<div id="screen-verifying" class="screen" style="justify-content:center; align-items:center; background:radial-gradient(ellipse at 50% 30%,rgba(0,191,255,0.12) 0%,transparent 65%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
+  <img src="https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png" alt="Go" style="width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(0,191,255,0.6));animation:verifyPulse 1.4s ease-in-out infinite;margin-bottom:28px;">
+  <div style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:0.25em;color:var(--sky);animation:verifyDots 1.4s steps(4,end) infinite;" id="verify-text">Verifying</div>
+</div>
+
 <!-- ============================================================
      SCREEN 1: HOMEPAGE
      ============================================================ -->
 <div id="screen-home" class="screen">
-  <div class="logo-wrap" style="cursor:pointer;" onclick="goTo('screen-login')">
+  <div class="site-label">SUPER PORTAL</div>
+  <div class="logo-wrap" style="cursor:pointer; margin-top:8px;" onclick="goTo('screen-login')">
     <img src="https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png" alt="Go">
     <div class="logo-title" style="display:flex; flex-direction:column; align-items:center; line-height:1.3;">
       <span>五</span>
@@ -1414,13 +1440,13 @@ html, body {
 <div id="screen-b1" class="screen">
   <div class="inner-header">
     <button class="back-btn" onclick="goTo('screen-home')">‹</button>
-    <span class="inner-title">Ajisai · 擇日 Date Selection</span>
+    <span class="inner-title">五 Go Main Menu</span>
   </div>
 
+  <div class="site-label" style="margin-bottom:12px;">YOUR DS PORTAL</div>
   <div class="logo-wrap" style="margin-bottom: 20px;">
     <img src="https://i.postimg.cc/4dtH6Ncp/Ds_iii_Ajisai_2.png" alt="Ajisai" style="width:60px;height:60px;">
     <div class="logo-title" style="font-size:16px;">DS (iii) Ajisai</div>
-    <div class="logo-sub">Your DS portal</div>
   </div>
 
   <div class="cards">
@@ -1501,7 +1527,7 @@ html, body {
 <div id="screen-haircut" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-b1')">‹</button>
-    <span class="inner-title">💇🏻 Haircut Advice</span>
+    <span class="inner-title">DS (iii) Ajisai</span>
   </div>
 
   <div class="haircut-box">
@@ -1512,7 +1538,7 @@ html, body {
 
   <div class="haircut-box" style="width:100%; max-width:420px;">
     <div class="haircut-box-label">Check Another Date</div>
-    <input type="date" class="haircut-date-input" id="haircut-date-picker">
+    <input type="date" class="haircut-date-input" id="haircut-date-picker" onchange="checkHaircutDate()">
     <button class="btn-primary" style="width:100%; height:46px; font-size:14px;" onclick="checkHaircutDate()">Lookup Date</button>
     <div id="haircut-custom-result" style="margin-top:12px; display:none;">
       <div style="font-size:13px; color:var(--text-dim); margin-bottom:6px;" id="haircut-custom-date-label"></div>
@@ -1539,25 +1565,36 @@ html, body {
 <div id="screen-b2" class="screen">
   <div class="inner-header">
     <button class="back-btn" onclick="goTo('screen-home')">‹</button>
-    <span class="inner-title">Divination (i) Tsutsuji</span>
+    <span class="inner-title">五 Go Main Menu</span>
   </div>
 
-  <div class="logo-wrap" style="margin-bottom: 20px;">
-    <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" alt="Tsutsuji" style="width:70px;height:70px; filter:drop-shadow(0 0 16px rgba(255,100,150,0.5));">
-    <div class="logo-title" style="font-size:16px;">Divination (i) Tsutsuji</div>
+  <!-- QMDJ (i) Botan section -->
+  <div class="logo-wrap" style="margin-bottom: 12px;">
+    <img src="https://i.postimg.cc/SRYGBpwy/QMDJ-i-Botan.png" alt="Botan" style="width:60px;height:60px; filter:drop-shadow(0 0 14px rgba(0,191,255,0.4));">
+    <div class="logo-title" style="font-size:16px;">QMDJ (i) Botan</div>
   </div>
 
   <div class="cards">
-    <!-- QMDJ Charts - moved to top, dead -->
     <div class="card grayed">
-      <div class="card-icon" style="width:48px; flex-shrink:0;"></div>
+      <div class="card-icon" style="width:48px;flex-shrink:0;"></div>
       <div class="card-text">
         <div class="card-title">奇門遁甲 Charts <span class="coming-soon-tag">Soon</span></div>
         <div class="card-desc">QMDJ Y/M/D/H charts</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
+  </div>
 
+  <!-- Divider -->
+  <div style="width:100%; max-width:420px; height:1px; background:rgba(255,255,255,0.1); margin:20px 0;"></div>
+
+  <!-- Divination (i) Tsutsuji section -->
+  <div class="logo-wrap" style="margin-bottom: 12px;">
+    <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" alt="Tsutsuji" style="width:60px;height:60px; filter:drop-shadow(0 0 14px rgba(255,100,150,0.5));">
+    <div class="logo-title" style="font-size:16px;">Divination (i) Tsutsuji</div>
+  </div>
+
+  <div class="cards">
     <div class="card" onclick="goTo('screen-dice')">
       <div class="card-icon"><img src="https://i.postimg.cc/2Sw1KPTF/2_d4.png" alt="Dice" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
@@ -1589,7 +1626,7 @@ html, body {
 <div id="screen-dice" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-b2')">‹</button>
-    <span class="inner-title">Divination (i) Tsutsuji</span>
+    <span class="inner-title">QMDJ &amp; Divinations</span>
   </div>
 
   <!-- SETUP SECTION -->
@@ -1597,8 +1634,8 @@ html, body {
 
     <div class="dice-question" style="text-align:center; font-size:14px; margin-bottom:4px;">How many dice?</div>
     <div class="dropdown-wrap">
-      <select id="dice-count">
-        <option value="1">1 die    🎲</option>
+      <select id="dice-count" style="font-family:'Courier New',monospace; font-size:14px;">
+        <option value="1">1 die     🎲</option>
         <option value="2">2 dice   🎲🎲</option>
         <option value="3">3 dice   🎲🎲🎲</option>
         <option value="4" selected>4 dice   🎲🎲🎲🎲</option>
@@ -1772,20 +1809,20 @@ html, body {
     </div>
 
     <div class="kw-stage">
-      <!-- Item 4: "Focus your mind on your question" centered ABOVE the box -->
       <p style="font-size:14px; font-style:italic; color:rgba(255,245,220,0.75); text-align:center; margin-bottom:18px; line-height:1.6;">Focus your mind on your question</p>
 
-      <!-- Item 4: Number shown after drawing, below the button -->
-      <button class="kw-btn" id="kw-btn" onclick="kwDraw()">Draw a lot 🪷</button>
+      <button class="kw-btn" id="kw-btn" onclick="kwDraw()">Draw a lot</button>
 
-      <!-- Number appears here AFTER drawing (item 4 + 5) -->
-      <div class="kw-number" id="kw-number" style="margin-top:24px;">—</div>
-      <div class="kw-fate" id="kw-fate"></div>
+      <!-- Fate shown ABOVE number after drawing -->
+      <div class="kw-fate" id="kw-fate" style="margin-top:20px; min-height:22px;"></div>
       <div class="kw-status" id="kw-status"></div>
 
-      <!-- Print result button - only visible after drawing (item 5) -->
-      <button id="kw-print-btn" onclick="kwShowResult()" style="display:none; margin-top:16px; font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.12em; color:var(--navy); background:var(--sky); border:none; border-radius:10px; padding:12px 28px; cursor:pointer; font-weight:700;">
-        <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;object-fit:contain;"> Print the Result
+      <!-- Number in lime yellow, more space from button -->
+      <div class="kw-number" id="kw-number" style="margin-top:8px; color:#ccff00; text-shadow:0 0 20px rgba(204,255,0,0.6);">—</div>
+
+      <!-- Print result button -->
+      <button id="kw-print-btn" onclick="kwShowResult()" style="display:none; margin-top:20px; font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.12em; color:var(--navy); background:var(--sky); border:none; border-radius:10px; padding:12px 28px; cursor:pointer; font-weight:700;">
+        Print the Result
       </button>
     </div>
 
@@ -1811,32 +1848,42 @@ html, body {
       <!-- Answer box -->
       <div style="width:100%; margin-bottom:20px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:20px 22px; text-align:left;">
         <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,245,220,0.5); margin-bottom:12px;">The answer to your question:</div>
-        <div id="kw-result-question" style="font-family:'Beau Rivage',cursive; font-size:22px; font-style:italic; color:rgba(255,245,220,0.85); line-height:1.6; margin-bottom:14px;"></div>
+        <div id="kw-result-question" style="font-family:'Beau Rivage',cursive; font-size:22px; font-style:italic; color:#00BFFF; line-height:1.6; margin-bottom:14px;"></div>
         <div style="font-family:'Cinzel',serif; font-size:12px; color:rgba(255,245,220,0.5); margin-bottom:6px;">is:</div>
-        <!-- Item 7: "Lot" normal, number 2x bold lime yellow -->
-        <div id="kw-result-lot-label" style="font-family:'Cormorant Garamond',serif; font-weight:300; color:#c8a96e; line-height:1;">
-          <span style="font-size:28px;">Lot </span><span id="kw-result-lot-num" style="font-size:56px; font-weight:700; color:#ccff00; line-height:1;"></span>
+        <div id="kw-result-lot-label" style="font-family:'Cormorant Garamond',serif; font-weight:300; color:#c8a96e; line-height:1.2;">
+          <span style="font-size:28px;">Lot</span><span style="display:inline-block; width:16px;"></span><span id="kw-result-lot-num" style="font-size:56px; font-weight:700; color:#ccff00; line-height:1;"></span>
         </div>
       </div>
 
-      <!-- Item 10: See what Lot says button with flower -->
-      <a id="kw-lot-link" href="#" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px; background:rgba(255,245,220,0.12); border:1px solid rgba(255,245,220,0.3); border-radius:10px; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:rgba(255,245,220,0.8); text-decoration:none; margin-bottom:10px; cursor:pointer;">
+      <!-- See what Lot says button -->
+      <a id="kw-lot-link" href="#" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px; background:rgba(255,245,220,0.12); border:1px solid rgba(255,245,220,0.3); border-radius:10px; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:rgba(255,245,220,0.8); text-decoration:none; margin-bottom:16px; cursor:pointer;">
         <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" style="width:20px;height:20px;object-fit:contain;">
         <span id="kw-lot-link-text">See what this Lot says ↗</span>
       </a>
 
-      <!-- Copy button with flower -->
-      <button onclick="kwCopyResult()" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:12px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:white; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; border-radius:10px; cursor:pointer; margin-bottom:6px; backdrop-filter:blur(4px);">
-        <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" style="width:18px;height:18px;object-fit:contain;">
-        📋 Copy Result
-      </button>
-      <span id="kw-result-copy-confirm" style="font-size:12px; color:rgba(255,255,255,0.6); font-style:italic; opacity:0; transition:opacity 0.3s; display:block; margin-bottom:20px;">Copied!</span>
+      <!-- Section divider -->
+      <div style="width:100%; height:1px; background:rgba(255,255,255,0.15); margin-bottom:16px;"></div>
 
-      <!-- Item 11: "Ask another question" button with alt logo below -->
-      <button onclick="kwAskAnother()" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:13px; background:rgba(255,245,220,0.08); border:1px solid rgba(255,245,220,0.2); color:rgba(255,245,220,0.7); font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.12em; border-radius:10px; cursor:pointer; margin-bottom:20px;">
-        <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" style="width:18px;height:18px;object-fit:contain;">
+      <!-- Two copy buttons side by side -->
+      <div style="display:flex; gap:10px; width:100%; margin-bottom:6px;">
+        <button onclick="kwCopyResultImage()" style="flex:1; padding:12px 8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:white; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; border-radius:10px; cursor:pointer; backdrop-filter:blur(4px);">
+          Copy Result 📷
+        </button>
+        <button onclick="kwCopyResult()" style="flex:1; padding:12px 8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:white; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; border-radius:10px; cursor:pointer; backdrop-filter:blur(4px);">
+          Copy Result 📄
+        </button>
+      </div>
+      <span id="kw-result-copy-confirm" style="font-size:12px; color:rgba(255,255,255,0.6); font-style:italic; opacity:0; transition:opacity 0.3s; display:block; margin-bottom:4px; text-align:center;">Copied!</span>
+
+      <!-- Section divider -->
+      <div style="width:100%; height:1px; background:rgba(255,255,255,0.15); margin:12px 0 16px;"></div>
+
+      <!-- Ask another question -->
+      <button onclick="kwAskAnother()" style="width:100%; padding:13px; background:rgba(255,245,220,0.08); border:1px solid rgba(255,245,220,0.2); color:rgba(255,245,220,0.7); font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.12em; border-radius:10px; cursor:pointer; margin-bottom:10px;">
         Ask Another Question
       </button>
+      <div style="font-size:12px; color:#ff6666; text-align:center; margin-bottom:20px; font-style:italic;">Do not ask the same question again.</div>
+
       <img src="https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png" alt="Tsutsuji alt logo" style="width:52px; height:52px; object-fit:contain; opacity:0.7; margin-bottom:12px;">
     </div>
   </div>
@@ -1853,7 +1900,7 @@ html, body {
 <div id="screen-b3" class="screen">
   <div class="inner-header">
     <button class="back-btn" onclick="goTo('screen-home')">‹</button>
-    <span class="inner-title">八字 ज्योतिष Life Study</span>
+    <span class="inner-title">五 Go Main Menu</span>
   </div>
 
   <div class="logo-wrap" style="margin-bottom: 20px;">
@@ -1905,7 +1952,7 @@ html, body {
 <div id="screen-2hs" class="screen" style="background:radial-gradient(ellipse at 50% 30%,rgba(0,191,255,0.12) 0%,transparent 65%),linear-gradient(180deg,#000073 0%,#00004a 100%); justify-content:center;">
   <div class="inner-header" style="max-width:420px; width:100%; position:absolute; top:0;">
     <button class="back-btn" onclick="goTo('screen-b3')">‹</button>
-    <span class="inner-title">2Hs Portal</span>
+    <span class="inner-title">Individual Life Study</span>
   </div>
   <div style="display:flex; flex-direction:column; align-items:center; padding-top:80px; width:100%;">
     <div style="display:flex; flex-direction:column; align-items:center; gap:6px; margin-bottom:24px;">
@@ -1955,7 +2002,7 @@ html, body {
 <div id="screen-2hs-quick" class="screen" style="background:radial-gradient(ellipse at 50% 0%,rgba(0,191,255,0.08) 0%,transparent 60%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
   <div class="inner-header" style="max-width:520px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-2hs')">‹</button>
-    <span class="inner-title">QUICKLY LOCATE YOUR 2Hs</span>
+    <span class="inner-title">2Hs Portal</span>
   </div>
   <div style="width:100%; max-width:480px;">
     <div style="text-align:center; margin-bottom:40px;">
@@ -1985,10 +2032,11 @@ html, body {
 <!-- ============================================================
      SCREEN B3.2b: 2Hs FIND BY DOB
      ============================================================ -->
+<!-- INPUT SCREEN -->
 <div id="screen-2hs-find" class="screen" style="background:radial-gradient(ellipse at 50% 0%,rgba(0,191,255,0.08) 0%,transparent 60%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
   <div class="inner-header" style="max-width:520px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-2hs')">‹</button>
-    <span class="inner-title">FIND YOUR 2Hs</span>
+    <span class="inner-title">2Hs Portal</span>
   </div>
   <div style="width:100%; max-width:480px;">
     <div style="text-align:center; margin-bottom:20px;"><img src="https://i.postimg.cc/5tVbTphW/MOTH-orchid-pink-web-email.png" style="width:70px; height:70px; object-fit:contain;"></div>
@@ -2013,10 +2061,10 @@ html, body {
       <option value="04:00">03:00 – 05:00 — 🐅 寅 (Tiger, Dần)</option>
       <option value="06:00">05:00 – 07:00 — 🐇 卯 (Rabbit, Mão)</option>
       <option value="08:00">07:00 – 09:00 — 🐉 辰 (Dragon, Thìn)</option>
-      <option value="10:00">09:00 – 11:00 — 🐍 巳 (Snake, Tị)</option>
+      <option value="10:00">09:00 – 11:00 — 🐍 巣 (Snake, Tị)</option>
       <option value="12:00">11:00 – 13:00 — 🐴 午 (Horse, Ngọ)</option>
       <option value="14:00">13:00 – 15:00 — 🐏 未 (Goat, Mùi)</option>
-      <option value="16:00">15:00 – 17:00 — 🐵 申 (Monkey, Thân)</option>
+      <option value="16:00">15:00 – 17:00 — 🐒 申 (Monkey, Thân)</option>
       <option value="18:00">17:00 – 19:00 — 🐓 酉 (Rooster, Dậu)</option>
       <option value="20:00">19:00 – 21:00 — 🐕 戌 (Dog, Tuất)</option>
       <option value="22:00">21:00 – 23:00 — 🐖 亥 (Pig, Hợi)</option>
@@ -2024,60 +2072,72 @@ html, body {
     </select>
     <button id="hs-gen-btn" style="width:75%; height:56px; border-radius:12px; border:none; background:var(--sky); color:var(--navy); font-family:'Cinzel',serif; font-size:16px; font-weight:700; letter-spacing:0.1em; cursor:pointer; display:block; margin:0 auto 10px;" onclick="hsCalculateDOB()">Generate</button>
     <div id="hs-dob-error" style="color:#ff8a80; font-size:13px; text-align:center; display:none; margin-bottom:12px;">Please fill in all fields.</div>
-    <div id="hs-dob-result" style="display:none; flex-direction:column; align-items:center; margin-top:28px; padding-top:28px; border-top:1px solid rgba(255,255,255,0.12);">
-      <div style="text-align:center; margin-bottom:12px;"><img src="https://i.postimg.cc/hvw4ZmWx/MOTH-orchid-WHITE-web-email.png" style="width:80px; height:80px; object-fit:contain;"></div>
-      <div id="hs-dob-meta" style="font-size:13px; color:rgba(255,255,255,0.4); text-align:center; margin-bottom:20px;"></div>
-      <div style="font-family:'Cinzel',serif; font-size:14px; letter-spacing:0.15em; color:#fff; text-transform:uppercase; text-align:center; margin:40px 0;">Your Bazi:</div>
-      <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:24px; width:100%;">
-        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 6px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
-          <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:8px; letter-spacing:0.05em;">年 Year</div>
-          <div style="font-size:32px; font-weight:700; line-height:1; margin-bottom:8px;" id="hs-r-year"></div>
-          <div style="font-size:11px; color:rgba(255,255,255,0.5); font-style:italic;" id="hs-v-year"></div>
-        </div>
-        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 6px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
-          <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:8px;">月 Month</div>
-          <div style="font-size:32px; font-weight:700; line-height:1; margin-bottom:8px;" id="hs-r-month"></div>
-          <div style="font-size:11px; color:rgba(255,255,255,0.5); font-style:italic;" id="hs-v-month"></div>
-        </div>
-        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 6px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
-          <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:8px;">日 Day</div>
-          <div style="font-size:32px; font-weight:700; line-height:1; margin-bottom:8px;" id="hs-r-day"></div>
-          <div style="font-size:11px; color:rgba(255,255,255,0.5); font-style:italic;" id="hs-v-day"></div>
-        </div>
-        <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 6px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
-          <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:8px;">時 Hour</div>
-          <div style="font-size:32px; font-weight:700; line-height:1; margin-bottom:8px;" id="hs-r-hour"></div>
-          <div style="font-size:11px; color:rgba(255,255,255,0.5); font-style:italic;" id="hs-v-hour"></div>
-        </div>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div id="screen-2hs-result" class="screen" style="background:radial-gradient(ellipse at 50% 0%,rgba(0,191,255,0.08) 0%,transparent 60%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
+  <div class="inner-header" style="max-width:520px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-2hs-find')">‹</button>
+    <span class="inner-title">Find Your 2Hs</span>
+  </div>
+  <div style="width:100%; max-width:480px; display:flex; flex-direction:column; align-items:center;">
+    <!-- White orchid header -->
+    <img src="https://i.postimg.cc/hvw4ZmWx/MOTH-orchid-WHITE-web-email.png" style="width:80px; height:80px; object-fit:contain; margin-bottom:12px;">
+    <div id="hs-dob-meta" style="font-size:13px; color:rgba(255,255,255,0.4); text-align:center; margin-bottom:20px;"></div>
+    <div style="font-family:'Cinzel',serif; font-size:14px; letter-spacing:0.15em; color:#fff; text-transform:uppercase; text-align:center; margin:32px 0 16px;">Your Bazi:</div>
+    <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:24px; width:100%;">
+      <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 6px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:8px; letter-spacing:0.05em;">年 Year</div>
+        <div style="font-size:32px; font-weight:700; line-height:1; margin-bottom:8px;" id="hs-r-year"></div>
+        <div style="font-size:11px; color:rgba(255,255,255,0.5); font-style:italic;" id="hs-v-year"></div>
       </div>
-      <div style="font-family:'Cinzel',serif; font-size:14px; letter-spacing:0.15em; color:#fff; text-transform:uppercase; text-align:center; margin-top:40px; margin-bottom:8px;">Your 2Hs ↓</div>
-      <div style="font-size:12px; color:#ff0000; text-align:center; margin:7px 0 28px;">⚠️ Accessing any of the 100 2Hs sites—except No. 3 (free demo)—requires a prior subscription.</div>
-      <a id="hs-dob-btn-ran" class="hs-btn" target="_blank">
-        <img class="hs-btn-orchid" src="https://i.postimg.cc/MZsnjcLC/Blue-Orchid-Web-Email.png">
-        <div class="hs-btn-body"><div class="hs-btn-num" id="hs-dob-num-ran"></div><div class="hs-btn-char" id="hs-dob-char-ran"></div></div>
-      </a>
-      <span class="hs-btn-hint">Tap to open the 2Hs site ↗</span>
-      <!-- 4Cs Ran -->
-      <div id="fcs-ran-wrap" style="display:none; width:100%; max-width:520px; margin-top:20px;">
-        <div class="fcs-section-label">4Cs — Bazi (ii) Ran</div>
-        <div id="fcs-ran-list"></div>
-        <div class="fcs-section-label" style="margin-top:20px;">Structure — Bazi (ii) Ran</div>
-        <div id="str-ran-wrap"></div>
+      <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 6px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:8px;">月 Month</div>
+        <div style="font-size:32px; font-weight:700; line-height:1; margin-bottom:8px;" id="hs-r-month"></div>
+        <div style="font-size:11px; color:rgba(255,255,255,0.5); font-style:italic;" id="hs-v-month"></div>
       </div>
-      <a id="hs-dob-btn-yuri" class="hs-btn" target="_blank" style="margin-top:32px;">
-        <img class="hs-btn-orchid" src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png">
-        <div class="hs-btn-body"><div class="hs-btn-num" id="hs-dob-num-yuri"></div><div class="hs-btn-char" id="hs-dob-char-yuri"></div></div>
-      </a>
-      <span class="hs-btn-hint">Tap to open the 2Hs site ↗</span>
-      <!-- 4Cs Yuri -->
-      <div id="fcs-yuri-wrap" style="display:none; width:100%; max-width:520px; margin-top:20px;">
-        <div class="fcs-section-label">4Cs — Bazi (iii) Yuri</div>
-        <div id="fcs-yuri-list"></div>
-        <div class="fcs-section-label" style="margin-top:20px;">Structure — Bazi (iii) Yuri</div>
-        <div id="str-yuri-wrap"></div>
+      <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 6px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:8px;">日 Day</div>
+        <div style="font-size:32px; font-weight:700; line-height:1; margin-bottom:8px;" id="hs-r-day"></div>
+        <div style="font-size:11px; color:rgba(255,255,255,0.5); font-style:italic;" id="hs-v-day"></div>
       </div>
-      <button class="start-over-btn" onclick="hsResetDOB()">↺ START OVER</button>
+      <div style="background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 6px; text-align:center; border:1px solid rgba(255,255,255,0.1);">
+        <div style="font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:8px;">時 Hour</div>
+        <div style="font-size:32px; font-weight:700; line-height:1; margin-bottom:8px;" id="hs-r-hour"></div>
+        <div style="font-size:11px; color:rgba(255,255,255,0.5); font-style:italic;" id="hs-v-hour"></div>
+      </div>
     </div>
+    <div style="font-family:'Cinzel',serif; font-size:14px; letter-spacing:0.15em; color:#fff; text-transform:uppercase; text-align:center; margin-top:32px; margin-bottom:8px;">Your 2Hs ↓</div>
+    <div style="font-size:12px; color:#ff0000; text-align:center; margin:7px 0 28px;">⚠️ Accessing any of the 100 2Hs sites—except No. 3 (free demo)—requires a prior subscription.</div>
+    <a id="hs-dob-btn-ran" class="hs-btn" target="_blank">
+      <img class="hs-btn-orchid" src="https://i.postimg.cc/MZsnjcLC/Blue-Orchid-Web-Email.png">
+      <div class="hs-btn-body"><div class="hs-btn-num" id="hs-dob-num-ran"></div><div class="hs-btn-char" id="hs-dob-char-ran"></div></div>
+    </a>
+    <span class="hs-btn-hint">Tap to open the 2Hs site ↗</span>
+    <div id="fcs-ran-wrap" style="display:none; width:100%; max-width:520px; margin-top:20px;">
+      <div class="fcs-section-label">4Cs — Bazi (ii) Ran</div>
+      <div id="fcs-ran-list"></div>
+      <div class="fcs-section-label" style="margin-top:20px;">Structure — Bazi (ii) Ran</div>
+      <div id="str-ran-wrap"></div>
+    </div>
+    <a id="hs-dob-btn-yuri" class="hs-btn" target="_blank" style="margin-top:32px;">
+      <img class="hs-btn-orchid" src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png">
+      <div class="hs-btn-body"><div class="hs-btn-num" id="hs-dob-num-yuri"></div><div class="hs-btn-char" id="hs-dob-char-yuri"></div></div>
+    </a>
+    <span class="hs-btn-hint">Tap to open the 2Hs site ↗</span>
+    <div id="fcs-yuri-wrap" style="display:none; width:100%; max-width:520px; margin-top:20px;">
+      <div class="fcs-section-label">4Cs — Bazi (iii) Yuri</div>
+      <div id="fcs-yuri-list"></div>
+      <div class="fcs-section-label" style="margin-top:20px;">Structure — Bazi (iii) Yuri</div>
+      <div id="str-yuri-wrap"></div>
+    </div>
+    <!-- Copy buttons row -->
+    <div style="display:flex; gap:10px; width:100%; margin-top:28px;">
+      <button onclick="hs2HsCopyImage()" style="flex:1; padding:12px 8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:white; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; border-radius:10px; cursor:pointer;">Copy Result 📷</button>
+      <button onclick="hs2HsCopyText()" style="flex:1; padding:12px 8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:white; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; border-radius:10px; cursor:pointer;">Copy Result 📄</button>
+    </div>
+    <button class="start-over-btn" onclick="hsResetDOB()" style="margin-top:16px;">↺ START OVER</button>
   </div>
 </div>
 
@@ -2087,7 +2147,7 @@ html, body {
 <div id="screen-2hs-dir" class="screen">
   <div class="inner-header" style="max-width:520px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-2hs')">‹</button>
-    <span class="inner-title">DIRECTORY</span>
+    <span class="inner-title">2Hs Portal</span>
   </div>
   <div style="text-align:center; margin-bottom:24px;"><img src="https://i.postimg.cc/hvw4ZmWx/MOTH-orchid-WHITE-web-email.png" style="width:70px; height:70px; object-fit:contain;"></div>
   <div style="font-size:12px; color:#ff0000; text-align:center; margin-bottom:28px; width:100%; max-width:400px;">⚠️ Accessing any site—except No. 3 (free demo)—requires a prior subscription.</div>
@@ -2115,7 +2175,7 @@ html, body {
 <div id="screen-2hs-dir-ran" class="screen">
   <div class="inner-header" style="max-width:520px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-2hs-dir')">‹</button>
-    <span class="inner-title">BAZI (II) RAN — 100 2Hs</span>
+    <span class="inner-title">2Hs Directory</span>
   </div>
   <input type="number" min="1" max="100" placeholder="Filter by number..." oninput="hsFilterDir('hs-dir-ran-grid',this.value)" style="width:100%; max-width:520px; padding:14px 18px; font-size:16px; font-family:'Cinzel',serif; border-radius:10px; border:2px solid rgba(0,191,255,0.3); background:rgba(0,0,0,0.3); color:#fff; outline:none; margin-bottom:20px; -webkit-appearance:none;">
   <div id="hs-dir-ran-grid" style="width:100%; max-width:520px; display:flex; flex-direction:column; gap:16px; padding-bottom:20px;"></div>
@@ -2125,7 +2185,7 @@ html, body {
 <div id="screen-2hs-dir-yuri" class="screen">
   <div class="inner-header" style="max-width:520px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-2hs-dir')">‹</button>
-    <span class="inner-title">BAZI (III) YURI — 100 2Hs</span>
+    <span class="inner-title">2Hs Directory</span>
   </div>
   <input type="number" min="1" max="100" placeholder="Filter by number..." oninput="hsFilterDir('hs-dir-yuri-grid',this.value)" style="width:100%; max-width:520px; padding:14px 18px; font-size:16px; font-family:'Cinzel',serif; border-radius:10px; border:2px solid rgba(0,191,255,0.3); background:rgba(0,0,0,0.3); color:#fff; outline:none; margin-bottom:20px; -webkit-appearance:none;">
   <div id="hs-dir-yuri-grid" style="width:100%; max-width:520px; display:flex; flex-direction:column; gap:16px; padding-bottom:20px;"></div>
@@ -2137,7 +2197,7 @@ html, body {
 <div id="screen-vedic" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-b3')">‹</button>
-    <span class="inner-title">ज्योतिष Vedic Astrology</span>
+    <span class="inner-title">Individual Life Study</span>
   </div>
 
   <div class="logo-wrap" style="margin-bottom: 20px;">
@@ -2177,7 +2237,7 @@ html, body {
 <div id="screen-vedic-charts" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-vedic')">‹</button>
-    <span class="inner-title">Divisional Chart Data</span>
+    <span class="inner-title">VA (i) Fuki</span>
   </div>
 
   <div style="width:100%; max-width:420px;">
@@ -2187,28 +2247,35 @@ html, body {
       <div class="user-badge" id="vedic-user-badge"></div>
     </div>
 
-    <!-- Loading state -->
     <div id="vedic-loading" style="text-align:center; padding:30px 0; color:var(--text-dim); font-style:italic; font-size:14px;">Loading your charts…</div>
 
-    <!-- Not subscribed -->
     <div id="vedic-not-subscribed" style="display:none; text-align:center; padding:20px 0;">
       <p class="red-note" style="margin-bottom:12px;">You haven't subscribed to this service yet.</p>
       <p style="color:var(--text-mid); font-size:13px; line-height:1.7;">Please contact your administrator to subscribe.</p>
     </div>
 
-    <!-- Chart list -->
     <div id="vedic-chart-cards" class="cards" style="display:none;"></div>
-
-    <!-- Data panel -->
-    <div id="vedic-data-panel" style="display:none; margin-top:20px;">
-      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:10px;">
-        <div style="font-family:'Cinzel',serif; font-size:15px; font-weight:700; color:var(--sky);" id="vedic-data-title"></div>
-        <button id="vedic-copy-btn" onclick="vedicCopyData()" style="background:var(--sky); color:var(--navy); border:none; border-radius:10px; padding:10px 20px; font-family:'Cinzel',serif; font-size:13px; font-weight:700; cursor:pointer;">Copy All</button>
-      </div>
-      <div id="vedic-data-box" style="background:rgba(255,255,255,0.05); border:1px solid rgba(0,191,255,0.15); border-radius:12px; padding:16px; font-family:'Courier New',monospace; font-size:13px; line-height:2; color:rgba(255,255,255,0.85); white-space:pre-wrap; word-break:break-word;"></div>
-    </div>
   </div>
 
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
+    <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
+  </div>
+</div>
+
+<!-- Vedic chart data detail screen -->
+<div id="screen-vedic-data" class="screen">
+  <div class="inner-header" style="max-width:420px; width:100%;">
+    <button class="back-btn" onclick="goTo('screen-vedic-charts')">‹</button>
+    <span class="inner-title">VA (i) Fuki</span>
+  </div>
+  <div style="width:100%; max-width:420px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; gap:10px;">
+      <div style="font-family:'Cinzel',serif; font-size:15px; font-weight:700; color:var(--sky);" id="vedic-data-title"></div>
+      <button id="vedic-copy-btn" onclick="vedicCopyData()" style="background:var(--sky); color:var(--navy); border:none; border-radius:10px; padding:10px 20px; font-family:'Cinzel',serif; font-size:13px; font-weight:700; cursor:pointer;">Copy All</button>
+    </div>
+    <div id="vedic-data-box" style="background:rgba(255,255,255,0.05); border:1px solid rgba(0,191,255,0.15); border-radius:12px; padding:16px; font-family:'Courier New',monospace; font-size:13px; line-height:2; color:rgba(255,255,255,0.85); white-space:pre-wrap; word-break:break-word;"></div>
+  </div>
   <div class="portal-footer">
     <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
     <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
@@ -2221,17 +2288,44 @@ html, body {
 <div id="screen-b4" class="screen">
   <div class="inner-header">
     <button class="back-btn" onclick="goTo('screen-home')">‹</button>
-    <span class="inner-title">曼珠沙華 Fengshui</span>
+    <span class="inner-title">五 Go Main Menu</span>
   </div>
 
+  <div class="site-label" style="margin-bottom:12px;">YOUR FENGSHUI PORTAL</div>
   <div class="logo-wrap" style="margin-bottom: 20px;">
     <img src="https://i.postimg.cc/13SDRFLD/FS-i-Manju.png" alt="FS" style="width:60px;height:60px;">
     <div class="logo-title" style="font-size:16px;">風水 Fengshui</div>
-    <div class="logo-sub">Everything about Fengshui can be found here</div>
   </div>
 
   <div class="cards">
-    <!-- FS (i) Manju — external -->
+    <!-- TOOLS FIRST -->
+    <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(0,191,255,0.6); padding:6px 0 8px; width:100%; max-width:420px;">🛠️ Your Tools</div>
+    <p class="fs-subscriber-note" style="display:none; font-size:12px; color:rgba(255,150,150,0.8); font-style:italic; margin-bottom:10px; padding:8px 12px; background:rgba(255,0,0,0.08); border:1px solid rgba(255,0,0,0.2); border-radius:8px;">For subscribers of FS (ii) Shage only</p>
+
+    <div class="card fs-tool-gated" onclick="goTo('screen-facing-ruler')">
+      <div class="card-icon"><img src="https://i.postimg.cc/VsSqKmq5/FS-ii-Shage.png" alt="Ruler"></div>
+      <div class="card-text">
+        <div class="card-title">🧭 House Facing Ruler</div>
+        <div class="card-desc">FINLAY SK · Measure facing direction on live map</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card fs-tool-gated" onclick="goTo('screen-flying-star')">
+      <div class="card-icon" style="width:48px;flex-shrink:0;"></div>
+      <div class="card-text">
+        <div class="card-title">Flying Star Charts</div>
+        <div class="card-desc">All 飛星 fengshui charts lookup</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <!-- Section divider -->
+    <div style="width:100%; height:1px; background:rgba(255,255,255,0.1); margin:4px 0;"></div>
+
+    <!-- SITES -->
+    <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(0,191,255,0.6); padding:6px 0 8px; width:100%; max-width:420px;">🌐 Sites:</div>
+
     <div class="card external" onclick="window.open('https://sites.google.com/view/fsimanju/', '_blank')">
       <div class="card-icon"><img src="https://i.postimg.cc/13SDRFLD/FS-i-Manju.png" alt="Manju"></div>
       <div class="card-text">
@@ -2242,7 +2336,6 @@ html, body {
       <div class="card-arrow">›</div>
     </div>
 
-    <!-- FS (ii) Shage — external -->
     <div class="card external" onclick="window.open('https://sites.google.com/view/fsiishage/', '_blank')">
       <div class="card-icon"><img src="https://i.postimg.cc/VsSqKmq5/FS-ii-Shage.png" alt="Shage"></div>
       <div class="card-text">
@@ -2253,31 +2346,6 @@ html, body {
       <div class="card-arrow">›</div>
     </div>
 
-    <!-- TOOLS — always visible -->
-    <div class="tools-section">
-      <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(0,191,255,0.6); padding: 10px 0 8px; border-top: 1px solid rgba(255,255,255,0.08);">🛠️ Your Tools</div>
-      <p class="fs-subscriber-note" style="display:none; font-size:12px; color:rgba(255,150,150,0.8); font-style:italic; margin-bottom:10px; padding:8px 12px; background:rgba(255,0,0,0.08); border:1px solid rgba(255,0,0,0.2); border-radius:8px;">For subscribers of FS (ii) Shage only</p>
-      <div style="display:flex; flex-direction:column; gap:14px;">
-        <div class="card fs-tool-gated" onclick="goTo('screen-facing-ruler')">
-          <div class="card-icon"><img src="https://i.postimg.cc/VsSqKmq5/FS-ii-Shage.png" alt="Ruler"></div>
-          <div class="card-text">
-            <div class="card-title">🧭 House Facing Ruler</div>
-            <div class="card-desc">FINLAY SK · Measure facing direction on live map</div>
-          </div>
-          <div class="card-arrow">›</div>
-        </div>
-        <div class="card fs-tool-gated" onclick="goTo('screen-flying-star')">
-          <div class="card-icon">飛</div>
-          <div class="card-text">
-            <div class="card-title">Flying Star Charts</div>
-            <div class="card-desc">All 飛星 fengshui charts lookup</div>
-          </div>
-          <div class="card-arrow">›</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- FS (v) Sokei — external -->
     <div class="card external" onclick="window.open('https://sites.google.com/view/fsvsokei/', '_blank')">
       <div class="card-icon"><img src="https://i.postimg.cc/9M0MFXmG/FS-v-Sokei.png" alt="Sokei"></div>
       <div class="card-text">
@@ -2301,7 +2369,7 @@ html, body {
 <div id="screen-facing-ruler" class="screen" style="padding-bottom: 80px;">
   <div class="inner-header" style="max-width:700px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-b4')">‹</button>
-    <span class="inner-title">🧭 House Facing Ruler</span>
+    <span class="inner-title">Fengshui Menu</span>
   </div>
 
   <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
@@ -2431,7 +2499,7 @@ html, body {
 <div id="screen-flying-star" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-b4')">‹</button>
-    <span class="inner-title">飛 Flying Star Charts</span>
+    <span class="inner-title">Fengshui Menu</span>
   </div>
 
   <div style="text-align:center; margin-bottom:24px;">
@@ -2565,9 +2633,10 @@ function checkOAuthReturn() {
 }
 
 async function validateWithToken(token) {
-  // Show checking state on login screen
-  const checking = document.getElementById('login-checking');
-  if (checking) checking.style.display = 'block';
+  // Show full-screen verifying state
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const verifyScreen = document.getElementById('screen-verifying');
+  if (verifyScreen) verifyScreen.classList.add('active');
 
   try {
     const infoResp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
@@ -2577,7 +2646,7 @@ async function validateWithToken(token) {
     const email = userInfo.email;
 
     if (!email) {
-      if (checking) checking.style.display = 'none';
+      goTo('screen-login');
       showLoginError('Could not get your email from Google. Please try again.');
       return;
     }
@@ -2602,11 +2671,11 @@ async function validateWithToken(token) {
       setHomeState();
       goTo('screen-home');
     } else {
-      if (checking) checking.style.display = 'none';
+      goTo('screen-login');
       showLoginError('Your account (' + email + ') is not registered. Please contact your administrator.');
     }
   } catch(e) {
-    if (checking) checking.style.display = 'none';
+    goTo('screen-login');
     showLoginError('Connection error. Check your internet and try again.');
   }
 }
@@ -3213,17 +3282,26 @@ function copyDiceResult() {
   const rows = document.getElementById('dice-result-rows');
   const now = new Date();
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const dt = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear() + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-  let text = 'Divination (i) Tsutsuji — Dice Roll\n' + dt + '\n\n';
+  const dt = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear()
+    + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  let text = 'Divination (i) Tsutsuji\nDice Roll\n' + dt + '\n\n';
   let idx = 1;
   rows.querySelectorAll('.dice-result-row').forEach(r => {
-    const spans = r.querySelectorAll('span');
-    let rep = '', val = '';
-    spans.forEach(s => {
-      if (s.style.fontFamily && s.style.fontFamily.includes('Beau Rivage')) rep = s.textContent.trim();
-      if (s.style.color === 'rgb(204, 255, 0)') val = s.textContent.trim();
+    let rep = '', val = '', marker = '';
+    // Get rep from Beau Rivage span
+    r.querySelectorAll('span').forEach(s => {
+      const ff = s.style.fontFamily || '';
+      const col = s.style.color || '';
+      if (ff.includes('Beau Rivage')) rep = s.textContent.trim();
+      if (col.includes('204, 255, 0') || col === '#ccff00') val = s.textContent.trim();
     });
-    text += idx + ' \u00b7 ' + rep + ' \u2192 ' + val + '\n';
+    // Also check for emoji marker spans
+    r.querySelectorAll('span').forEach(s => {
+      const t = s.textContent.trim();
+      if (t === '✨' || t === '⭐' || t === '❌') marker = t;
+    });
+    const markerStr = marker ? marker + ' ' : '';
+    text += idx + ' · ' + rep + ' → ' + markerStr + val + '\n';
     idx++;
   });
   navigator.clipboard.writeText(text.trim());
@@ -3324,7 +3402,7 @@ async function kwDraw() {
     kwResultDateTime = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear()
       + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
 
-    const fates = { crypto: 'Hardware entropy has spoken', 'random-org': 'The atmosphere has chosen', quantum: 'Quantum chance has decided' };
+    const fates = { crypto: 'Hardware entropy has decided:', 'random-org': 'The atmosphere has chosen:', quantum: 'Quantum chance has decided:' };
     if (fateEl) fateEl.textContent = fates[sourceUsed];
     if (statusEl && !statusEl.textContent.includes('unreachable')) statusEl.textContent = '';
 
@@ -3382,12 +3460,85 @@ function kwShowResult() {
   window.scrollTo(0, 0);
 }
 
-// Item 16: rich copy format
+// Image copy — draws result to canvas and triggers download
+function kwCopyResultImage() {
+  if (!kwLastNumber) return;
+  const rawQ = (document.getElementById('kw-question') || {}).value || '';
+  const smartQ = kwSmartCapitalise(rawQ);
+  const question = smartQ || '(No question entered)';
+  const lotNum = kwLastNumber;
+  const dt = kwResultDateTime;
+  const W = 540, H = 760;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#000073'); bg.addColorStop(1, '#00004a');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+  const glow = ctx.createRadialGradient(W/2, 80, 0, W/2, 80, 280);
+  glow.addColorStop(0, 'rgba(0,191,255,0.18)'); glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+  const img = new Image(); img.crossOrigin = 'anonymous';
+  img.onload = function() {
+    const iH = 140, iW = img.width * (iH / img.height);
+    ctx.drawImage(img, W/2 - iW/2, 30, iW, iH);
+    ctx.fillStyle = '#f5f0e8'; ctx.font = 'bold 17px serif'; ctx.textAlign = 'center';
+    ctx.fillText('Divination (i) Tsutsuji  ·  \u89c0\u97f3\u9748\u7c64', W/2, 200);
+    ctx.fillStyle = 'rgba(255,245,220,0.5)'; ctx.font = '13px serif';
+    ctx.fillText(dt, W/2, 224);
+    const bx = 40, by = 248, bw = W - 80, bh = 284;
+    ctx.fillStyle = 'rgba(255,255,255,0.07)';
+    kwRoundRect(ctx, bx, by, bw, bh, 16); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1;
+    kwRoundRect(ctx, bx, by, bw, bh, 16); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,245,220,0.4)'; ctx.font = '11px serif'; ctx.textAlign = 'left';
+    ctx.fillText('THE ANSWER TO YOUR QUESTION:', bx+20, by+32);
+    ctx.fillStyle = '#00BFFF'; ctx.font = 'italic 19px serif';
+    kwWrapText(ctx, question, bx+20, by+62, bw-40, 27);
+    ctx.fillStyle = 'rgba(255,245,220,0.4)'; ctx.font = '12px serif';
+    ctx.fillText('is:', bx+20, by+192);
+    ctx.fillStyle = '#c8a96e'; ctx.font = '28px serif';
+    ctx.fillText('Lot', bx+20, by+250);
+    ctx.fillStyle = '#ccff00'; ctx.font = 'bold 64px serif';
+    ctx.fillText(String(lotNum), bx+90, by+255);
+    ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.font = '11px serif'; ctx.textAlign = 'center';
+    ctx.fillText('\u00a9 2026 \u00b7 FS (ii) Shage \u00b7 All rights reserved', W/2, H-20);
+    const link = document.createElement('a');
+    link.download = 'kwanyin-lot-' + lotNum + '.png';
+    link.href = canvas.toDataURL('image/png'); link.click();
+    const el = document.getElementById('kw-result-copy-confirm');
+    if (el) { el.textContent = 'Image downloaded!'; el.style.opacity = '1';
+      setTimeout(() => { el.style.opacity = '0'; el.textContent = 'Copied!'; }, 2500); }
+  };
+  img.onerror = () => kwCopyResult();
+  img.src = 'https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png';
+}
+function kwRoundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath(); ctx.moveTo(x+r, y);
+  ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r);
+  ctx.lineTo(x+w, y+h-r); ctx.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  ctx.lineTo(x+r, y+h); ctx.quadraticCurveTo(x, y+h, x, y+h-r);
+  ctx.lineTo(x, y+r); ctx.quadraticCurveTo(x, y, x+r, y); ctx.closePath();
+}
+function kwWrapText(ctx, text, x, y, maxW, lineH) {
+  const words = text.split(' '); let line = '';
+  for (let i = 0; i < words.length; i++) {
+    const test = line + words[i] + ' ';
+    if (ctx.measureText(test).width > maxW && i > 0) {
+      ctx.fillText(line, x, y); line = words[i] + ' '; y += lineH;
+    } else { line = test; }
+  }
+  ctx.fillText(line, x, y);
+}
+
+// Rich copy format
 function kwCopyResult() {
   if (!kwLastNumber) return;
   const rawQ = (document.getElementById('kw-question') || {}).value || '';
   const smartQ = kwSmartCapitalise(rawQ);
-  const text = 'Divination (i) Tsutsuji\n觀音靈簽\n' + kwResultDateTime + '\n\nThe answer to your question:\n' + (smartQ || '(No question entered)') + '\nis: Lot ' + kwLastNumber;
+  const text = 'Divination (i) Tsutsuji\n觀音靈簽\n' + kwResultDateTime
+    + '\n\nThe answer to your question:\n' + (smartQ || '(No question entered)')
+    + '\nis:\nLot ' + kwLastNumber;
   navigator.clipboard.writeText(text).then(() => {
     const el = document.getElementById('kw-result-copy-confirm');
     if (el) { el.style.opacity = '1'; setTimeout(() => el.style.opacity = '0', 2200); }
@@ -3430,41 +3581,42 @@ function kwBackToMain() {
 // Uses Google Apps Script backend from B1.4. tab
 // The APPS_SCRIPT_URL below must be set to your deployed GAS web app URL
 // ============================================================
-const HAIRCUT_GAS_URL = 'https://script.google.com/macros/s/AKfycbwRMG58HZHlZqF9LIyAPk2iqs4ARXPww9d_U87mU6sVJtQlI7iieaRO5HljHeHpt_gMDA/exec';
+const HAIRCUT_GAS_URL = 'https://script.google.com/macros/s/AKfycbydOaI3Gee7fjOi67pIn5CB-_6P9trOWIdq_jPCw3ncB7lUL5H4fMnw8IkJhpia-oWLlg/exec';
 
 async function loadTodayHaircut() {
   const now = new Date();
-  const dateStr = now.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  document.getElementById('haircut-today-date').textContent = dateStr;
-  document.getElementById('haircut-today-advice').textContent = 'Loading…';
+  document.getElementById('haircut-today-date').textContent = 'Loading…';
+  document.getElementById('haircut-today-advice').textContent = 'Searching…';
   document.getElementById('haircut-today-advice').style.color = '';
-  document.getElementById('haircut-today-advice').style.fontSize = '';
 
   try {
+    // GAS function: getTodayAdvice() returns {date, advice}
     const resp = await fetch(HAIRCUT_GAS_URL + '?action=today', { mode: 'cors' });
     const data = await resp.json();
-    // GAS may return advice, result, text, or answer
-    const text = data.advice || data.result || data.text || data.answer || data.message || JSON.stringify(data);
+    const dateText = data.date || now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    document.getElementById('haircut-today-date').textContent = dateText;
+    const text = data.advice || data.result || data.text || data.answer || data.message || 'No data returned.';
     applyHaircutAdvice(document.getElementById('haircut-today-advice'), text);
   } catch(e) {
-    document.getElementById('haircut-today-advice').innerHTML = 'Unable to load — check connection.';
+    document.getElementById('haircut-today-date').textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    document.getElementById('haircut-today-advice').textContent = 'Unable to load — please check connection.';
     document.getElementById('haircut-today-advice').style.color = 'rgba(255,255,255,0.5)';
-    document.getElementById('haircut-today-advice').style.fontSize = '13px';
   }
 }
 
 async function checkHaircutDate() {
   const picker = document.getElementById('haircut-date-picker');
   if (!picker.value) return;
-  const d = new Date(picker.value);
+  const d = new Date(picker.value + 'T12:00:00');
   const dateStr = d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
   document.getElementById('haircut-custom-date-label').textContent = 'Result for: ' + dateStr;
   document.getElementById('haircut-custom-advice').textContent = 'Loading…';
   document.getElementById('haircut-custom-result').style.display = 'block';
   try {
+    // GAS function: getAdviceForDate(dateObj) returns {date, advice}
     const resp = await fetch(HAIRCUT_GAS_URL + '?action=date&date=' + encodeURIComponent(picker.value), { mode: 'cors' });
     const data = await resp.json();
-    const text = data.advice || data.result || data.text || data.answer || data.message || JSON.stringify(data);
+    const text = data.advice || data.result || data.text || data.answer || data.message || 'No data returned.';
     applyHaircutAdvice(document.getElementById('haircut-custom-advice'), text);
   } catch(e) {
     document.getElementById('haircut-custom-advice').textContent = 'Unable to load — check connection.';
@@ -3507,8 +3659,18 @@ function goTo(screenId) {
     resetKwanyin();
   }
   if (screenId === 'screen-dice') {
-    // Reset dice to fresh setup screen (item 27)
+    // Reset dice to fresh setup screen
     resetDiceToSetup();
+  }
+  if (screenId === 'screen-2hs-find') {
+    // Clear old entries so user always starts fresh
+    ['hs-dob-day','hs-dob-month','hs-dob-year','hs-dob-time'].forEach(id => {
+      const el = document.getElementById(id); if (el) el.value = '';
+    });
+    const errEl = document.getElementById('hs-dob-error');
+    if (errEl) errEl.style.display = 'none';
+    const btn = document.getElementById('hs-gen-btn');
+    if (btn) { btn.disabled = false; btn.textContent = 'Generate'; }
   }
   if (screenId === 'screen-login') {
     // Clear saved login so user can switch accounts
@@ -3833,12 +3995,11 @@ function hsCalculateDOB() {
     document.getElementById('hs-dob-num-yuri').style.color = c.num;
     document.getElementById('hs-dob-char-yuri').textContent = HS_LABELS[n-1];
 
-    const res = document.getElementById('hs-dob-result');
-    res.style.display = 'flex';
-    res.scrollIntoView({ behavior: 'smooth', block: 'start' });
     btn.disabled = false; btn.textContent = 'Generate';
     // Show 4Cs and Structure
     showFcsResults(data);
+    // Navigate to result screen
+    goTo('screen-2hs-result');
   };
   script.onerror = function() { cleanup(); errEl.textContent = 'Error. Try again.'; errEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Generate'; };
   script.src = url; document.head.appendChild(script);
@@ -3846,13 +4007,49 @@ function hsCalculateDOB() {
 
 function hsResetDOB() {
   ['hs-dob-day','hs-dob-month','hs-dob-year','hs-dob-time'].forEach(id => { document.getElementById(id).value = ''; });
-  document.getElementById('hs-dob-result').style.display = 'none';
   document.getElementById('hs-dob-error').style.display = 'none';
   document.getElementById('hs-gen-btn').disabled = false;
   document.getElementById('hs-gen-btn').textContent = 'Generate';
   // Clear 4Cs
   ['fcs-ran-wrap','fcs-yuri-wrap'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display='none'; });
   ['fcs-ran-list','fcs-yuri-list','str-ran-wrap','str-yuri-wrap'].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML=''; });
+}
+
+// 2Hs result copy functions
+function hs2HsCopyText() {
+  const meta = document.getElementById('hs-dob-meta');
+  const yr = document.getElementById('hs-r-year');
+  const mo = document.getElementById('hs-r-month');
+  const dy = document.getElementById('hs-r-day');
+  const hr = document.getElementById('hs-r-hour');
+  const numRan = document.getElementById('hs-dob-num-ran');
+  const charRan = document.getElementById('hs-dob-char-ran');
+  const numYuri = document.getElementById('hs-dob-num-yuri');
+  const charYuri = document.getElementById('hs-dob-char-yuri');
+  const text = '2Hs Portal — Bazi Result\n'
+    + (meta ? meta.textContent.trim() + '\n' : '')
+    + '\nBazi: ' + [yr,mo,dy,hr].map(e => e ? e.textContent.trim() : '').join(' | ')
+    + '\n\nBazi (ii) Ran: ' + (numRan ? numRan.textContent : '') + ' — ' + (charRan ? charRan.textContent : '')
+    + '\nBazi (iii) Yuri: ' + (numYuri ? numYuri.textContent : '') + ' — ' + (charYuri ? charYuri.textContent : '');
+  navigator.clipboard.writeText(text.trim());
+}
+
+function hs2HsCopyImage() {
+  // Capture the result screen as canvas image
+  const resultEl = document.querySelector('#screen-2hs-result');
+  if (!resultEl) { hs2HsCopyText(); return; }
+  // Use html2canvas if available, otherwise fall back to text copy
+  if (typeof html2canvas !== 'undefined') {
+    html2canvas(resultEl, { backgroundColor: '#000073', scale: 2 }).then(canvas => {
+      const link = document.createElement('a');
+      link.download = '2hs-result.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }).catch(() => hs2HsCopyText());
+  } else {
+    // Fallback: just copy text
+    hs2HsCopyText();
+  }
 }
 
 function renderFcsItem(containerId, item, showCheck) {
@@ -4175,25 +4372,23 @@ function loadVedicCharts() {
 }
 
 function loadVedicChart(chartName) {
-  const panel = document.getElementById('vedic-data-panel');
   const title = document.getElementById('vedic-data-title');
   const box = document.getElementById('vedic-data-box');
   const btn = document.getElementById('vedic-copy-btn');
-  panel.style.display = 'block';
-  title.textContent = chartName;
-  box.textContent = 'Loading…';
-  btn.textContent = 'Copy All';
-  btn.style.background = 'var(--sky)';
+  if (title) title.textContent = chartName;
+  if (box) box.textContent = 'Loading…';
+  if (btn) { btn.textContent = 'Copy All'; btn.style.background = 'var(--sky)'; }
   vedicCurrentData = '';
-  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // Navigate to data detail screen
+  goTo('screen-vedic-data');
 
   fetch(AUTH_GAS_URL + '?action=vedicData&idCode=' + encodeURIComponent(currentUser) + '&chart=' + encodeURIComponent(chartName), { mode: 'cors' })
     .then(r => r.json())
     .then(data => {
       vedicCurrentData = data.data || '';
-      box.textContent = vedicCurrentData;
+      if (box) box.textContent = vedicCurrentData;
     })
-    .catch(() => { box.textContent = 'Error loading. Please try again.'; });
+    .catch(() => { if (box) box.textContent = 'Error loading. Please try again.'; });
 }
 
 function vedicCopyData() {
