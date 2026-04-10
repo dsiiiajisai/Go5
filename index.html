@@ -1208,6 +1208,69 @@ html, body {
 
 /* Pillar highlight */
 .hl { color: #FFD700; }
+
+/* Die type image picker */
+.die-type-opt {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  cursor: pointer; padding: 10px 14px; border-radius: 12px;
+  border: 2px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05);
+  transition: all 0.2s; flex: 1; max-width: 110px;
+}
+.die-type-opt img { width: 56px; height: 56px; object-fit: contain; transition: transform 0.2s; }
+.die-type-opt.selected {
+  border: 2.5px solid var(--sky);
+  background: rgba(0,191,255,0.12);
+  box-shadow: 0 0 14px rgba(0,191,255,0.4);
+}
+.die-type-opt.selected img { transform: scale(1.15); }
+.die-type-label { font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; color:rgba(255,255,255,0.7); }
+
+/* Randomness source picker */
+.dice-src-opt {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  cursor: pointer; padding: 10px 12px; border-radius: 12px;
+  border: 2px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.05);
+  transition: all 0.2s; flex: 1;
+}
+.dice-src-opt.selected {
+  border: 2.5px solid var(--sky);
+  background: rgba(0,191,255,0.15);
+  box-shadow: 0 0 14px rgba(0,191,255,0.5), 0 0 30px rgba(0,191,255,0.2);
+  animation: srcGlow 1.5s ease-in-out infinite alternate;
+}
+@keyframes srcGlow {
+  from { box-shadow: 0 0 10px rgba(0,191,255,0.4); }
+  to   { box-shadow: 0 0 22px rgba(0,191,255,0.8); }
+}
+.dice-src-icon { font-size: 22px; }
+.dice-src-label { font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; color:rgba(255,255,255,0.7); }
+.dice-src-opt:not(.selected) { opacity: 0.5; }
+
+/* kw-method glow when active (item 14) */
+.kw-method-card.active {
+  border: 2.5px solid #000073;
+  background: #e8e8f5;
+  box-shadow: 0 0 0 3px rgba(0,0,115,0.3), 0 0 18px rgba(0,100,255,0.5), inset 0 2px 6px rgba(0,0,0,0.15);
+  transform: scale(1.06);
+  animation: kwMethodGlow 1.4s ease-in-out infinite alternate;
+}
+@keyframes kwMethodGlow {
+  from { box-shadow: 0 0 0 3px rgba(0,0,115,0.2), 0 0 12px rgba(0,100,255,0.35); }
+  to   { box-shadow: 0 0 0 4px rgba(0,0,115,0.4), 0 0 28px rgba(0,100,255,0.7); }
+}
+.kw-method-card:not(.active) { opacity: 0.55; transform: scale(1); }
+
+/* ============================================================
+   4Cs & STRUCTURE (2Hs module)
+   ============================================================ */
+.fcs-section-label { font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.15em; color:#ffffff; text-transform:uppercase; text-align:center; margin-bottom:12px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1); }
+.fcs-row { display:flex; flex-direction:row; align-items:stretch; gap:0; margin-bottom:10px; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
+.fcs-emoji-box { width:64px; min-width:64px; background:rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center; flex-wrap:wrap; padding:8px; gap:2px; font-size:18px; line-height:1.3; }
+.fcs-mr-box { flex:1; background:rgba(255,255,255,0.04); padding:12px 14px; display:flex; flex-direction:column; justify-content:center; gap:3px; }
+.fcs-cn { font-family:'Noto Serif TC',serif; font-size:15px; font-weight:700; color:#ff6666; line-height:1.3; }
+.fcs-vn { font-family:'Noto Serif TC',serif; font-size:13px; color:#cc88ff; line-height:1.3; }
+.fcs-en { font-family:'Roboto',sans-serif; font-size:12px; color:#ffffff; opacity:0.85; line-height:1.3; }
+.fcs-check-box { width:32px; min-width:32px; background:rgba(0,0,0,0.2); display:flex; align-items:center; justify-content:center; font-size:16px; color:#00cc44; }
 </style>
 </head>
 <body>
@@ -1261,8 +1324,7 @@ html, body {
      SCREEN 1: HOMEPAGE
      ============================================================ -->
 <div id="screen-home" class="screen">
-  <div class="site-label">五 GO</div>
-  <div class="logo-wrap">
+  <div class="logo-wrap" style="cursor:pointer;" onclick="goTo('screen-login')">
     <img src="https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png" alt="Go">
     <div class="logo-title" style="display:flex; flex-direction:column; align-items:center; line-height:1.3;">
       <span>五</span>
@@ -1477,19 +1539,29 @@ html, body {
 <div id="screen-b2" class="screen">
   <div class="inner-header">
     <button class="back-btn" onclick="goTo('screen-home')">‹</button>
-    <span class="inner-title">Botan · QMDJ &amp; Divinations</span>
+    <span class="inner-title">Divination (i) Tsutsuji</span>
   </div>
 
   <div class="logo-wrap" style="margin-bottom: 20px;">
-    <img src="https://i.postimg.cc/SRYGBpwy/QMDJ-i-Botan.png" alt="Botan" style="width:60px;height:60px;">
-    <div class="logo-title" style="font-size:16px;">QMDJ (i) Botan</div>
+    <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" alt="Tsutsuji" style="width:70px;height:70px; filter:drop-shadow(0 0 16px rgba(255,100,150,0.5));">
+    <div class="logo-title" style="font-size:16px;">Divination (i) Tsutsuji</div>
   </div>
 
   <div class="cards">
-    <div class="card" onclick="goTo('screen-dice')">
-      <div class="card-icon"><img src="https://i.postimg.cc/FsLnyVcZ/D8s-Red-Dices-8-sides.png" alt="Dice"></div>
+    <!-- QMDJ Charts - moved to top, dead -->
+    <div class="card grayed">
+      <div class="card-icon" style="width:48px; flex-shrink:0;"></div>
       <div class="card-text">
-        <div class="card-title">🛠️ Casting Dice 🎲</div>
+        <div class="card-title">奇門遁甲 Charts <span class="coming-soon-tag">Soon</span></div>
+        <div class="card-desc">QMDJ Y/M/D/H charts</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card" onclick="goTo('screen-dice')">
+      <div class="card-icon"><img src="https://i.postimg.cc/2Sw1KPTF/2_d4.png" alt="Dice" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title">🔮 Rolling Dice 🎲</div>
         <div class="card-desc">QMDJ Divination with dice</div>
       </div>
       <div class="card-arrow">›</div>
@@ -1498,17 +1570,8 @@ html, body {
     <div class="card" onclick="goTo('screen-kwanyin-splash')">
       <div class="card-icon"><img src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin"></div>
       <div class="card-text">
-        <div class="card-title">🔮 觀音 Kwanyin Oracle</div>
-        <div class="card-desc">Draw a sacred number</div>
-      </div>
-      <div class="card-arrow">›</div>
-    </div>
-
-    <div class="card grayed">
-      <div class="card-icon">奇</div>
-      <div class="card-text">
-        <div class="card-title">奇門遁甲 Charts <span class="coming-soon-tag">Soon</span></div>
-        <div class="card-desc">QMDJ Y/M/D/H charts</div>
+        <div class="card-title">觀音靈簽</div>
+        <div class="card-desc">Kwan-Yin Oracle</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
@@ -1526,58 +1589,63 @@ html, body {
 <div id="screen-dice" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-b2')">‹</button>
-    <span class="inner-title">QMDJ Divinity</span>
+    <span class="inner-title">Divination (i) Tsutsuji</span>
   </div>
 
-  <div style="text-align:center; margin-bottom:24px;">
-    <div style="font-size:13px; color:var(--text-mid); font-style:italic;">Backing Chief then roll your dices</div>
-  </div>
-
+  <!-- SETUP SECTION -->
   <div id="dice-setup-section" class="dice-setup">
-    <div>
-      <div class="dice-question">How many dice do you need?</div>
-      <div class="dropdown-wrap">
-        <select id="dice-count">
-          <option value="1">1 die</option>
-          <option value="2">2 dice</option>
-          <option value="3">3 dice</option>
-          <option value="4" selected>4 dice</option>
-          <option value="5">5 dice</option>
-          <option value="6">6 dice</option>
-          <option value="7">7 dice</option>
-          <option value="8">8 dice</option>
-        </select>
-        <span class="chevron">▾</span>
+
+    <div class="dice-question" style="text-align:center; font-size:14px; margin-bottom:4px;">How many dice?</div>
+    <div class="dropdown-wrap">
+      <select id="dice-count">
+        <option value="1">1 die    🎲</option>
+        <option value="2">2 dice   🎲🎲</option>
+        <option value="3">3 dice   🎲🎲🎲</option>
+        <option value="4" selected>4 dice   🎲🎲🎲🎲</option>
+        <option value="5">5 dice   🎲🎲🎲🎲🎲</option>
+        <option value="6">6 dice   🎲🎲🎲🎲🎲🎲</option>
+        <option value="7">7 dice   🎲🎲🎲🎲🎲🎲🎲</option>
+        <option value="8">8 dice   🎲🎲🎲🎲🎲🎲🎲🎲</option>
+      </select>
+      <span class="chevron">▾</span>
+    </div>
+
+    <div class="dice-question" style="text-align:center; font-size:14px; margin-top:8px; margin-bottom:12px;">Die type?</div>
+    <div id="dice-type-picker" style="display:flex; gap:16px; justify-content:center; width:100%; max-width:420px; margin-bottom:8px;">
+      <div class="die-type-opt selected" data-val="6" onclick="selectDieType(6)">
+        <img src="https://i.postimg.cc/sXZ0jFn4/d6_yellow_nhũ_1.png" alt="d6">
+        <div class="die-type-label">6-sided</div>
+      </div>
+      <div class="die-type-opt" data-val="8" onclick="selectDieType(8)">
+        <img src="https://i.postimg.cc/W3JfNR9G/d8_white_3.png" alt="d8">
+        <div class="die-type-label">8-sided</div>
+      </div>
+      <div class="die-type-opt" data-val="10" onclick="selectDieType(10)">
+        <img src="https://i.postimg.cc/fbnzz5LY/d10_Blue_solid_1.png" alt="d10">
+        <div class="die-type-label">10-sided</div>
       </div>
     </div>
 
-    <div>
-      <div class="dice-question">Die type?</div>
-      <div class="dropdown-wrap">
-        <select id="dice-type">
-          <option value="6">6-sided (d6)</option>
-          <option value="8">8-sided (d8)</option>
-        </select>
-        <span class="chevron">▾</span>
+    <div class="dice-question" style="text-align:center; font-size:14px; margin-top:8px; margin-bottom:4px;">Randomness source?</div>
+    <div id="dice-src-picker" style="display:flex; gap:10px; justify-content:center; width:100%; max-width:420px; margin-bottom:8px;">
+      <div class="dice-src-opt selected" data-val="quantum" onclick="selectDiceSrc('quantum')">
+        <span class="dice-src-icon">⚛️</span>
+        <span class="dice-src-label">Quantum</span>
+      </div>
+      <div class="dice-src-opt" data-val="random-org" onclick="selectDiceSrc('random-org')">
+        <span class="dice-src-icon">📡</span>
+        <span class="dice-src-label">Atm.</span>
+      </div>
+      <div class="dice-src-opt" data-val="crypto" onclick="selectDiceSrc('crypto')">
+        <span class="dice-src-icon">🔐</span>
+        <span class="dice-src-label">Crypto</span>
       </div>
     </div>
 
-    <div>
-      <div class="dice-question">Which source of true randomness do you prefer?</div>
-      <div class="dropdown-wrap">
-        <select id="dice-random-src">
-          <option value="quantum" selected>⚛️ Quantum (ANU vacuum)</option>
-          <option value="random-org">📡 Atmospheric (random.org)</option>
-          <option value="crypto">🔐 Crypto (Hardware entropy)</option>
-        </select>
-        <span class="chevron">▾</span>
-      </div>
-    </div>
-
-    <button class="btn-primary" style="margin: 0 auto;" onclick="setupDiceReps()">Set Up Dice →</button>
+    <button class="btn-primary" style="margin: 8px auto 0;" onclick="setupDiceReps()">Set Up Dice →</button>
   </div>
 
-  <!-- Die representations -->
+  <!-- NAME DICE SECTION -->
   <div id="dice-rep-section" style="width:100%; max-width:420px; display:none;">
     <div style="font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:var(--text-dim); margin-bottom:14px; text-align:center; text-transform:uppercase;">Name each die (what it represents)</div>
     <div class="die-rep-grid" id="die-rep-grid"></div>
@@ -1586,7 +1654,7 @@ html, body {
       <strong>Back Chief direction</strong><br>
       Go into manifestation mode — calm down, slow your breath, and focus.<br><br>
       Recite what you want to ask in your mind &amp; be clear you're asking Chief's wisdom.<br><br>
-      Remember: <strong>6 is highest, 1 is lowest</strong>. Focus and roll just once. Do not roll again if unsatisfied.
+      Remember: <strong>highest number is best, 1 is lowest</strong>. Focus and roll just once.
     </div>
 
     <a class="info-link" href="https://sites.google.com/view/qmdjibotan/03-applications/06-other-tips-tricks/dws-divine-wisdom-sourcing" target="_blank">
@@ -1596,15 +1664,17 @@ html, body {
     <button class="btn-primary" style="margin: 20px auto 0; display:block;" onclick="rollDice()">🎲 Roll the Dice</button>
   </div>
 
-  <!-- Rolling animation -->
+  <!-- ROLLING ANIMATION -->
   <div id="dice-rolling-wrap" class="dice-rolling-wrap">
     <div class="dice-roll-row" id="dice-roll-row"></div>
     <div class="dice-rolling-label">Rolling…</div>
   </div>
 
-  <!-- Results -->
+  <!-- RESULTS -->
   <div id="dice-result-section" class="dice-result-screen">
-    <div style="font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:var(--text-dim); margin-bottom:16px; text-align:center; text-transform:uppercase;">Your Results</div>
+    <div style="text-align:center; margin-bottom:20px;">
+      <img src="https://i.postimg.cc/2Sw1KPTF/2_d6.png" alt="Dice" style="width:64px; height:64px; object-fit:contain; filter:drop-shadow(0 0 12px rgba(0,191,255,0.4));">
+    </div>
     <div id="dice-result-rows"></div>
 
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; justify-content:center;">
@@ -1614,9 +1684,12 @@ html, body {
       </button>
     </div>
     <div style="font-size:11px; color:var(--text-dim); text-align:center; margin-top:6px; font-style:italic;">Do not roll again for the same question</div>
-    <button class="btn-secondary" style="margin: 16px auto 0; display:block;" onclick="goTo('screen-home')">↩ Go back to Homepage</button>
+    <button class="btn-secondary" style="margin: 16px auto 0; display:block;" onclick="goTo('screen-b2')">↩ Back to Divinations</button>
   </div>
 
+  <div style="text-align:center; margin-top:40px; padding-bottom:20px;">
+    <img src="https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png" alt="Tsutsuji" style="width:60px; height:60px; object-fit:contain; opacity:0.7;">
+  </div>
   <div class="portal-footer">
     <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
     <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
@@ -1663,8 +1736,8 @@ html, body {
      ============================================================ -->
 <div id="screen-kwanyin" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-b2')">‹</button>
-    <span class="inner-title">觀音靈簽 Kwanyin Oracle</span>
+    <button class="back-btn" onclick="goBack()">‹</button>
+    <span class="inner-title">Draw a lot</span>
   </div>
 
   <!-- Main consultation view -->
@@ -1672,7 +1745,7 @@ html, body {
     <div class="kwanyin-title">觀音靈簽</div>
     <img class="kwanyin-img" src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin">
 
-    <p style="font-size:15px; font-style:italic; color:#c8c0b0; text-align:center; margin-bottom:18px;">Choose your source of true randomness</p>
+    <p style="font-size:14px; font-style:italic; color:#c8c0b0; text-align:center; margin-bottom:18px;">Choose your source of randomness</p>
 
     <div class="kw-methods">
       <div class="kw-method-card active" onclick="kwSelectMethod('quantum')" id="kw-card-quantum">
@@ -1699,50 +1772,72 @@ html, body {
     </div>
 
     <div class="kw-stage">
-      <div class="kw-number" id="kw-number">—</div>
-      <div class="kw-fate" id="kw-fate">Your fate awaits</div>
-      <p style="font-size:14px; font-style:italic; color:rgba(255,245,220,0.7); margin-bottom:14px; line-height:1.6; max-width:280px;">
-        Consult Her Holy's Wisdom — focus your mind, then draw a lot
-      </p>
-      <button class="kw-btn" id="kw-btn" onclick="kwDraw()">Draw a lot 🪷</button>
-    </div>
-    <div class="kw-status" id="kw-status"></div>
+      <!-- Item 4: "Focus your mind on your question" centered ABOVE the box -->
+      <p style="font-size:14px; font-style:italic; color:rgba(255,245,220,0.75); text-align:center; margin-bottom:18px; line-height:1.6;">Focus your mind on your question</p>
 
-    <div class="kw-history" id="kw-history-wrap" style="display:none; width:100%; max-width:420px;">
-      <hr style="border:none; border-top:1px solid rgba(255,255,255,0.15); margin: 16px 0 12px;">
-      <div class="kw-history-title">Past Readings</div>
-      <div class="kw-chips" id="kw-chips"></div>
+      <!-- Item 4: Number shown after drawing, below the button -->
+      <button class="kw-btn" id="kw-btn" onclick="kwDraw()">Draw a lot 🪷</button>
+
+      <!-- Number appears here AFTER drawing (item 4 + 5) -->
+      <div class="kw-number" id="kw-number" style="margin-top:24px;">—</div>
+      <div class="kw-fate" id="kw-fate"></div>
+      <div class="kw-status" id="kw-status"></div>
+
+      <!-- Print result button - only visible after drawing (item 5) -->
+      <button id="kw-print-btn" onclick="kwShowResult()" style="display:none; margin-top:16px; font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.12em; color:var(--navy); background:var(--sky); border:none; border-radius:10px; padding:12px 28px; cursor:pointer; font-weight:700;">
+        <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" style="width:18px;height:18px;vertical-align:middle;margin-right:6px;object-fit:contain;"> Print the Result
+      </button>
+    </div>
+
+    <!-- Item 15: Alt logo at bottom -->
+    <div style="text-align:center; margin-top:32px; padding-bottom:16px;">
+      <img src="https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png" alt="Tsutsuji" style="width:56px; height:56px; object-fit:contain; opacity:0.75;">
     </div>
   </div>
 
-  <!-- Result view -->
+  <!-- Result view (item 5: shown on Print the Result press) -->
   <div id="kw-result-view" style="display:none; flex-direction:column; align-items:center; width:100%; position:relative; min-height:80dvh;">
     <div style="position:fixed; inset:0; z-index:-1; background-image:url('https://i.postimg.cc/QNzjqmR1/Draw-AKwan-Yin-Lot.png'); background-size:cover; background-position:center;"></div>
     <div style="position:fixed; inset:0; z-index:-1; background:rgba(0,0,40,0.6);"></div>
-    <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; padding:40px 24px; text-align:center; width:100%; max-width:420px;">
+    <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; padding:32px 24px 48px; text-align:center; width:100%; max-width:420px;">
 
-      <!-- Draw a lot label above result -->
-      <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,245,220,0.5); margin-bottom:8px;">Draw a lot</div>
+      <!-- Item 8: Guanyin image instead of big number -->
+      <img src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin"
+        style="max-height:130px; width:auto; filter:drop-shadow(0 0 16px rgba(255,245,80,0.7)); margin-bottom:20px;">
 
-      <!-- Big number -->
-      <div id="kw-result-number" style="font-family:'Ma Shan Zheng','IM Fell English',serif; font-size:140px; font-weight:400; color:rgba(255,255,255,0.3); line-height:1; text-shadow:0 0 60px rgba(255,250,200,0.2); margin-bottom:32px;">—</div>
+      <!-- Item 9: Date & time above the answer box -->
+      <div id="kw-result-datetime" style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.12em; color:rgba(255,245,220,0.55); margin-bottom:12px;"></div>
 
-      <!-- Question display -->
-      <div style="width:100%; margin-bottom:24px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:20px 22px; text-align:left;">
+      <!-- Answer box -->
+      <div style="width:100%; margin-bottom:20px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:20px 22px; text-align:left;">
         <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,245,220,0.5); margin-bottom:12px;">The answer to your question:</div>
-        <div id="kw-result-question" style="font-family:'Beau Rivage',cursive; font-size:22px; font-style:italic; color:rgba(255,245,220,0.85); line-height:1.6; margin-bottom:12px;"></div>
-        <div style="font-family:'Cinzel',serif; font-size:12px; color:rgba(255,245,220,0.5); margin-bottom:4px;">is:</div>
-        <div id="kw-result-lot-label" style="font-family:'Cormorant Garamond',serif; font-size:28px; color:#c8a96e; font-weight:300;">Lot #—</div>
+        <div id="kw-result-question" style="font-family:'Beau Rivage',cursive; font-size:22px; font-style:italic; color:rgba(255,245,220,0.85); line-height:1.6; margin-bottom:14px;"></div>
+        <div style="font-family:'Cinzel',serif; font-size:12px; color:rgba(255,245,220,0.5); margin-bottom:6px;">is:</div>
+        <!-- Item 7: "Lot" normal, number 2x bold lime yellow -->
+        <div id="kw-result-lot-label" style="font-family:'Cormorant Garamond',serif; font-weight:300; color:#c8a96e; line-height:1;">
+          <span style="font-size:28px;">Lot </span><span id="kw-result-lot-num" style="font-size:56px; font-weight:700; color:#ccff00; line-height:1;"></span>
+        </div>
       </div>
 
-      <!-- See what lot says button -->
-      <a id="kw-lot-link" href="#" target="_blank" style="display:inline-block; width:100%; padding:14px; background:rgba(255,245,220,0.12); border:1px solid rgba(255,245,220,0.3); border-radius:10px; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:rgba(255,245,220,0.8); text-decoration:none; margin-bottom:12px; text-align:center; cursor:pointer;">See what this Lot says ↗</a>
+      <!-- Item 10: See what Lot says button with flower -->
+      <a id="kw-lot-link" href="#" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px; background:rgba(255,245,220,0.12); border:1px solid rgba(255,245,220,0.3); border-radius:10px; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:rgba(255,245,220,0.8); text-decoration:none; margin-bottom:10px; cursor:pointer;">
+        <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" style="width:20px;height:20px;object-fit:contain;">
+        <span id="kw-lot-link-text">See what this Lot says ↗</span>
+      </a>
 
-      <!-- Copy button -->
-      <button onclick="kwCopyResult()" style="width:100%; padding:12px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:white; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; border-radius:10px; cursor:pointer; margin-bottom:8px; backdrop-filter:blur(4px);">📋 Copy Result</button>
-      <span id="kw-result-copy-confirm" style="font-size:12px; color:rgba(255,255,255,0.6); font-style:italic; opacity:0; transition:opacity 0.3s; display:block; margin-bottom:16px;">Copied!</span>
+      <!-- Copy button with flower -->
+      <button onclick="kwCopyResult()" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:12px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:white; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; border-radius:10px; cursor:pointer; margin-bottom:6px; backdrop-filter:blur(4px);">
+        <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" style="width:18px;height:18px;object-fit:contain;">
+        📋 Copy Result
+      </button>
+      <span id="kw-result-copy-confirm" style="font-size:12px; color:rgba(255,255,255,0.6); font-style:italic; opacity:0; transition:opacity 0.3s; display:block; margin-bottom:20px;">Copied!</span>
 
-      <button onclick="kwBackToMain()" style="background:transparent; border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.35); font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; padding:10px 20px; border-radius:8px; cursor:pointer;">‹ Back</button>
+      <!-- Item 11: "Ask another question" button with alt logo below -->
+      <button onclick="kwAskAnother()" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:13px; background:rgba(255,245,220,0.08); border:1px solid rgba(255,245,220,0.2); color:rgba(255,245,220,0.7); font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.12em; border-radius:10px; cursor:pointer; margin-bottom:20px;">
+        <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" style="width:18px;height:18px;object-fit:contain;">
+        Ask Another Question
+      </button>
+      <img src="https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png" alt="Tsutsuji alt logo" style="width:52px; height:52px; object-fit:contain; opacity:0.7; margin-bottom:12px;">
     </div>
   </div>
 
@@ -1962,11 +2057,25 @@ html, body {
         <div class="hs-btn-body"><div class="hs-btn-num" id="hs-dob-num-ran"></div><div class="hs-btn-char" id="hs-dob-char-ran"></div></div>
       </a>
       <span class="hs-btn-hint">Tap to open the 2Hs site ↗</span>
+      <!-- 4Cs Ran -->
+      <div id="fcs-ran-wrap" style="display:none; width:100%; max-width:520px; margin-top:20px;">
+        <div class="fcs-section-label">4Cs — Bazi (ii) Ran</div>
+        <div id="fcs-ran-list"></div>
+        <div class="fcs-section-label" style="margin-top:20px;">Structure — Bazi (ii) Ran</div>
+        <div id="str-ran-wrap"></div>
+      </div>
       <a id="hs-dob-btn-yuri" class="hs-btn" target="_blank" style="margin-top:32px;">
         <img class="hs-btn-orchid" src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png">
         <div class="hs-btn-body"><div class="hs-btn-num" id="hs-dob-num-yuri"></div><div class="hs-btn-char" id="hs-dob-char-yuri"></div></div>
       </a>
       <span class="hs-btn-hint">Tap to open the 2Hs site ↗</span>
+      <!-- 4Cs Yuri -->
+      <div id="fcs-yuri-wrap" style="display:none; width:100%; max-width:520px; margin-top:20px;">
+        <div class="fcs-section-label">4Cs — Bazi (iii) Yuri</div>
+        <div id="fcs-yuri-list"></div>
+        <div class="fcs-section-label" style="margin-top:20px;">Structure — Bazi (iii) Yuri</div>
+        <div id="str-yuri-wrap"></div>
+      </div>
       <button class="start-over-btn" onclick="hsResetDOB()">↺ START OVER</button>
     </div>
   </div>
@@ -2426,6 +2535,24 @@ const GOOGLE_CLIENT_ID = '656273496716-j3hhabkjpk7e70uqppoqlrqpsammdjia.apps.goo
 // (runs after all functions are defined)
 function checkOAuthReturn() {
   try {
+    // First check for saved login in localStorage (max 30 days)
+    const saved = localStorage.getItem('go_saved_user');
+    if (saved && !window.location.hash.includes('access_token')) {
+      const s = JSON.parse(saved);
+      const age = Date.now() - (s.savedAt || 0);
+      if (age < 30 * 24 * 3600 * 1000) {
+        currentUser = s.user;
+        currentUserName = s.name;
+        currentFsSubscriber = !!s.fs;
+        currentHasPortal = !!s.portal;
+        isGuest = false;
+        setHomeState();
+        goTo('screen-home');
+        return;
+      } else {
+        localStorage.removeItem('go_saved_user');
+      }
+    }
     const hash = window.location.hash;
     if (!hash || !hash.includes('access_token')) return;
     const params = new URLSearchParams(hash.replace('#', ''));
@@ -2464,6 +2591,14 @@ async function validateWithToken(token) {
       currentFsSubscriber = data.fsSubscriber === true;
       currentHasPortal = data.hasPortal === true;
       isGuest = false;
+      // Persist login
+      try {
+        localStorage.setItem('go_saved_user', JSON.stringify({
+          user: currentUser, name: currentUserName,
+          fs: currentFsSubscriber, portal: currentHasPortal,
+          email: email, savedAt: Date.now()
+        }));
+      } catch(e) {}
       setHomeState();
       goTo('screen-home');
     } else {
@@ -2506,6 +2641,7 @@ function guestLogin() {
   currentFsSubscriber = false;
   currentHasPortal = false;
   isGuest = true;
+  try { localStorage.removeItem('go_saved_user'); } catch(e) {}
   setHomeState();
   goTo('screen-home');
 }
@@ -2897,15 +3033,59 @@ async function searchAddress() {
 }
 
 // ============================================================
-// B2.1 DICE ROLLER
+// B2.1 DICE ROLLER — globals, utilities, and all dice functions
 // ============================================================
 let diceSetup = {};
 let diceReps = [];
+let selectedDieType = 6;
+let selectedDiceSrc = 'quantum';
+const DIE_IMGS = {
+  6:  'https://i.postimg.cc/sXZ0jFn4/d6_yellow_nh%C5%A9_1.png',
+  8:  'https://i.postimg.cc/W3JfNR9G/d8_white_3.png',
+  10: 'https://i.postimg.cc/fbnzz5LY/d10_Blue_solid_1.png'
+};
+const DICE_COLORS = ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#1abc9c','#e91e63'];
+
+function selectDieType(val) {
+  selectedDieType = val;
+  document.querySelectorAll('.die-type-opt').forEach(el => {
+    el.classList.toggle('selected', parseInt(el.dataset.val) === val);
+  });
+}
+
+function selectDiceSrc(val) {
+  selectedDiceSrc = val;
+  document.querySelectorAll('.dice-src-opt').forEach(el => {
+    el.classList.toggle('selected', el.dataset.val === val);
+  });
+}
+
+function resetDiceToSetup() {
+  selectedDieType = 6;
+  selectedDiceSrc = 'quantum';
+  document.querySelectorAll('.die-type-opt').forEach(el => {
+    el.classList.toggle('selected', el.dataset.val === '6');
+  });
+  document.querySelectorAll('.dice-src-opt').forEach(el => {
+    el.classList.toggle('selected', el.dataset.val === 'quantum');
+  });
+  const countSel = document.getElementById('dice-count');
+  if (countSel) countSel.value = '4';
+  const setup = document.getElementById('dice-setup-section');
+  if (setup) setup.style.display = 'flex';
+  const rep = document.getElementById('dice-rep-section');
+  if (rep) rep.style.display = 'none';
+  const res = document.getElementById('dice-result-section');
+  if (res) res.classList.remove('active');
+  const roll = document.getElementById('dice-rolling-wrap');
+  if (roll) roll.classList.remove('active');
+  diceSetup = {}; diceReps = [];
+}
 
 function setupDiceReps() {
   const count = parseInt(document.getElementById('dice-count').value);
-  const type = parseInt(document.getElementById('dice-type').value);
-  const src = document.getElementById('dice-random-src').value;
+  const type = selectedDieType;
+  const src = selectedDiceSrc;
   diceSetup = { count, type, src };
 
   document.getElementById('dice-setup-section').style.display = 'none';
@@ -2914,11 +3094,14 @@ function setupDiceReps() {
 
   const grid = document.getElementById('die-rep-grid');
   grid.innerHTML = '';
+  const imgSrc = DIE_IMGS[type] || DIE_IMGS[6];
   for (let i = 1; i <= count; i++) {
     const row = document.createElement('div');
     row.className = 'die-rep-row';
     row.innerHTML = `
-      <span class="die-rep-num">🎲 ${i}</span>
+      <span class="die-rep-num" style="display:flex;align-items:center;gap:6px;min-width:56px;">
+        <img src="${imgSrc}" style="width:28px;height:28px;object-fit:contain;"> ${i}
+      </span>
       <input class="die-rep-input" type="text" placeholder="What does this die represent?" id="die-rep-${i}">
     `;
     grid.appendChild(row);
@@ -2962,52 +3145,132 @@ async function rollDice() {
     diceReps.push(rep);
   }
 
-  const rollBtn = document.querySelector('#dice-rep-section .btn-primary');
-  rollBtn.textContent = 'Rolling…';
-  rollBtn.disabled = true;
+  document.getElementById('dice-rep-section').style.display = 'none';
+  const rollRow = document.getElementById('dice-roll-row');
+  rollRow.innerHTML = '';
+  const imgSrc = DIE_IMGS[type] || DIE_IMGS[6];
+  for (let i = 0; i < count; i++) {
+    const die = document.createElement('div');
+    die.className = 'die-anim';
+    die.style.cssText = 'background:transparent;box-shadow:none;position:relative;width:64px;height:64px;display:flex;align-items:center;justify-content:center;';
+    die.style.animationDelay = (i * 0.07) + 's';
+    die.innerHTML = `<img src="${imgSrc}" style="width:52px;height:52px;object-fit:contain;position:absolute;"><span style="position:relative;font-size:18px;font-weight:700;color:#ccff00;text-shadow:0 0 8px #ccff00;">${Math.floor(Math.random() * type) + 1}</span>`;
+    rollRow.appendChild(die);
+  }
+  const rollWrap = document.getElementById('dice-rolling-wrap');
+  rollWrap.classList.add('active');
+
+  const updateInterval = setInterval(() => {
+    rollRow.querySelectorAll('.die-anim span').forEach(s => {
+      s.textContent = Math.floor(Math.random() * type) + 1;
+    });
+  }, 120);
 
   const results = [];
   for (let i = 0; i < count; i++) {
-    const val = await getRandN(type, src);
-    results.push(val);
+    results.push(await getRandN(type, src));
   }
+  clearInterval(updateInterval);
 
-  rollBtn.textContent = '🎲 Roll the Dice';
-  rollBtn.disabled = false;
+  rollRow.querySelectorAll('.die-anim span').forEach((s, i) => { s.textContent = results[i]; });
+  rollRow.querySelectorAll('.die-anim').forEach(d => { d.style.animation = 'none'; });
+  await new Promise(r => setTimeout(r, 800));
 
-  // Show result
-  document.getElementById('dice-rep-section').style.display = 'none';
+  rollWrap.classList.remove('active');
   const resSection = document.getElementById('dice-result-section');
   resSection.classList.add('active');
 
   const rows = document.getElementById('dice-result-rows');
   rows.innerHTML = '';
+
+  function getDiceMarker(val, maxVal) {
+    if (val === maxVal) return '\u2728';
+    if (val === maxVal - 1) return '\u2b50';
+    if (val <= 2) return '\u274c';
+    return '';
+  }
+
   for (let i = 0; i < count; i++) {
+    const marker = getDiceMarker(results[i], type);
     rows.innerHTML += `
-      <div class="dice-result-row">
-        <span class="dice-result-num">Die ${i+1}</span>
-        <span class="dice-result-rep">${diceReps[i]}</span>
-        <span class="dice-result-val">${results[i]}</span>
+      <div class="dice-result-row" style="align-items:center;">
+        <span style="display:flex;align-items:center;gap:6px;min-width:56px;">
+          <img src="${imgSrc}" style="width:26px;height:26px;object-fit:contain;">
+          <span style="font-family:\'Cinzel\',serif;font-size:12px;color:var(--sky);">${i + 1}</span>
+        </span>
+        <span style="flex:1;font-family:\'Beau Rivage\',cursive;font-size:18px;color:#ffffff;font-style:italic;">${diceReps[i]}</span>
+        <span style="display:flex;align-items:center;justify-content:flex-end;min-width:80px;">
+          ${marker ? `<span style="font-size:18px;margin-right:4px;">${marker}</span>` : ''}
+          <span style="font-family:\'Cormorant Garamond\',serif;font-size:2.4rem;font-weight:700;color:#ccff00;text-align:right;">${results[i]}</span>
+        </span>
       </div>
     `;
   }
   resSection._results = results;
 }
 
+function copyDiceResult() {
+  const rows = document.getElementById('dice-result-rows');
+  const now = new Date();
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dt = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear() + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  let text = 'Divination (i) Tsutsuji — Dice Roll\n' + dt + '\n\n';
+  let idx = 1;
+  rows.querySelectorAll('.dice-result-row').forEach(r => {
+    const spans = r.querySelectorAll('span');
+    let rep = '', val = '';
+    spans.forEach(s => {
+      if (s.style.fontFamily && s.style.fontFamily.includes('Beau Rivage')) rep = s.textContent.trim();
+      if (s.style.color === 'rgb(204, 255, 0)') val = s.textContent.trim();
+    });
+    text += idx + ' \u00b7 ' + rep + ' \u2192 ' + val + '\n';
+    idx++;
+  });
+  navigator.clipboard.writeText(text.trim());
+}
 
-
-
+function rollAgain() {
+  document.getElementById('dice-result-section').classList.remove('active');
+  document.getElementById('dice-rolling-wrap').classList.remove('active');
+  document.getElementById('dice-rep-section').style.display = 'block';
+}
 
 // ============================================================
-// B2.2 KWANYIN ORACLE
+// B2.2 KWANYIN ORACLE — fully rewritten
 // ============================================================
 let kwLastNumber = null;
 let kwLastSource = null;
+let kwResultDateTime = '';
 
 function kwSelectMethod(m) {
   kwSelectedMethod = m;
-  document.querySelectorAll('.kw-method-card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.kw-method-card').forEach(c => {
+    c.classList.remove('active');
+  });
   document.getElementById('kw-card-' + m).classList.add('active');
+}
+
+function resetKwanyin() {
+  kwLastNumber = null; kwLastSource = null; kwResultDateTime = '';
+  document.getElementById('kw-main-view').style.display = 'flex';
+  document.getElementById('kw-result-view').style.display = 'none';
+  const numEl = document.getElementById('kw-number');
+  if (numEl) numEl.textContent = '—';
+  const fateEl = document.getElementById('kw-fate');
+  if (fateEl) fateEl.textContent = '';
+  const statusEl = document.getElementById('kw-status');
+  if (statusEl) statusEl.textContent = '';
+  const qEl = document.getElementById('kw-question');
+  if (qEl) qEl.value = '';
+  const printBtn = document.getElementById('kw-print-btn');
+  if (printBtn) printBtn.style.display = 'none';
+  const btn = document.getElementById('kw-btn');
+  if (btn) { btn.disabled = false; btn.textContent = 'Draw a lot 🪷'; }
+  // Reset method to quantum
+  kwSelectedMethod = 'quantum';
+  document.querySelectorAll('.kw-method-card').forEach(c => c.classList.remove('active'));
+  const qCard = document.getElementById('kw-card-quantum');
+  if (qCard) qCard.classList.add('active');
 }
 
 async function kwDraw() {
@@ -3019,9 +3282,10 @@ async function kwDraw() {
   const statusEl = document.getElementById('kw-status');
 
   btn.disabled = true;
-  fateEl.textContent = 'Reaching into the void…';
-  statusEl.textContent = '';
-  numEl.textContent = '—';
+  btn.textContent = 'Drawing…';
+  if (fateEl) fateEl.textContent = '';
+  if (statusEl) statusEl.textContent = '';
+  if (numEl) numEl.textContent = '—';
 
   let number, sourceUsed = kwSelectedMethod;
   try {
@@ -3029,68 +3293,137 @@ async function kwDraw() {
       await new Promise(r => setTimeout(r, 200));
       number = cryptoRandN(100);
     } else if (kwSelectedMethod === 'random-org') {
-      statusEl.textContent = 'Contacting random.org…';
+      if (statusEl) statusEl.textContent = 'Contacting random.org…';
       try { number = await randomOrgFetchN(100); }
-      catch { statusEl.textContent = 'Random.org unreachable — using crypto fallback'; number = cryptoRandN(100); sourceUsed = 'crypto'; }
+      catch { if (statusEl) statusEl.textContent = 'Atm. unreachable — using crypto'; number = cryptoRandN(100); sourceUsed = 'crypto'; }
     } else {
-      statusEl.textContent = 'Querying quantum vacuum…';
+      if (statusEl) statusEl.textContent = 'Querying quantum vacuum…';
       try { number = await quantumFetchN(100); }
-      catch { statusEl.textContent = 'ANU unreachable — using crypto fallback'; number = cryptoRandN(100); sourceUsed = 'crypto'; }
+      catch { if (statusEl) statusEl.textContent = 'ANU unreachable — using crypto'; number = cryptoRandN(100); sourceUsed = 'crypto'; }
     }
 
-    // Rolling animation on main view
-    numEl.classList.add('rolling');
+    // Rolling animation
+    if (numEl) numEl.classList.add('rolling');
     const end = Date.now() + 900;
     await new Promise(resolve => {
       const tick = () => {
-        numEl.textContent = Math.floor(Math.random() * 100) + 1;
+        if (numEl) numEl.textContent = Math.floor(Math.random() * 100) + 1;
         if (Date.now() < end) requestAnimationFrame(tick);
-        else { numEl.classList.remove('rolling'); resolve(); }
+        else { if (numEl) numEl.classList.remove('rolling'); resolve(); }
       };
       requestAnimationFrame(tick);
     });
 
-    numEl.textContent = number;
+    if (numEl) numEl.textContent = number;
     kwLastNumber = number;
     kwLastSource = sourceUsed;
 
-    const fates = { crypto: 'Hardware entropy has spoken', 'random-org': 'The atmosphere has chosen', quantum: 'Quantum chance has decided' };
-    fateEl.textContent = fates[sourceUsed];
-    if (!statusEl.textContent.includes('fallback')) statusEl.textContent = '';
+    // Record timestamp
+    const now = new Date();
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    kwResultDateTime = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear()
+      + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0') + ':' + String(now.getSeconds()).padStart(2,'0');
 
-    // Add to history with emoji icon
-    const srcEmoji = { crypto: '🔐', 'random-org': '📡', quantum: '⚛️' };
-    kwHistory.unshift({ n: number, icon: srcEmoji[sourceUsed] });
-    if (kwHistory.length > 8) kwHistory.pop();
-    renderKwHistory();
+    const fates = { crypto: 'Hardware entropy has spoken', 'random-org': 'The atmosphere has chosen', quantum: 'Quantum chance has decided' };
+    if (fateEl) fateEl.textContent = fates[sourceUsed];
+    if (statusEl && !statusEl.textContent.includes('unreachable')) statusEl.textContent = '';
 
     btn.disabled = false;
+    btn.textContent = 'Draw a lot 🪷';
     kwIsDrawing = false;
 
-    // Show result screen after short delay
-    setTimeout(() => kwShowResult(number, sourceUsed), 600);
+    // Show "Print the Result" button (item 5)
+    const printBtn = document.getElementById('kw-print-btn');
+    if (printBtn) printBtn.style.display = 'inline-flex';
 
   } catch(err) {
-    fateEl.textContent = 'The oracle is silent';
-    statusEl.textContent = 'Error: ' + err.message;
+    if (fateEl) fateEl.textContent = 'The oracle is silent';
+    if (statusEl) statusEl.textContent = 'Error: ' + err.message;
     btn.disabled = false;
+    btn.textContent = 'Draw a lot 🪷';
     kwIsDrawing = false;
   }
 }
 
-
-
-
-
-
-
-function renderKwHistory() {
-  const wrap = document.getElementById('kw-history-wrap');
-  const chips = document.getElementById('kw-chips');
-  if (kwHistory.length === 0) { wrap.style.display = 'none'; return; }
-  wrap.style.display = 'block';
-  chips.innerHTML = kwHistory.map(h => `<div class="kw-chip"><b>${h.n}</b><small>${h.icon}</small></div>`).join('');
+function kwSmartCapitalise(text) {
+  if (!text) return '';
+  text = text.trim();
+  text = text.charAt(0).toUpperCase() + text.slice(1);
+  if (!/[.!?]$/.test(text)) text += '.';
+  text = text.replace(/([.!?]\s+)([a-z])/g, (m, p1, p2) => p1 + p2.toUpperCase());
+  return text;
 }
+
+// Item 5: called when "Print the Result" is pressed
+function kwShowResult() {
+  if (!kwLastNumber) return;
+  document.getElementById('kw-main-view').style.display = 'none';
+  const rv = document.getElementById('kw-result-view');
+  rv.style.display = 'flex';
+
+  const rawQ = (document.getElementById('kw-question') || {}).value || '';
+  const smartQ = kwSmartCapitalise(rawQ);
+  document.getElementById('kw-result-question').textContent = smartQ || '(No question entered)';
+
+  // Item 7: "Lot" normal size, number 2x bold lime yellow, no "#"
+  document.getElementById('kw-result-lot-num').textContent = kwLastNumber;
+
+  // Item 9: date time
+  const dtEl = document.getElementById('kw-result-datetime');
+  if (dtEl) dtEl.textContent = kwResultDateTime;
+
+  // Item 10: lot link text without "#"
+  const LOT_BASE = 'https://sites.google.com/view/divinationitsutsuji/%E8%A7%80%E9%9F%B3%E9%9D%88%E7%B0%BD-guan-yin-fortune-divination-quan-%C3%A2m-linh-thi%C3%AAm/lots/';
+  const linkEl = document.getElementById('kw-lot-link');
+  const linkTextEl = document.getElementById('kw-lot-link-text');
+  if (linkEl) linkEl.href = LOT_BASE + kwLastNumber;
+  if (linkTextEl) linkTextEl.textContent = 'See what Lot ' + kwLastNumber + ' says ↗';
+
+  window.scrollTo(0, 0);
+}
+
+// Item 16: rich copy format
+function kwCopyResult() {
+  if (!kwLastNumber) return;
+  const rawQ = (document.getElementById('kw-question') || {}).value || '';
+  const smartQ = kwSmartCapitalise(rawQ);
+  const text = 'Divination (i) Tsutsuji\n觀音靈簽\n' + kwResultDateTime + '\n\nThe answer to your question:\n' + (smartQ || '(No question entered)') + '\nis: Lot ' + kwLastNumber;
+  navigator.clipboard.writeText(text).then(() => {
+    const el = document.getElementById('kw-result-copy-confirm');
+    if (el) { el.style.opacity = '1'; setTimeout(() => el.style.opacity = '0', 2200); }
+  });
+}
+
+// Item 11: ask another — clears all and returns to draw screen
+function kwAskAnother() {
+  kwLastNumber = null; kwLastSource = null; kwResultDateTime = '';
+  const numEl = document.getElementById('kw-number');
+  if (numEl) numEl.textContent = '—';
+  const fateEl = document.getElementById('kw-fate');
+  if (fateEl) fateEl.textContent = '';
+  const statusEl = document.getElementById('kw-status');
+  if (statusEl) statusEl.textContent = '';
+  const qEl = document.getElementById('kw-question');
+  if (qEl) qEl.value = '';
+  const printBtn = document.getElementById('kw-print-btn');
+  if (printBtn) printBtn.style.display = 'none';
+  const btn = document.getElementById('kw-btn');
+  if (btn) { btn.disabled = false; btn.textContent = 'Draw a lot 🪷'; }
+  document.getElementById('kw-result-view').style.display = 'none';
+  document.getElementById('kw-main-view').style.display = 'flex';
+  window.scrollTo(0, 0);
+}
+
+function kwBackToMain() {
+  document.getElementById('kw-result-view').style.display = 'none';
+  document.getElementById('kw-main-view').style.display = 'flex';
+}
+
+
+
+
+
+
 
 // ============================================================
 // B1.4 HAIRCUT ADVICE
@@ -3110,9 +3443,11 @@ async function loadTodayHaircut() {
   try {
     const resp = await fetch(HAIRCUT_GAS_URL + '?action=today', { mode: 'cors' });
     const data = await resp.json();
-    applyHaircutAdvice(document.getElementById('haircut-today-advice'), data.advice);
+    // GAS may return advice, result, text, or answer
+    const text = data.advice || data.result || data.text || data.answer || data.message || JSON.stringify(data);
+    applyHaircutAdvice(document.getElementById('haircut-today-advice'), text);
   } catch(e) {
-    document.getElementById('haircut-today-advice').innerHTML = 'Connect your Google Apps Script backend:<br><small style="opacity:0.5">Set HAIRCUT_GAS_URL in the JS to your deployed GAS URL</small>';
+    document.getElementById('haircut-today-advice').innerHTML = 'Unable to load — check connection.';
     document.getElementById('haircut-today-advice').style.color = 'rgba(255,255,255,0.5)';
     document.getElementById('haircut-today-advice').style.fontSize = '13px';
   }
@@ -3129,9 +3464,10 @@ async function checkHaircutDate() {
   try {
     const resp = await fetch(HAIRCUT_GAS_URL + '?action=date&date=' + encodeURIComponent(picker.value), { mode: 'cors' });
     const data = await resp.json();
-    applyHaircutAdvice(document.getElementById('haircut-custom-advice'), data.advice);
+    const text = data.advice || data.result || data.text || data.answer || data.message || JSON.stringify(data);
+    applyHaircutAdvice(document.getElementById('haircut-custom-advice'), text);
   } catch(e) {
-    document.getElementById('haircut-custom-advice').textContent = 'Backend not connected.';
+    document.getElementById('haircut-custom-advice').textContent = 'Unable to load — check connection.';
     document.getElementById('haircut-custom-advice').style.color = 'rgba(255,255,255,0.5)';
   }
 }
@@ -3167,8 +3503,25 @@ function goTo(screenId) {
   if (screenId === 'screen-b4') applyFsSubscriberGating();
   if (screenId === 'screen-vedic-charts') loadVedicCharts();
   if (screenId === 'screen-kwanyin') {
-    document.getElementById('kw-main-view').style.display = 'flex';
-    document.getElementById('kw-result-view').style.display = 'none';
+    // Reset kwanyin to fresh draw screen
+    resetKwanyin();
+  }
+  if (screenId === 'screen-dice') {
+    // Reset dice to fresh setup screen (item 27)
+    resetDiceToSetup();
+  }
+  if (screenId === 'screen-login') {
+    // Clear saved login so user can switch accounts
+    try { localStorage.removeItem('go_saved_user'); } catch(e) {}
+    currentUser = null; currentUserName = 'Guest'; isGuest = false;
+    currentFsSubscriber = false; currentHasPortal = false;
+  }
+  // Item 32: Reset flying star when leaving the screen
+  if (screenId === 'screen-b4' || (current === 'screen-flying-star' && screenId !== 'screen-flying-star')) {
+    resetFlyingStarScreen();
+  }
+  if (screenId === 'screen-flying-star') {
+    resetFlyingStarScreen();
   }
 }
 
@@ -3212,6 +3565,7 @@ document.addEventListener('touchend', e => {
     const active = document.querySelector('.screen.active');
     if (active && active.id === 'screen-facing-ruler') return;
     if (dx > 0) goBack(); // swipe right = back
+    // swipe left = forward (re-enter last screen if available) — noop for now, standard Android behaviour
   }
 }, { passive: true });
 
@@ -3483,6 +3837,8 @@ function hsCalculateDOB() {
     res.style.display = 'flex';
     res.scrollIntoView({ behavior: 'smooth', block: 'start' });
     btn.disabled = false; btn.textContent = 'Generate';
+    // Show 4Cs and Structure
+    showFcsResults(data);
   };
   script.onerror = function() { cleanup(); errEl.textContent = 'Error. Try again.'; errEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Generate'; };
   script.src = url; document.head.appendChild(script);
@@ -3494,6 +3850,44 @@ function hsResetDOB() {
   document.getElementById('hs-dob-error').style.display = 'none';
   document.getElementById('hs-gen-btn').disabled = false;
   document.getElementById('hs-gen-btn').textContent = 'Generate';
+  // Clear 4Cs
+  ['fcs-ran-wrap','fcs-yuri-wrap'].forEach(id => { const el = document.getElementById(id); if(el) el.style.display='none'; });
+  ['fcs-ran-list','fcs-yuri-list','str-ran-wrap','str-yuri-wrap'].forEach(id => { const el = document.getElementById(id); if(el) el.innerHTML=''; });
+}
+
+function renderFcsItem(containerId, item, showCheck) {
+  const el = document.getElementById(containerId);
+  if (!el || !item) return;
+  el.innerHTML = '';
+  if (!item.cn && !item.vn && !item.en) return;
+  const row = document.createElement('div');
+  row.className = 'fcs-row';
+  const emojiBox = document.createElement('div');
+  emojiBox.className = 'fcs-emoji-box';
+  emojiBox.textContent = item.emoji || '';
+  const mrBox = document.createElement('div');
+  mrBox.className = 'fcs-mr-box';
+  if (item.cn) { const d = document.createElement('div'); d.className = 'fcs-cn'; d.textContent = item.cn; mrBox.appendChild(d); }
+  if (item.vn) { const d = document.createElement('div'); d.className = 'fcs-vn'; d.textContent = item.vn + (item.vnAlt ? ' ~ ' + item.vnAlt : ''); mrBox.appendChild(d); }
+  if (item.en) { const d = document.createElement('div'); d.className = 'fcs-en'; d.textContent = item.en; mrBox.appendChild(d); }
+  const checkBox = document.createElement('div');
+  checkBox.className = 'fcs-check-box';
+  if (showCheck && item.check && item.check.trim() !== '') checkBox.textContent = '✓';
+  row.appendChild(emojiBox); row.appendChild(mrBox); row.appendChild(checkBox);
+  el.appendChild(row);
+}
+
+function showFcsResults(data) {
+  if (data.ran4Cs && data.ran4Cs.cn) {
+    renderFcsItem('fcs-ran-list', data.ran4Cs, true);
+    const el = document.getElementById('fcs-ran-wrap'); if(el) el.style.display='block';
+  }
+  if (data.ranStr && data.ranStr.cn) { renderFcsItem('str-ran-wrap', data.ranStr, false); }
+  if (data.yuri4Cs && data.yuri4Cs.cn) {
+    renderFcsItem('fcs-yuri-list', data.yuri4Cs, false);
+    const el = document.getElementById('fcs-yuri-wrap'); if(el) el.style.display='block';
+  }
+  if (data.yuriStr && data.yuriStr.cn) { renderFcsItem('str-yuri-wrap', data.yuriStr, false); }
 }
 
 function hsBuildDirGrid(gridId, baseUrl, orchid, isYuri) {
@@ -3525,203 +3919,26 @@ function hsFilterDir(gridId, val) {
 }
 
 // ============================================================
-// KWANYIN — updated draw with question, smart capitalisation
+// FLYING STAR — reset helper (item 32)
 // ============================================================
-function kwSmartCapitalise(text) {
-  if (!text) return '';
-  // Capitalise first letter
-  text = text.trim();
-  text = text.charAt(0).toUpperCase() + text.slice(1);
-  // Add period at end if missing
-  if (!/[.!?]$/.test(text)) text += '.';
-  // Capitalise after . ! ?
-  text = text.replace(/([.!?]\s+)([a-z])/g, (m, p1, p2) => p1 + p2.toUpperCase());
-  return text;
-}
-
-async function kwDraw() {
-  if (kwIsDrawing) return;
-  kwIsDrawing = true;
-  const btn = document.getElementById('kw-btn');
-  const numEl = document.getElementById('kw-number');
-  const fateEl = document.getElementById('kw-fate');
-  const statusEl = document.getElementById('kw-status');
-
-  btn.disabled = true;
-  fateEl.textContent = 'Reaching into the void…';
-  statusEl.textContent = '';
-  numEl.textContent = '—';
-
-  let number, sourceUsed = kwSelectedMethod;
-  try {
-    if (kwSelectedMethod === 'crypto') {
-      await new Promise(r => setTimeout(r, 200));
-      number = cryptoRandN(100);
-    } else if (kwSelectedMethod === 'random-org') {
-      statusEl.textContent = 'Contacting random.org…';
-      try { number = await randomOrgFetchN(100); }
-      catch { statusEl.textContent = 'Random.org unreachable — using crypto fallback'; number = cryptoRandN(100); sourceUsed = 'crypto'; }
-    } else {
-      statusEl.textContent = 'Querying quantum vacuum…';
-      try { number = await quantumFetchN(100); }
-      catch { statusEl.textContent = 'ANU unreachable — using crypto fallback'; number = cryptoRandN(100); sourceUsed = 'crypto'; }
-    }
-
-    numEl.classList.add('rolling');
-    const end = Date.now() + 900;
-    await new Promise(resolve => {
-      const tick = () => {
-        numEl.textContent = Math.floor(Math.random() * 100) + 1;
-        if (Date.now() < end) requestAnimationFrame(tick);
-        else { numEl.classList.remove('rolling'); resolve(); }
-      };
-      requestAnimationFrame(tick);
-    });
-
-    numEl.textContent = number;
-    kwLastNumber = number;
-    kwLastSource = sourceUsed;
-
-    const fates = { crypto: 'Hardware entropy has spoken', 'random-org': 'The atmosphere has chosen', quantum: 'Quantum chance has decided' };
-    fateEl.textContent = fates[sourceUsed];
-    if (!statusEl.textContent.includes('fallback')) statusEl.textContent = '';
-
-    const srcEmoji = { crypto: '🔐', 'random-org': '📡', quantum: '⚛️' };
-    kwHistory.unshift({ n: number, icon: srcEmoji[sourceUsed] });
-    if (kwHistory.length > 8) kwHistory.pop();
-    renderKwHistory();
-
-    btn.disabled = false;
-    kwIsDrawing = false;
-    setTimeout(() => kwShowResult(number, sourceUsed), 600);
-
-  } catch(err) {
-    fateEl.textContent = 'The oracle is silent';
-    statusEl.textContent = 'Error: ' + err.message;
-    btn.disabled = false;
-    kwIsDrawing = false;
-  }
-}
-
-function kwShowResult(number, sourceUsed) {
-  document.getElementById('kw-main-view').style.display = 'none';
-  const rv = document.getElementById('kw-result-view');
-  rv.style.display = 'flex';
-
-  document.getElementById('kw-result-number').textContent = number;
-
-  // Get and display question
-  const rawQ = (document.getElementById('kw-question') || {}).value || '';
-  const smartQ = kwSmartCapitalise(rawQ);
-  document.getElementById('kw-result-question').textContent = smartQ || '(No question entered)';
-  document.getElementById('kw-result-lot-label').textContent = 'Lot #' + number;
-
-  // Set lot link
-  const LOT_BASE = 'https://sites.google.com/view/divinationitsutsuji/%E8%A7%80%E9%9F%B3%E9%9D%88%E7%B0%BD-guan-yin-fortune-divination-quan-%C3%A2m-linh-thi%C3%AAm/lots/';
-  document.getElementById('kw-lot-link').href = LOT_BASE + number;
-  document.getElementById('kw-lot-link').textContent = 'See what Lot #' + number + ' says ↗';
-}
-
-function kwCopyResult() {
-  if (!kwLastNumber) return;
-  const rawQ = (document.getElementById('kw-question') || {}).value || '';
-  const smartQ = kwSmartCapitalise(rawQ);
-  const text = 'The answer to your question:\n' + smartQ + '\nis: Lot #' + kwLastNumber;
-  navigator.clipboard.writeText(text).then(() => {
-    const el = document.getElementById('kw-result-copy-confirm');
-    el.style.opacity = '1';
-    setTimeout(() => el.style.opacity = '0', 2000);
-  });
-}
-
-function kwBackToMain() {
-  document.getElementById('kw-result-view').style.display = 'none';
-  document.getElementById('kw-main-view').style.display = 'flex';
-  const btn = document.getElementById('kw-btn');
-  btn.textContent = 'Draw a lot 🪷';
-  btn.disabled = false;
-}
-
-// ============================================================
-// DICE — rolling animation + emoji labels in results
-// ============================================================
-const DICE_COLORS = ['#e74c3c','#e67e22','#f1c40f','#2ecc71','#3498db','#9b59b6','#1abc9c','#e91e63'];
-
-async function rollDice() {
-  const { count, type, src } = diceSetup;
-  diceReps = [];
-  for (let i = 1; i <= count; i++) {
-    const rep = document.getElementById('die-rep-' + i).value.trim() || '(unnamed)';
-    diceReps.push(rep);
-  }
-
-  // Show rolling animation
-  document.getElementById('dice-rep-section').style.display = 'none';
-  const rollRow = document.getElementById('dice-roll-row');
-  rollRow.innerHTML = '';
-  for (let i = 0; i < count; i++) {
-    const die = document.createElement('div');
-    die.className = 'die-anim';
-    die.style.background = DICE_COLORS[i % DICE_COLORS.length];
-    die.style.animationDelay = (i * 0.07) + 's';
-    die.textContent = Math.floor(Math.random() * type) + 1;
-    rollRow.appendChild(die);
-  }
-  const rollWrap = document.getElementById('dice-rolling-wrap');
-  rollWrap.classList.add('active');
-
-  // Keep dice spinning while fetching
-  const updateInterval = setInterval(() => {
-    rollRow.querySelectorAll('.die-anim').forEach(d => {
-      d.textContent = Math.floor(Math.random() * type) + 1;
-    });
-  }, 120);
-
-  const results = [];
-  for (let i = 0; i < count; i++) {
-    const val = await getRandN(type, src);
-    results.push(val);
-  }
-
-  clearInterval(updateInterval);
-
-  // Show final values briefly in dice before switching to results
-  const dieDivs = rollRow.querySelectorAll('.die-anim');
-  dieDivs.forEach((d, i) => { d.textContent = results[i]; d.style.animation = 'none'; });
-  await new Promise(r => setTimeout(r, 800));
-
-  rollWrap.classList.remove('active');
-  const resSection = document.getElementById('dice-result-section');
-  resSection.classList.add('active');
-
-  const rows = document.getElementById('dice-result-rows');
-  rows.innerHTML = '';
-  for (let i = 0; i < count; i++) {
-    rows.innerHTML += `
-      <div class="dice-result-row">
-        <span class="dice-result-num">🎲 ${i+1}</span>
-        <span class="dice-result-rep">${diceReps[i]}</span>
-        <span class="dice-result-val">${results[i]}</span>
-      </div>
-    `;
-  }
-}
-
-function copyDiceResult() {
-  const rows = document.getElementById('dice-result-rows');
-  let text = 'QMDJ Dice Roll Results\n';
-  rows.querySelectorAll('.dice-result-row').forEach((r, i) => {
-    const rep = r.querySelector('.dice-result-rep').textContent;
-    const val = r.querySelector('.dice-result-val').textContent;
-    text += `🎲 ${i+1} · ${rep} → ${val}\n`;
-  });
-  navigator.clipboard.writeText(text.trim());
-}
-
-function rollAgain() {
-  document.getElementById('dice-result-section').classList.remove('active');
-  document.getElementById('dice-rolling-wrap').classList.remove('active');
-  document.getElementById('dice-rep-section').style.display = 'block';
+function resetFlyingStarScreen() {
+  const pSel = document.getElementById('fs-period-select');
+  const fSel = document.getElementById('fs-facing-select');
+  if (pSel) pSel.value = '';
+  if (fSel) fSel.value = '';
+  const wrap = document.getElementById('fs-chart-wrap');
+  if (wrap) wrap.classList.remove('active');
+  const img = document.getElementById('fs-chart-img');
+  if (img) { img.style.display = 'none'; img.src = ''; }
+  const na = document.getElementById('fs-chart-na');
+  if (na) na.style.display = 'none';
+  const dlWrap = document.getElementById('fs-download-wrap');
+  if (dlWrap) dlWrap.style.display = 'none';
+  // Also reset ruler chart if present
+  const rWrap = document.getElementById('ruler-chart-result');
+  if (rWrap) rWrap.style.display = 'none';
+  const rPSel = document.getElementById('period-select-ruler');
+  if (rPSel) rPSel.value = '';
 }
 
 // ============================================================
