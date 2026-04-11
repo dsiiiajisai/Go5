@@ -15,6 +15,19 @@
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
+/* Global touch feedback — every button gets a press feel */
+button:active, a.card:active, [onclick]:active {
+  opacity: 0.75 !important;
+  transform: scale(0.96) !important;
+  transition: opacity 0.08s, transform 0.08s !important;
+}
+/* Explicit active for inline copy/action buttons */
+.kw-action-btn:active, .copy-btn-pair button:active {
+  transform: scale(0.94) !important;
+  opacity: 0.7 !important;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.4) !important;
+}
+
 /* ============================================================
    RESET & VARIABLES
    ============================================================ */
@@ -614,9 +627,11 @@ html, body {
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
-  transition: background 0.15s;
+  transition: background 0.1s, transform 0.08s, opacity 0.08s;
+  -webkit-tap-highlight-color: rgba(200,169,110,0.3);
 }
 .result-copy-btn:hover { background: rgba(200,169,110,0.1); }
+.result-copy-btn:active { transform: scale(0.94); opacity: 0.7; background: rgba(200,169,110,0.2); }
 .result-period-btn {
   background: var(--sky);
   border: none;
@@ -822,15 +837,22 @@ html, body {
   outline: none;
   font-family: 'Crimson Pro', serif;
   -webkit-text-fill-color: #ffffff !important;
+  color-scheme: dark;
+  /* Inset box-shadow forces dark bg even on mobile Chrome */
+  box-shadow: inset 0 0 0 1000px rgba(0,0,60,0.92);
 }
 .die-rep-input:-webkit-autofill,
+.die-rep-input:-webkit-autofill:hover,
+.die-rep-input:-webkit-autofill:focus,
 .die-rep-input:not(:placeholder-shown) {
-  background: rgba(0,0,60,0.9) !important;
+  background: rgba(0,0,60,0.95) !important;
   -webkit-text-fill-color: white !important;
   color: white !important;
+  box-shadow: inset 0 0 0 1000px rgba(0,0,60,0.95) !important;
+  caret-color: white;
 }
-.die-rep-input::placeholder { color: rgba(255,255,255,0.25); }
-.die-rep-input:focus { border-color: var(--sky); }
+.die-rep-input::placeholder { color: rgba(255,255,255,0.35); }
+.die-rep-input:focus { border-color: var(--sky); box-shadow: inset 0 0 0 1000px rgba(0,0,80,0.95); }
 
 .dice-instruction-box {
   background: var(--dim2);
@@ -2596,7 +2618,7 @@ let kwHistory = [];
 // ============================================================
 // LOGIN — Direct OAuth redirect (no library, guaranteed to work)
 // ============================================================
-const AUTH_GAS_URL = 'https://script.google.com/macros/s/AKfycbwRMG58HZHlZqF9LIyAPk2iqs4ARXPww9d_U87mU6sVJtQlI7iieaRO5HljHeHpt_gMDA/exec';
+const AUTH_GAS_URL = 'https://script.google.com/macros/s/AKfycbxYeLiWI5bioUX5ha5A9qVv7fLmhrf8YkCcRjayRZJUG8Psv8rtaFQldKPKDyGnzRKw/exec';
 const GOOGLE_CLIENT_ID = '656273496716-j3hhabkjpk7e70uqppoqlrqpsammdjia.apps.googleusercontent.com';
 
 // On page load — check if returning from Google OAuth redirect
@@ -3583,28 +3605,52 @@ function kwBackToMain() {
 // ============================================================
 const HAIRCUT_GAS_URL = 'https://script.google.com/macros/s/AKfycbydOaI3Gee7fjOi67pIn5CB-_6P9trOWIdq_jPCw3ncB7lUL5H4fMnw8IkJhpia-oWLlg/exec';
 
-async function loadTodayHaircut() {
+// Haircut uses JSONP (same pattern as Bazi) because the GAS serves via google.script.run internally
+function haircutJsonp(params, onSuccess, onError) {
+  const cbName = 'haircutCB_' + Date.now();
+  const script = document.createElement('script');
+  const url = HAIRCUT_GAS_URL + '?' + params + '&callback=' + cbName;
+  const timeout = setTimeout(() => {
+    cleanup();
+    onError('Timeout — check connection.');
+  }, 12000);
+  function cleanup() {
+    clearTimeout(timeout);
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+  }
+  window[cbName] = function(data) {
+    cleanup();
+    onSuccess(data);
+  };
+  script.onerror = function() {
+    cleanup();
+    onError('Script load failed.');
+  };
+  document.head.appendChild(script);
+  script.src = url;
+}
+
+function loadTodayHaircut() {
   const now = new Date();
   document.getElementById('haircut-today-date').textContent = 'Loading…';
   document.getElementById('haircut-today-advice').textContent = 'Searching…';
   document.getElementById('haircut-today-advice').style.color = '';
 
-  try {
-    // GAS function: getTodayAdvice() returns {date, advice}
-    const resp = await fetch(HAIRCUT_GAS_URL + '?action=today', { mode: 'cors' });
-    const data = await resp.json();
+  haircutJsonp('action=today', function(data) {
     const dateText = data.date || now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
     document.getElementById('haircut-today-date').textContent = dateText;
     const text = data.advice || data.result || data.text || data.answer || data.message || 'No data returned.';
     applyHaircutAdvice(document.getElementById('haircut-today-advice'), text);
-  } catch(e) {
-    document.getElementById('haircut-today-date').textContent = new Date().toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-    document.getElementById('haircut-today-advice').textContent = 'Unable to load — please check connection.';
+  }, function(err) {
+    document.getElementById('haircut-today-date').textContent = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+    document.getElementById('haircut-today-advice').textContent = 'Unable to load — check your connection and try again.';
     document.getElementById('haircut-today-advice').style.color = 'rgba(255,255,255,0.5)';
-  }
+    document.getElementById('haircut-today-advice').style.fontSize = '';
+  });
 }
 
-async function checkHaircutDate() {
+function checkHaircutDate() {
   const picker = document.getElementById('haircut-date-picker');
   if (!picker.value) return;
   const d = new Date(picker.value + 'T12:00:00');
@@ -3612,16 +3658,14 @@ async function checkHaircutDate() {
   document.getElementById('haircut-custom-date-label').textContent = 'Result for: ' + dateStr;
   document.getElementById('haircut-custom-advice').textContent = 'Loading…';
   document.getElementById('haircut-custom-result').style.display = 'block';
-  try {
-    // GAS function: getAdviceForDate(dateObj) returns {date, advice}
-    const resp = await fetch(HAIRCUT_GAS_URL + '?action=date&date=' + encodeURIComponent(picker.value), { mode: 'cors' });
-    const data = await resp.json();
+
+  haircutJsonp('action=date&date=' + encodeURIComponent(picker.value), function(data) {
     const text = data.advice || data.result || data.text || data.answer || data.message || 'No data returned.';
     applyHaircutAdvice(document.getElementById('haircut-custom-advice'), text);
-  } catch(e) {
-    document.getElementById('haircut-custom-advice').textContent = 'Unable to load — check connection.';
+  }, function(err) {
+    document.getElementById('haircut-custom-advice').textContent = 'Unable to load: ' + err;
     document.getElementById('haircut-custom-advice').style.color = 'rgba(255,255,255,0.5)';
-  }
+  });
 }
 
 function applyHaircutAdvice(el, text) {
