@@ -21,6 +21,69 @@ button:active, a.card:active, [onclick]:active {
   transform: scale(0.96) !important;
   transition: opacity 0.08s, transform 0.08s !important;
 }
+
+/* Profile pic top-right */
+#profile-corner {
+  position: fixed;
+  top: 12px;
+  right: 14px;
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+#profile-corner img {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(0,191,255,0.5);
+  box-shadow: 0 0 10px rgba(0,191,255,0.3);
+}
+#profile-corner-code {
+  font-family: 'Cinzel', serif;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  color: rgba(0,191,255,0.7);
+  margin-top: 3px;
+  max-width: 50px;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Logout popup */
+#logout-popup {
+  position: fixed;
+  top: 60px;
+  right: 10px;
+  z-index: 9999;
+  background: rgba(0,0,60,0.97);
+  border: 1px solid rgba(0,191,255,0.35);
+  border-radius: 12px;
+  padding: 14px 18px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  min-width: 160px;
+}
+#logout-popup button {
+  background: none;
+  border: 1px solid rgba(255,80,80,0.5);
+  color: rgba(255,150,150,0.9);
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+}
+#logout-popup button:active { opacity: 0.7; }
 /* Explicit active for inline copy/action buttons */
 .kw-action-btn:active, .copy-btn-pair button:active {
   transform: scale(0.94) !important;
@@ -1317,6 +1380,15 @@ html, body {
 </head>
 <body>
 
+<!-- Profile pic corner (shown when logged in) -->
+<div id="profile-corner" onclick="toggleLogoutPopup()">
+  <img id="profile-corner-img" src="" alt="">
+  <div id="profile-corner-code"></div>
+</div>
+<div id="logout-popup">
+  <button onclick="doLogout()">⟵ Log out</button>
+</div>
+
 <!-- ============================================================
      SCREEN 0: LOGIN
      ============================================================ -->
@@ -1737,7 +1809,8 @@ html, body {
     <div id="dice-result-rows"></div>
 
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; justify-content:center;">
-      <button class="result-copy-btn" onclick="copyDiceResult()">📋 Copy Results</button>
+      <button class="result-copy-btn" onclick="copyDiceResultImage()">📷 Copy Image</button>
+      <button class="result-copy-btn" onclick="copyDiceResult()">📄 Copy Text</button>
       <button class="result-copy-btn" onclick="rollAgain()" style="border-color:rgba(255,80,80,0.4); color:rgba(255,80,80,0.8);">
         🎲 Roll Another Batch
       </button>
@@ -1858,17 +1931,23 @@ html, body {
   <div id="kw-result-view" style="display:none; flex-direction:column; align-items:center; width:100%; position:relative; min-height:80dvh;">
     <div style="position:fixed; inset:0; z-index:-1; background-image:url('https://i.postimg.cc/QNzjqmR1/Draw-AKwan-Yin-Lot.png'); background-size:cover; background-position:center;"></div>
     <div style="position:fixed; inset:0; z-index:-1; background:rgba(0,0,40,0.6);"></div>
-    <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; padding:32px 24px 48px; text-align:center; width:100%; max-width:420px;">
+    <div style="position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; padding:28px 24px 48px; text-align:center; width:100%; max-width:420px;">
 
-      <!-- Item 8: Guanyin image instead of big number -->
+      <!-- Divination (i) Tsutsuji ABOVE guanyin image -->
+      <div style="font-family:'Cinzel',serif; font-size:15px; font-weight:600; letter-spacing:0.15em; color:rgba(255,245,220,0.9); margin-bottom:14px;">Divination (i) Tsutsuji</div>
+
+      <!-- Guanyin image -->
       <img src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin"
-        style="max-height:130px; width:auto; filter:drop-shadow(0 0 16px rgba(255,245,80,0.7)); margin-bottom:20px;">
+        style="max-height:120px; width:auto; filter:drop-shadow(0 0 16px rgba(255,245,80,0.7)); margin-bottom:10px;">
 
-      <!-- Item 9: Date & time above the answer box -->
-      <div id="kw-result-datetime" style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.12em; color:rgba(255,245,220,0.55); margin-bottom:12px;"></div>
+      <!-- 觀音靈簽 stays below guanyin image -->
+      <div style="font-family:'Ma Shan Zheng',cursive; font-size:22px; color:#f5f0e8; text-shadow:0 0 8px rgba(255,245,80,0.8); margin-bottom:14px;">觀音靈簽</div>
+
+      <!-- Date & time -->
+      <div id="kw-result-datetime" style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.12em; color:rgba(255,245,220,0.55); margin-bottom:14px;"></div>
 
       <!-- Answer box -->
-      <div style="width:100%; margin-bottom:20px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:20px 22px; text-align:left;">
+      <div style="width:100%; margin-bottom:16px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:20px 22px; text-align:left;">
         <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,245,220,0.5); margin-bottom:12px;">The answer to your question:</div>
         <div id="kw-result-question" style="font-family:'Beau Rivage',cursive; font-size:22px; font-style:italic; color:#00BFFF; line-height:1.6; margin-bottom:14px;"></div>
         <div style="font-family:'Cinzel',serif; font-size:12px; color:rgba(255,245,220,0.5); margin-bottom:6px;">is:</div>
@@ -1876,6 +1955,9 @@ html, body {
           <span style="font-size:28px;">Lot</span><span style="display:inline-block; width:16px;"></span><span id="kw-result-lot-num" style="font-size:56px; font-weight:700; color:#ccff00; line-height:1;"></span>
         </div>
       </div>
+
+      <!-- Tsutsuji alt logo below answer box -->
+      <img src="https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png" alt="Tsutsuji" style="width:48px; height:48px; object-fit:contain; opacity:0.75; margin-bottom:16px;">
 
       <!-- See what Lot says button -->
       <a id="kw-lot-link" href="#" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px; background:rgba(255,245,220,0.12); border:1px solid rgba(255,245,220,0.3); border-radius:10px; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:rgba(255,245,220,0.8); text-decoration:none; margin-bottom:16px; cursor:pointer;">
@@ -1906,7 +1988,8 @@ html, body {
       </button>
       <div style="font-size:12px; color:#ff6666; text-align:center; margin-bottom:20px; font-style:italic;">Do not ask the same question again.</div>
 
-      <img src="https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png" alt="Tsutsuji alt logo" style="width:52px; height:52px; object-fit:contain; opacity:0.7; margin-bottom:12px;">
+      <!-- Footer text -->
+      <div style="font-size:11px; color:rgba(255,245,220,0.3); text-align:center; font-family:'Cinzel',serif; letter-spacing:0.1em;">You're using Super Portal 五 Go</div>
     </div>
   </div>
 
@@ -2031,7 +2114,7 @@ html, body {
       <img src="https://i.postimg.cc/hvw4ZmWx/MOTH-orchid-WHITE-web-email.png" style="width:70px; height:70px; object-fit:contain;">
     </div>
     <span style="font-size:13px; letter-spacing:0.12em; color:rgba(255,255,255,0.45); text-transform:uppercase; margin-bottom:8px; display:block;">Enter your ID code</span>
-    <input type="text" id="hs-id-input" style="width:100%; padding:18px 20px; font-size:22px; font-family:'Cinzel',serif; letter-spacing:0.15em; border-radius:12px; border:2px solid rgba(0,191,255,0.4); background:rgba(0,0,0,0.3); color:#fff; text-align:center; text-transform:uppercase; outline:none; margin-bottom:20px;" placeholder="TYPE HERE" autocomplete="off" autocorrect="off" spellcheck="false" oninput="hsFindByID()">
+    <input type="text" id="hs-id-input" style="width:100%; padding:18px 20px; font-size:22px; font-family:'Cinzel',serif; letter-spacing:0.15em; border-radius:12px; border:2px solid rgba(0,191,255,0.4); background:rgba(0,0,0,0.3); color:#fff; text-align:center; text-transform:uppercase; outline:none; margin-bottom:20px;" placeholder="TYPE HERE" autocomplete="off" autocorrect="off" spellcheck="false" oninput="hsFindByID()" onkeydown="if(event.key==='Enter'||event.key==='Go'){this.blur();hsFindByID();}">
     <div id="hs-id-no-result" style="color:#ff8a80; text-align:center; font-size:14px; display:none; margin-bottom:12px;">✕ ID CODE NOT FOUND</div>
     <div id="hs-id-result-wrap" style="display:none; flex-direction:column; align-items:center; gap:12px;">
       <div style="text-align:center; margin-top:40px; margin-bottom:8px;"><img src="https://i.postimg.cc/MZsnjcLC/Blue-Orchid-Web-Email.png" style="width:60px; height:60px; object-fit:contain; filter:drop-shadow(0 0 18px rgba(0,191,255,0.5));"></div>
@@ -2618,7 +2701,29 @@ let kwHistory = [];
 // ============================================================
 // LOGIN — Direct OAuth redirect (no library, guaranteed to work)
 // ============================================================
-const AUTH_GAS_URL = 'https://script.google.com/macros/s/AKfycbxYeLiWI5bioUX5ha5A9qVv7fLmhrf8YkCcRjayRZJUG8Psv8rtaFQldKPKDyGnzRKw/exec';
+// ============================================================
+// UNIFIED JSONP helper for ALL GAS calls (avoids CORS issues)
+// ============================================================
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbxYeLiWI5bioUX5ha5A9qVv7fLmhrf8YkCcRjayRZJUG8Psv8rtaFQldKPKDyGnzRKw/exec';
+
+function gasJsonp(params, onSuccess, onError, timeoutMs) {
+  const cbName = 'gasCB_' + Date.now() + '_' + Math.floor(Math.random()*9999);
+  const script = document.createElement('script');
+  const url = GAS_URL + '?' + params + '&callback=' + cbName;
+  const timer = setTimeout(() => {
+    cleanup();
+    if (onError) onError('Timeout');
+  }, timeoutMs || 15000);
+  function cleanup() {
+    clearTimeout(timer);
+    delete window[cbName];
+    if (script.parentNode) script.parentNode.removeChild(script);
+  }
+  window[cbName] = function(data) { cleanup(); onSuccess(data); };
+  script.onerror = function() { cleanup(); if (onError) onError('Script load failed'); };
+  document.head.appendChild(script);
+  script.src = url;
+}
 const GOOGLE_CLIENT_ID = '656273496716-j3hhabkjpk7e70uqppoqlrqpsammdjia.apps.googleusercontent.com';
 
 // On page load — check if returning from Google OAuth redirect
@@ -2637,6 +2742,7 @@ function checkOAuthReturn() {
         currentHasPortal = !!s.portal;
         isGuest = false;
         setHomeState();
+        updateProfileCorner();
         goTo('screen-home');
         return;
       } else {
@@ -2673,29 +2779,32 @@ async function validateWithToken(token) {
       return;
     }
 
-    const resp = await fetch(AUTH_GAS_URL + '?action=validateEmail&email=' + encodeURIComponent(email), { mode: 'cors' });
-    const data = await resp.json();
-
-    if (data.valid) {
-      currentUser = data.idCode || email;
-      currentUserName = data.name || data.idCode || email;
-      currentFsSubscriber = data.fsSubscriber === true;
-      currentHasPortal = data.hasPortal === true;
-      isGuest = false;
-      // Persist login
-      try {
-        localStorage.setItem('go_saved_user', JSON.stringify({
-          user: currentUser, name: currentUserName,
-          fs: currentFsSubscriber, portal: currentHasPortal,
-          email: email, savedAt: Date.now()
-        }));
-      } catch(e) {}
-      setHomeState();
-      goTo('screen-home');
-    } else {
+    // JSONP to avoid CORS with GAS
+    gasJsonp('action=validateEmail&email=' + encodeURIComponent(email), function(data) {
+      if (data.valid) {
+        currentUser = data.idCode || email;
+        currentUserName = data.name || data.idCode || email;
+        currentFsSubscriber = data.fsSubscriber === true;
+        currentHasPortal = data.hasPortal === true;
+        isGuest = false;
+        try {
+          localStorage.setItem('go_saved_user', JSON.stringify({
+            user: currentUser, name: currentUserName,
+            fs: currentFsSubscriber, portal: currentHasPortal,
+            email: email, savedAt: Date.now()
+          }));
+        } catch(e) {}
+        setHomeState();
+        updateProfileCorner();
+        goTo('screen-home');
+      } else {
+        goTo('screen-login');
+        showLoginError('Your account (' + email + ') is not registered. Please contact your administrator.');
+      }
+    }, function() {
       goTo('screen-login');
-      showLoginError('Your account (' + email + ') is not registered. Please contact your administrator.');
-    }
+      showLoginError('Connection error. Check your internet and try again.');
+    });
   } catch(e) {
     goTo('screen-login');
     showLoginError('Connection error. Check your internet and try again.');
@@ -2720,6 +2829,58 @@ function showLoginError(msg) {
   const el = document.getElementById('login-error');
   if (el) { el.textContent = msg; el.style.display = 'block'; }
 }
+
+const PROFILE_PIC_BASE = 'https://raw.githubusercontent.com/dsiiiajisai/Go5/main/Profile%20Pix/';
+
+function updateProfileCorner() {
+  const corner = document.getElementById('profile-corner');
+  const img = document.getElementById('profile-corner-img');
+  const code = document.getElementById('profile-corner-code');
+  if (!corner) return;
+  if (!currentUser || isGuest) {
+    corner.style.display = 'none';
+    return;
+  }
+  corner.style.display = 'flex';
+  code.textContent = currentUser;
+  // Try to load profile pic; fallback to default avatar
+  const picUrl = PROFILE_PIC_BASE + encodeURIComponent(currentUser) + '-Profile-Pic-R.png';
+  img.onerror = function() {
+    // No pic available - show initials circle
+    img.src = '';
+    img.style.display = 'none';
+    code.style.fontSize = '10px';
+    code.style.color = 'var(--sky)';
+    code.style.fontWeight = '700';
+  };
+  img.onload = function() { img.style.display = 'block'; };
+  img.src = picUrl;
+}
+
+function toggleLogoutPopup() {
+  const popup = document.getElementById('logout-popup');
+  if (!popup) return;
+  const showing = popup.style.display === 'flex';
+  popup.style.display = showing ? 'none' : 'flex';
+}
+
+function doLogout() {
+  try { localStorage.removeItem('go_saved_user'); } catch(e) {}
+  document.getElementById('logout-popup').style.display = 'none';
+  document.getElementById('profile-corner').style.display = 'none';
+  currentUser = null; currentUserName = 'Guest';
+  currentFsSubscriber = false; currentHasPortal = false; isGuest = false;
+  goTo('screen-login');
+}
+
+// Close popup when clicking elsewhere
+document.addEventListener('click', function(e) {
+  const popup = document.getElementById('logout-popup');
+  const corner = document.getElementById('profile-corner');
+  if (popup && popup.style.display === 'flex' && !popup.contains(e.target) && !corner.contains(e.target)) {
+    popup.style.display = 'none';
+  }
+});
 
 function showIdInput() {}
 function loginWithId() {}
@@ -3300,6 +3461,82 @@ async function rollDice() {
   resSection._results = results;
 }
 
+function copyDiceResultImage() {
+  const rows = document.getElementById('dice-result-rows');
+  const now = new Date();
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const dt = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear()
+    + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+
+  // Collect result rows
+  const results = [];
+  rows.querySelectorAll('.dice-result-row').forEach((r, idx) => {
+    let rep = '', val = '', marker = '';
+    r.querySelectorAll('span').forEach(s => {
+      const ff = s.style.fontFamily || '';
+      const col = s.style.color || '';
+      if (ff.includes('Beau Rivage')) rep = s.textContent.trim();
+      if (col.includes('204, 255, 0') || col === '#ccff00') val = s.textContent.trim();
+      const t = s.textContent.trim();
+      if (t === '✨' || t === '⭐' || t === '❌') marker = t;
+    });
+    results.push({ idx: idx + 1, rep, val, marker });
+  });
+
+  const W = 540, rowH = 54, H = 120 + results.length * rowH + 80;
+  const canvas = document.createElement('canvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+
+  // Background
+  const bg = ctx.createLinearGradient(0, 0, 0, H);
+  bg.addColorStop(0, '#000073'); bg.addColorStop(1, '#00004a');
+  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
+  const glow = ctx.createRadialGradient(W/2, 40, 0, W/2, 40, 200);
+  glow.addColorStop(0, 'rgba(0,191,255,0.15)'); glow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+
+  // Title
+  ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.font = 'bold 16px serif'; ctx.textAlign = 'center';
+  ctx.fillText('Divination (i) Tsutsuji', W/2, 30);
+  ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.font = '13px serif';
+  ctx.fillText('Dice Roll  ·  ' + dt, W/2, 52);
+
+  // Divider
+  ctx.strokeStyle = 'rgba(0,191,255,0.3)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(40, 66); ctx.lineTo(W-40, 66); ctx.stroke();
+
+  // Result rows
+  results.forEach((r, i) => {
+    const y = 80 + i * rowH;
+    // Row bg
+    ctx.fillStyle = i % 2 === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)';
+    ctx.fillRect(30, y - 2, W - 60, rowH - 4);
+
+    // Die number
+    ctx.fillStyle = 'rgba(0,191,255,0.8)'; ctx.font = '12px serif'; ctx.textAlign = 'left';
+    ctx.fillText(r.idx, 44, y + 30);
+
+    // Rep name
+    ctx.fillStyle = '#ffffff'; ctx.font = 'italic 18px serif';
+    ctx.fillText(r.rep || '(unnamed)', 70, y + 32);
+
+    // Marker + value right-aligned
+    const markerStr = r.marker ? r.marker + ' ' : '';
+    ctx.fillStyle = '#ccff00'; ctx.font = 'bold 28px serif'; ctx.textAlign = 'right';
+    ctx.fillText(markerStr + r.val, W - 44, y + 34);
+  });
+
+  // Footer
+  ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.font = '11px serif'; ctx.textAlign = 'center';
+  ctx.fillText("You're using Super Portal \u4e94 Go", W/2, H - 16);
+
+  const link = document.createElement('a');
+  link.download = 'dice-roll-' + dt.replace(/[: ,]/g, '-') + '.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
 function copyDiceResult() {
   const rows = document.getElementById('dice-result-rows');
   const now = new Date();
@@ -3502,29 +3739,41 @@ function kwCopyResultImage() {
   ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
   const img = new Image(); img.crossOrigin = 'anonymous';
   img.onload = function() {
-    const iH = 140, iW = img.width * (iH / img.height);
-    ctx.drawImage(img, W/2 - iW/2, 30, iW, iH);
-    ctx.fillStyle = '#f5f0e8'; ctx.font = 'bold 17px serif'; ctx.textAlign = 'center';
-    ctx.fillText('Divination (i) Tsutsuji  ·  \u89c0\u97f3\u9748\u7c64', W/2, 200);
+    // "Divination (i) Tsutsuji" above image
+    ctx.fillStyle = 'rgba(255,245,220,0.9)'; ctx.font = 'bold 16px serif'; ctx.textAlign = 'center';
+    ctx.fillText('Divination (i) Tsutsuji', W/2, 36);
+    // Guanyin image
+    const iH = 120, iW = img.width * (iH / img.height);
+    ctx.drawImage(img, W/2 - iW/2, 50, iW, iH);
+    // 觀音靈籤 below image
+    ctx.fillStyle = '#f5f0e8'; ctx.font = '22px serif';
+    ctx.fillText('觀音靈籤', W/2, 196);
+    // Date/time
     ctx.fillStyle = 'rgba(255,245,220,0.5)'; ctx.font = '13px serif';
-    ctx.fillText(dt, W/2, 224);
-    const bx = 40, by = 248, bw = W - 80, bh = 284;
+    ctx.fillText(dt, W/2, 220);
+    // Answer box
+    const bx = 40, by = 244, bw = W - 80, bh = 268;
     ctx.fillStyle = 'rgba(255,255,255,0.07)';
     kwRoundRect(ctx, bx, by, bw, bh, 16); ctx.fill();
     ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1;
     kwRoundRect(ctx, bx, by, bw, bh, 16); ctx.stroke();
     ctx.fillStyle = 'rgba(255,245,220,0.4)'; ctx.font = '11px serif'; ctx.textAlign = 'left';
-    ctx.fillText('THE ANSWER TO YOUR QUESTION:', bx+20, by+32);
+    ctx.fillText('THE ANSWER TO YOUR QUESTION:', bx+20, by+30);
     ctx.fillStyle = '#00BFFF'; ctx.font = 'italic 19px serif';
-    kwWrapText(ctx, question, bx+20, by+62, bw-40, 27);
+    kwWrapText(ctx, question, bx+20, by+58, bw-40, 26);
     ctx.fillStyle = 'rgba(255,245,220,0.4)'; ctx.font = '12px serif';
-    ctx.fillText('is:', bx+20, by+192);
+    ctx.fillText('is:', bx+20, by+180);
     ctx.fillStyle = '#c8a96e'; ctx.font = '28px serif';
-    ctx.fillText('Lot', bx+20, by+250);
-    ctx.fillStyle = '#ccff00'; ctx.font = 'bold 64px serif';
-    ctx.fillText(String(lotNum), bx+90, by+255);
-    ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.font = '11px serif'; ctx.textAlign = 'center';
-    ctx.fillText('\u00a9 2026 \u00b7 FS (ii) Shage \u00b7 All rights reserved', W/2, H-20);
+    ctx.fillText('Lot', bx+20, by+238);
+    ctx.fillStyle = '#ccff00'; ctx.font = 'bold 60px serif';
+    ctx.fillText(String(lotNum), bx+90, by+242);
+    // Tsutsuji alt logo substitute text below box
+    ctx.fillStyle = 'rgba(255,245,220,0.3)'; ctx.font = '12px serif'; ctx.textAlign = 'center';
+    ctx.fillText('♥ Tsutsuji ♥', W/2, by + bh + 28);
+    // Footer
+    ctx.fillStyle = 'rgba(255,245,220,0.22)'; ctx.font = '11px serif';
+    ctx.fillText("You’re using Super Portal 五 Go", W/2, H - 18);
+    // Download
     const link = document.createElement('a');
     link.download = 'kwanyin-lot-' + lotNum + '.png';
     link.href = canvas.toDataURL('image/png'); link.click();
@@ -3603,50 +3852,22 @@ function kwBackToMain() {
 // Uses Google Apps Script backend from B1.4. tab
 // The APPS_SCRIPT_URL below must be set to your deployed GAS web app URL
 // ============================================================
-const HAIRCUT_GAS_URL = 'https://script.google.com/macros/s/AKfycbydOaI3Gee7fjOi67pIn5CB-_6P9trOWIdq_jPCw3ncB7lUL5H4fMnw8IkJhpia-oWLlg/exec';
-
-// Haircut uses JSONP (same pattern as Bazi) because the GAS serves via google.script.run internally
-function haircutJsonp(params, onSuccess, onError) {
-  const cbName = 'haircutCB_' + Date.now();
-  const script = document.createElement('script');
-  const url = HAIRCUT_GAS_URL + '?' + params + '&callback=' + cbName;
-  const timeout = setTimeout(() => {
-    cleanup();
-    onError('Timeout — check connection.');
-  }, 12000);
-  function cleanup() {
-    clearTimeout(timeout);
-    delete window[cbName];
-    if (script.parentNode) script.parentNode.removeChild(script);
-  }
-  window[cbName] = function(data) {
-    cleanup();
-    onSuccess(data);
-  };
-  script.onerror = function() {
-    cleanup();
-    onError('Script load failed.');
-  };
-  document.head.appendChild(script);
-  script.src = url;
-}
+const HAIRCUT_GAS_URL = GAS_URL; // unified backend
 
 function loadTodayHaircut() {
   const now = new Date();
   document.getElementById('haircut-today-date').textContent = 'Loading…';
   document.getElementById('haircut-today-advice').textContent = 'Searching…';
   document.getElementById('haircut-today-advice').style.color = '';
-
-  haircutJsonp('action=today', function(data) {
+  gasJsonp('action=today', function(data) {
     const dateText = data.date || now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
     document.getElementById('haircut-today-date').textContent = dateText;
     const text = data.advice || data.result || data.text || data.answer || data.message || 'No data returned.';
     applyHaircutAdvice(document.getElementById('haircut-today-advice'), text);
-  }, function(err) {
+  }, function() {
     document.getElementById('haircut-today-date').textContent = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
     document.getElementById('haircut-today-advice').textContent = 'Unable to load — check your connection and try again.';
     document.getElementById('haircut-today-advice').style.color = 'rgba(255,255,255,0.5)';
-    document.getElementById('haircut-today-advice').style.fontSize = '';
   });
 }
 
@@ -3658,12 +3879,11 @@ function checkHaircutDate() {
   document.getElementById('haircut-custom-date-label').textContent = 'Result for: ' + dateStr;
   document.getElementById('haircut-custom-advice').textContent = 'Loading…';
   document.getElementById('haircut-custom-result').style.display = 'block';
-
-  haircutJsonp('action=date&date=' + encodeURIComponent(picker.value), function(data) {
+  gasJsonp('action=date&date=' + encodeURIComponent(picker.value), function(data) {
     const text = data.advice || data.result || data.text || data.answer || data.message || 'No data returned.';
     applyHaircutAdvice(document.getElementById('haircut-custom-advice'), text);
-  }, function(err) {
-    document.getElementById('haircut-custom-advice').textContent = 'Unable to load: ' + err;
+  }, function() {
+    document.getElementById('haircut-custom-advice').textContent = 'Unable to load — check connection.';
     document.getElementById('haircut-custom-advice').style.color = 'rgba(255,255,255,0.5)';
   });
 }
@@ -3972,6 +4192,10 @@ function hsFindByID() {
     document.getElementById('hs-id-num-yuri').textContent = 'No. ' + n;
     document.getElementById('hs-id-num-yuri').style.color = c.num;
     document.getElementById('hs-id-lbl-yuri').textContent = HS_LABELS[n-1];
+    // Dismiss keyboard when result found
+    const inp = document.getElementById('hs-id-input'); if(inp) inp.blur();
+    // Dismiss keyboard when result found
+    document.getElementById('hs-id-input').blur();
   } else {
     wrap.style.display = 'none'; err.style.display = 'block';
   }
@@ -4391,28 +4615,25 @@ function loadVedicCharts() {
   panel.style.display = 'none';
 
   // Ask GAS for available charts for this user's ID
-  fetch(AUTH_GAS_URL + '?action=vedicCharts&idCode=' + encodeURIComponent(currentUser), { mode: 'cors' })
-    .then(r => r.json())
-    .then(data => {
-      loading.style.display = 'none';
-      if (!data.charts || data.charts.length === 0) {
-        notSub.style.display = 'block';
-        return;
-      }
-      cards.innerHTML = '';
-      cards.style.display = 'flex';
-      data.charts.forEach(chartName => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `<div class="card-icon"><img src="https://i.postimg.cc/bwm6CsPv/Fuki_1.png" alt="" style="width:42px;height:42px;object-fit:contain;"></div><div class="card-text"><div class="card-title">${chartName}</div><div class="card-desc">Tap to view &amp; copy</div></div><div class="card-arrow">›</div>`;
-        card.onclick = () => loadVedicChart(chartName);
-        cards.appendChild(card);
-      });
-    })
-    .catch(() => {
-      loading.style.display = 'none';
+  gasJsonp('action=vedicCharts&idCode=' + encodeURIComponent(currentUser), function(data) {
+    loading.style.display = 'none';
+    if (!data.charts || data.charts.length === 0) {
       notSub.style.display = 'block';
+      return;
+    }
+    cards.innerHTML = '';
+    cards.style.display = 'flex';
+    data.charts.forEach(chartName => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `<div class="card-icon"><img src="https://i.postimg.cc/bwm6CsPv/Fuki_1.png" alt="" style="width:42px;height:42px;object-fit:contain;"></div><div class="card-text"><div class="card-title">${chartName}</div><div class="card-desc">Tap to view & copy</div></div><div class="card-arrow">›</div>`;
+      card.onclick = () => loadVedicChart(chartName);
+      cards.appendChild(card);
     });
+  }, function() {
+    loading.style.display = 'none';
+    notSub.style.display = 'block';
+  });
 }
 
 function loadVedicChart(chartName) {
@@ -4426,13 +4647,12 @@ function loadVedicChart(chartName) {
   // Navigate to data detail screen
   goTo('screen-vedic-data');
 
-  fetch(AUTH_GAS_URL + '?action=vedicData&idCode=' + encodeURIComponent(currentUser) + '&chart=' + encodeURIComponent(chartName), { mode: 'cors' })
-    .then(r => r.json())
-    .then(data => {
-      vedicCurrentData = data.data || '';
-      if (box) box.textContent = vedicCurrentData;
-    })
-    .catch(() => { if (box) box.textContent = 'Error loading. Please try again.'; });
+  gasJsonp('action=vedicData&idCode=' + encodeURIComponent(currentUser) + '&chart=' + encodeURIComponent(chartName), function(data) {
+    vedicCurrentData = data.data || '';
+    if (box) box.textContent = vedicCurrentData;
+  }, function() {
+    if (box) box.textContent = 'Error loading. Please try again.';
+  });
 }
 
 function vedicCopyData() {
