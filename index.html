@@ -2704,7 +2704,7 @@ let kwHistory = [];
 // ============================================================
 // UNIFIED JSONP helper for ALL GAS calls (avoids CORS issues)
 // ============================================================
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbxYeLiWI5bioUX5ha5A9qVv7fLmhrf8YkCcRjayRZJUG8Psv8rtaFQldKPKDyGnzRKw/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwUGyCrohY15wdQ59t2ZDR4zD3PHJyfLiSE9Zs0XZr6X-xGOlSzC-lQguixQH6u9LDe7A/exec';
 
 function gasJsonp(params, onSuccess, onError, timeoutMs) {
   const cbName = 'gasCB_' + Date.now() + '_' + Math.floor(Math.random()*9999);
@@ -3468,74 +3468,87 @@ function copyDiceResultImage() {
   const dt = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear()
     + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
 
-  // Collect result rows
   const results = [];
   rows.querySelectorAll('.dice-result-row').forEach((r, idx) => {
     let rep = '', val = '', marker = '';
     r.querySelectorAll('span').forEach(s => {
-      const ff = s.style.fontFamily || '';
-      const col = s.style.color || '';
+      const ff = s.style.fontFamily || '', col = s.style.color || '';
       if (ff.includes('Beau Rivage')) rep = s.textContent.trim();
       if (col.includes('204, 255, 0') || col === '#ccff00') val = s.textContent.trim();
       const t = s.textContent.trim();
-      if (t === '✨' || t === '⭐' || t === '❌') marker = t;
+      if (t === '\u2728' || t === '\u2b50' || t === '\u274c') marker = t;
     });
     results.push({ idx: idx + 1, rep, val, marker });
   });
 
-  const W = 540, rowH = 54, H = 120 + results.length * rowH + 80;
+  const DIE_IMGS_MAP = {
+    6:  'https://i.postimg.cc/sXZ0jFn4/d6_yellow_nh%C5%A9_1.png',
+    8:  'https://i.postimg.cc/W3JfNR9G/d8_white_3.png',
+    10: 'https://i.postimg.cc/fbnzz5LY/d10_Blue_solid_1.png'
+  };
+  const dieType = diceSetup && diceSetup.type ? diceSetup.type : 6;
+  const diceImgUrl = DIE_IMGS_MAP[dieType] || DIE_IMGS_MAP[6];
+  const tsutsujiUrl = 'https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png';
+
+  const W = 540, rowH = 56, topSection = 200;
+  const H = topSection + results.length * rowH + 110;
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
 
-  // Background
-  const bg = ctx.createLinearGradient(0, 0, 0, H);
-  bg.addColorStop(0, '#000073'); bg.addColorStop(1, '#00004a');
-  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-  const glow = ctx.createRadialGradient(W/2, 40, 0, W/2, 40, 200);
-  glow.addColorStop(0, 'rgba(0,191,255,0.15)'); glow.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
+  const bgGrad = ctx.createLinearGradient(0,0,0,H);
+  bgGrad.addColorStop(0,'#000073'); bgGrad.addColorStop(1,'#00004a');
+  ctx.fillStyle = bgGrad; ctx.fillRect(0,0,W,H);
+  const glow = ctx.createRadialGradient(W/2,60,0,W/2,60,220);
+  glow.addColorStop(0,'rgba(0,191,255,0.15)'); glow.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle = glow; ctx.fillRect(0,0,W,H);
 
-  // Title
-  ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.font = 'bold 16px serif'; ctx.textAlign = 'center';
-  ctx.fillText('Divination (i) Tsutsuji', W/2, 30);
-  ctx.fillStyle = 'rgba(255,255,255,0.6)'; ctx.font = '13px serif';
-  ctx.fillText('Dice Roll  ·  ' + dt, W/2, 52);
+  function drawAll(diceImg, tsutsujiImg) {
+    ctx.fillStyle='rgba(255,255,255,0.88)'; ctx.font='bold 18px serif'; ctx.textAlign='center';
+    ctx.fillText('Divination (i) Tsutsuji', W/2, 34);
+    ctx.fillStyle='rgba(0,191,255,0.75)'; ctx.font='14px serif';
+    ctx.fillText('Dice Roll', W/2, 58);
+    if (diceImg) {
+      const dH=72, dW=diceImg.width*(dH/diceImg.height);
+      ctx.drawImage(diceImg, W/2-dW/2, 68, dW, dH);
+    }
+    ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font='13px serif';
+    ctx.fillText(dt, W/2, 158);
+    ctx.strokeStyle='rgba(0,191,255,0.3)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(40,172); ctx.lineTo(W-40,172); ctx.stroke();
+    results.forEach((r,i) => {
+      const y = topSection + i*rowH - 16;
+      ctx.fillStyle = i%2===0?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.02)';
+      ctx.fillRect(30, y-2, W-60, rowH-4);
+      ctx.fillStyle='rgba(0,191,255,0.8)'; ctx.font='12px serif'; ctx.textAlign='left';
+      ctx.fillText(r.idx, 44, y+32);
+      ctx.fillStyle='#ffffff'; ctx.font='italic 18px serif';
+      ctx.fillText(r.rep||'(unnamed)', 70, y+34);
+      const ms = r.marker ? r.marker+' ' : '';
+      ctx.fillStyle='#ccff00'; ctx.font='bold 28px serif'; ctx.textAlign='right';
+      ctx.fillText(ms+r.val, W-44, y+36);
+    });
+    if (tsutsujiImg) {
+      const tH=52, tW=tsutsujiImg.width*(tH/tsutsujiImg.height);
+      ctx.drawImage(tsutsujiImg, W/2-tW/2, H-80, tW, tH);
+    }
+    ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.font='11px serif'; ctx.textAlign='center';
+    ctx.fillText("You\u2019re using Super Portal \u4e94 Go", W/2, H-16);
+    const link=document.createElement('a');
+    link.download='dice-roll-'+dt.replace(/[: ,]/g,'-')+'.png';
+    link.href=canvas.toDataURL('image/png'); link.click();
+  }
 
-  // Divider
-  ctx.strokeStyle = 'rgba(0,191,255,0.3)'; ctx.lineWidth = 1;
-  ctx.beginPath(); ctx.moveTo(40, 66); ctx.lineTo(W-40, 66); ctx.stroke();
-
-  // Result rows
-  results.forEach((r, i) => {
-    const y = 80 + i * rowH;
-    // Row bg
-    ctx.fillStyle = i % 2 === 0 ? 'rgba(255,255,255,0.04)' : 'rgba(255,255,255,0.02)';
-    ctx.fillRect(30, y - 2, W - 60, rowH - 4);
-
-    // Die number
-    ctx.fillStyle = 'rgba(0,191,255,0.8)'; ctx.font = '12px serif'; ctx.textAlign = 'left';
-    ctx.fillText(r.idx, 44, y + 30);
-
-    // Rep name
-    ctx.fillStyle = '#ffffff'; ctx.font = 'italic 18px serif';
-    ctx.fillText(r.rep || '(unnamed)', 70, y + 32);
-
-    // Marker + value right-aligned
-    const markerStr = r.marker ? r.marker + ' ' : '';
-    ctx.fillStyle = '#ccff00'; ctx.font = 'bold 28px serif'; ctx.textAlign = 'right';
-    ctx.fillText(markerStr + r.val, W - 44, y + 34);
-  });
-
-  // Footer
-  ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.font = '11px serif'; ctx.textAlign = 'center';
-  ctx.fillText("You're using Super Portal \u4e94 Go", W/2, H - 16);
-
-  const link = document.createElement('a');
-  link.download = 'dice-roll-' + dt.replace(/[: ,]/g, '-') + '.png';
-  link.href = canvas.toDataURL('image/png');
-  link.click();
+  let diceImg=null, tsutsujiImg=null, loaded=0;
+  function onLoaded(){ loaded++; if(loaded===2) drawAll(diceImg,tsutsujiImg); }
+  const di=new Image(); di.crossOrigin='anonymous';
+  di.onload=function(){diceImg=di;onLoaded();}; di.onerror=function(){onLoaded();};
+  di.src=diceImgUrl;
+  const ti=new Image(); ti.crossOrigin='anonymous';
+  ti.onload=function(){tsutsujiImg=ti;onLoaded();}; ti.onerror=function(){onLoaded();};
+  ti.src=tsutsujiUrl;
 }
+
 
 function copyDiceResult() {
   const rows = document.getElementById('dice-result-rows');
@@ -3727,63 +3740,129 @@ function kwCopyResultImage() {
   const question = smartQ || '(No question entered)';
   const lotNum = kwLastNumber;
   const dt = kwResultDateTime;
-  const W = 540, H = 760;
+
+  const W = 560, H = 840;
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
-  const bg = ctx.createLinearGradient(0, 0, 0, H);
-  bg.addColorStop(0, '#000073'); bg.addColorStop(1, '#00004a');
-  ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-  const glow = ctx.createRadialGradient(W/2, 80, 0, W/2, 80, 280);
-  glow.addColorStop(0, 'rgba(0,191,255,0.18)'); glow.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
-  const img = new Image(); img.crossOrigin = 'anonymous';
-  img.onload = function() {
-    // "Divination (i) Tsutsuji" above image
-    ctx.fillStyle = 'rgba(255,245,220,0.9)'; ctx.font = 'bold 16px serif'; ctx.textAlign = 'center';
-    ctx.fillText('Divination (i) Tsutsuji', W/2, 36);
-    // Guanyin image
-    const iH = 120, iW = img.width * (iH / img.height);
-    ctx.drawImage(img, W/2 - iW/2, 50, iW, iH);
-    // 觀音靈籤 below image
-    ctx.fillStyle = '#f5f0e8'; ctx.font = '22px serif';
-    ctx.fillText('觀音靈籤', W/2, 196);
-    // Date/time
-    ctx.fillStyle = 'rgba(255,245,220,0.5)'; ctx.font = '13px serif';
-    ctx.fillText(dt, W/2, 220);
+
+  const bgGrad = ctx.createLinearGradient(0,0,0,H);
+  bgGrad.addColorStop(0,'#000073'); bgGrad.addColorStop(1,'#00004a');
+  ctx.fillStyle = bgGrad; ctx.fillRect(0,0,W,H);
+  const glow = ctx.createRadialGradient(W/2,120,0,W/2,120,300);
+  glow.addColorStop(0,'rgba(0,191,255,0.15)'); glow.addColorStop(1,'rgba(0,0,0,0)');
+  ctx.fillStyle = glow; ctx.fillRect(0,0,W,H);
+
+  // We need: guanyin + tsutsuji_2 + optionally profile pic
+  const guanyinUrl = 'https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png';
+  const tsutsujiUrl = 'https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png';
+  const profileUrl = currentUser ? ('https://raw.githubusercontent.com/dsiiiajisai/Go5/main/Profile%20Pix/' + encodeURIComponent(currentUser) + '-Profile-Pic-R.png') : null;
+
+  let guanyinImg=null, tsutsujiImg=null, profileImg=null;
+  const totalToLoad = profileUrl ? 3 : 2;
+  let loaded = 0;
+
+  function onLoaded() {
+    loaded++;
+    if (loaded < totalToLoad) return;
+    drawCanvas();
+  }
+
+  function drawCanvas() {
+    // "Divination (i) Tsutsuji" — larger, dimmer
+    ctx.fillStyle = 'rgba(255,245,220,0.45)';
+    ctx.font = 'bold 22px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Divination (i) Tsutsuji', W/2, 44);
+
+    // Lots of space then Guanyin image
+    if (guanyinImg) {
+      const iH = 150, iW = guanyinImg.width * (iH / guanyinImg.height);
+      ctx.drawImage(guanyinImg, W/2 - iW/2, 70, iW, iH);
+    }
+
+    // 觀音靈簽 below guanyin
+    ctx.fillStyle = '#f5f0e8';
+    ctx.font = '26px serif';
+    ctx.fillText('\u89c0\u97f3\u9748\u7c64', W/2, 244);
+
+    // Lots of space then date/time
+    ctx.fillStyle = 'rgba(255,245,220,0.5)';
+    ctx.font = '13px serif';
+    ctx.fillText(dt, W/2, 290);
+
     // Answer box
-    const bx = 40, by = 244, bw = W - 80, bh = 268;
+    const bx=40, by=316, bw=W-80, bh=280;
     ctx.fillStyle = 'rgba(255,255,255,0.07)';
-    kwRoundRect(ctx, bx, by, bw, bh, 16); ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.2)'; ctx.lineWidth = 1;
-    kwRoundRect(ctx, bx, by, bw, bh, 16); ctx.stroke();
-    ctx.fillStyle = 'rgba(255,245,220,0.4)'; ctx.font = '11px serif'; ctx.textAlign = 'left';
+    kwRoundRect(ctx,bx,by,bw,bh,16); ctx.fill();
+    ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1;
+    kwRoundRect(ctx,bx,by,bw,bh,16); ctx.stroke();
+
+    ctx.fillStyle='rgba(255,245,220,0.4)'; ctx.font='11px serif'; ctx.textAlign='left';
     ctx.fillText('THE ANSWER TO YOUR QUESTION:', bx+20, by+30);
-    ctx.fillStyle = '#00BFFF'; ctx.font = 'italic 19px serif';
-    kwWrapText(ctx, question, bx+20, by+58, bw-40, 26);
-    ctx.fillStyle = 'rgba(255,245,220,0.4)'; ctx.font = '12px serif';
-    ctx.fillText('is:', bx+20, by+180);
-    ctx.fillStyle = '#c8a96e'; ctx.font = '28px serif';
-    ctx.fillText('Lot', bx+20, by+238);
-    ctx.fillStyle = '#ccff00'; ctx.font = 'bold 60px serif';
-    ctx.fillText(String(lotNum), bx+90, by+242);
-    // Tsutsuji alt logo substitute text below box
-    ctx.fillStyle = 'rgba(255,245,220,0.3)'; ctx.font = '12px serif'; ctx.textAlign = 'center';
-    ctx.fillText('♥ Tsutsuji ♥', W/2, by + bh + 28);
+
+    ctx.fillStyle='#00BFFF'; ctx.font='italic 20px serif';
+    kwWrapText(ctx, question, bx+20, by+62, bw-40, 28);
+
+    ctx.fillStyle='rgba(255,245,220,0.4)'; ctx.font='12px serif';
+    ctx.fillText('is:', bx+20, by+192);
+
+    ctx.fillStyle='#c8a96e'; ctx.font='28px serif';
+    ctx.fillText('Lot', bx+20, by+248);
+
+    ctx.fillStyle='#ccff00'; ctx.font='bold 62px serif';
+    ctx.fillText(String(lotNum), bx+90, by+252);
+
+    // Tsutsuji alt logo image below box
+    if (tsutsujiImg) {
+      const tH=58, tW=tsutsujiImg.width*(tH/tsutsujiImg.height);
+      ctx.drawImage(tsutsujiImg, W/2-tW/2, by+bh+18, tW, tH);
+    }
+
+    // Profile pic + ID code top-right corner
+    if (profileImg && currentUser) {
+      const pSize = 52;
+      // Circle clip
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(W-40, 40, pSize/2, 0, Math.PI*2);
+      ctx.clip();
+      ctx.drawImage(profileImg, W-40-pSize/2, 40-pSize/2, pSize, pSize);
+      ctx.restore();
+      // Ring
+      ctx.strokeStyle='rgba(0,191,255,0.6)'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(W-40, 40, pSize/2+1, 0, Math.PI*2); ctx.stroke();
+      // ID code
+      ctx.fillStyle='rgba(0,191,255,0.7)'; ctx.font='bold 11px serif'; ctx.textAlign='center';
+      ctx.fillText(currentUser, W-40, 74);
+    } else if (currentUser) {
+      ctx.fillStyle='rgba(0,191,255,0.6)'; ctx.font='bold 11px serif'; ctx.textAlign='right';
+      ctx.fillText(currentUser, W-16, 28);
+    }
+
     // Footer
-    ctx.fillStyle = 'rgba(255,245,220,0.22)'; ctx.font = '11px serif';
-    ctx.fillText("You’re using Super Portal 五 Go", W/2, H - 18);
-    // Download
-    const link = document.createElement('a');
-    link.download = 'kwanyin-lot-' + lotNum + '.png';
-    link.href = canvas.toDataURL('image/png'); link.click();
-    const el = document.getElementById('kw-result-copy-confirm');
-    if (el) { el.textContent = 'Image downloaded!'; el.style.opacity = '1';
-      setTimeout(() => { el.style.opacity = '0'; el.textContent = 'Copied!'; }, 2500); }
-  };
-  img.onerror = () => kwCopyResult();
-  img.src = 'https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png';
+    ctx.fillStyle='rgba(255,245,220,0.2)'; ctx.font='11px serif'; ctx.textAlign='center';
+    ctx.fillText("You\u2019re using Super Portal \u4e94 Go", W/2, H-16);
+
+    const link=document.createElement('a');
+    link.download='kwanyin-lot-'+lotNum+'.png';
+    link.href=canvas.toDataURL('image/png'); link.click();
+    const el=document.getElementById('kw-result-copy-confirm');
+    if(el){el.textContent='Image downloaded!';el.style.opacity='1';
+      setTimeout(()=>{el.style.opacity='0';el.textContent='Copied!';},2500);}
+  }
+
+  // Load images
+  const gi=new Image(); gi.crossOrigin='anonymous';
+  gi.onload=function(){guanyinImg=gi;onLoaded();}; gi.onerror=function(){onLoaded();}; gi.src=guanyinUrl;
+  const ti=new Image(); ti.crossOrigin='anonymous';
+  ti.onload=function(){tsutsujiImg=ti;onLoaded();}; ti.onerror=function(){onLoaded();}; ti.src=tsutsujiUrl;
+  if (profileUrl) {
+    const pi=new Image(); pi.crossOrigin='anonymous';
+    pi.onload=function(){profileImg=pi;onLoaded();}; pi.onerror=function(){onLoaded();}; pi.src=profileUrl;
+  }
 }
+
 function kwRoundRect(ctx, x, y, w, h, r) {
   ctx.beginPath(); ctx.moveTo(x+r, y);
   ctx.lineTo(x+w-r, y); ctx.quadraticCurveTo(x+w, y, x+w, y+r);
