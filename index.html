@@ -2779,9 +2779,6 @@ function checkOAuthReturn() {
         if (dbg) dbg.textContent = 'Cache invalidated (name was: ' + (s.name||'empty') + '). Please log in again.';
       }
     }
-        localStorage.removeItem('go_saved_user');
-      }
-    }
     const hash = window.location.hash;
     if (!hash || !hash.includes('access_token')) return;
     const params = new URLSearchParams(hash.replace('#', ''));
