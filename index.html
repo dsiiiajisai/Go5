@@ -7,6 +7,14 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#000073">
 <title>五 Go · Super Portal</title>
+<link rel="alternate" type="application/json+oembed"
+  href="https://dsiiiajisai.github.io/Go5/oembed.json"
+  title="五 Go Super Portal">
+<meta property="og:title" content="五 Go · Super Portal">
+<meta property="og:description" content="QMDJ, Divination, Fengshui, Life Study — your personal super portal.">
+<meta property="og:image" content="https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary">
 <link rel="icon" type="image/png" href="https://i.postimg.cc/ryZgWswz/Go5_favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400&family=Ma+Shan+Zheng&family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Beau+Rivage&display=swap" rel="stylesheet">
@@ -1036,7 +1044,7 @@ html, body {
   margin: 0 auto 30px;
   max-height: 180px;
   width: auto;
-  filter: drop-shadow(0 0 4px rgba(255,245,80,0.95)) drop-shadow(0 0 22px rgba(255,248,140,0.45));
+  filter: drop-shadow(0 0 6px rgba(204,255,0,0.9)) drop-shadow(0 0 22px rgba(204,255,0,0.5)) drop-shadow(0 0 50px rgba(204,255,0,0.2));
 }
 .kw-methods {
   display: flex;
@@ -1456,7 +1464,7 @@ html, body {
   <div class="cards">
     <!-- B1 -->
     <div class="card" onclick="goTo('screen-b1')">
-      <div class="card-icon"><img src="https://i.postimg.cc/4dtH6Ncp/Ds_iii_Ajisai_2.png" alt="DS"></div>
+      <div class="card-icon"><img src="https://i.postimg.cc/15ky2Vyf/ajisai-DS.png" alt="DS"></div>
       <div class="card-text">
         <div class="card-title">擇日 Date Selection DS</div>
         <div class="card-desc">DS (iii) Ajisai</div>
@@ -1468,8 +1476,8 @@ html, body {
     <div class="card" onclick="goTo('screen-b2')">
       <div class="card-icon"><img src="https://i.postimg.cc/SRYGBpwy/QMDJ-i-Botan.png" alt="QMDJ"></div>
       <div class="card-text">
-        <div class="card-title">奇門遁甲 QMDJ &amp; Divinations</div>
-        <div class="card-desc">QMDJ (i) Botan</div>
+        <div class="card-title">奇門遁甲 QMDJ<br>🔮 Divination</div>
+        <div class="card-desc">QMDJ (i) Botan, Divination (i) Tsutsuji, etc.</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
@@ -1856,7 +1864,7 @@ html, body {
       text-shadow: 0 0 8px rgba(255,245,80,0.9), 0 0 30px rgba(255,243,100,0.6);
       margin-bottom:20px;">觀音靈簽</div>
     <img src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin"
-      style="max-height:200px; width:auto; filter:drop-shadow(0 0 20px rgba(255,245,80,0.7)); margin-bottom:30px;">
+      style="max-height:200px; width:auto; filter:drop-shadow(0 0 8px rgba(204,255,0,0.95)) drop-shadow(0 0 28px rgba(204,255,0,0.55)) drop-shadow(0 0 60px rgba(204,255,0,0.25)); margin-bottom:30px;">
     <div style="font-family:'IM Fell English',serif; font-size:18px; font-style:italic; color:rgba(255,245,220,0.8); margin-bottom:40px;">
       Tap anywhere to enter
     </div>
@@ -1938,7 +1946,7 @@ html, body {
 
       <!-- Guanyin image -->
       <img src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin"
-        style="max-height:120px; width:auto; filter:drop-shadow(0 0 16px rgba(255,245,80,0.7)); margin-bottom:10px;">
+        style="max-height:120px; width:auto; filter:drop-shadow(0 0 8px rgba(204,255,0,0.95)) drop-shadow(0 0 28px rgba(204,255,0,0.55)) drop-shadow(0 0 60px rgba(204,255,0,0.25)); margin-bottom:10px;">
 
       <!-- 觀音靈簽 stays below guanyin image -->
       <div style="font-family:'Ma Shan Zheng',cursive; font-size:22px; color:#f5f0e8; text-shadow:0 0 8px rgba(255,245,80,0.8); margin-bottom:14px;">觀音靈簽</div>
@@ -1947,23 +1955,27 @@ html, body {
       <div id="kw-result-datetime" style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.12em; color:rgba(255,245,220,0.55); margin-bottom:14px;"></div>
 
       <!-- Answer box -->
-      <div style="width:100%; margin-bottom:16px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:20px 22px; text-align:left;">
+      <div style="width:100%; margin-bottom:10px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:20px 22px; text-align:left;">
         <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,245,220,0.5); margin-bottom:12px;">The answer to your question:</div>
-        <div id="kw-result-question" style="font-family:'Beau Rivage',cursive; font-size:22px; font-style:italic; color:#00BFFF; line-height:1.6; margin-bottom:14px;"></div>
+        <div id="kw-result-question" style="font-family:'Beau Rivage',cursive; font-size:22px; font-style:italic; color:#00E5FF; line-height:1.6; margin-bottom:14px;"></div>
         <div style="font-family:'Cinzel',serif; font-size:12px; color:rgba(255,245,220,0.5); margin-bottom:6px;">is:</div>
         <div id="kw-result-lot-label" style="font-family:'Cormorant Garamond',serif; font-weight:300; color:#c8a96e; line-height:1.2;">
           <span style="font-size:28px;">Lot</span><span style="display:inline-block; width:16px;"></span><span id="kw-result-lot-num" style="font-size:56px; font-weight:700; color:#ccff00; line-height:1;"></span>
         </div>
       </div>
 
+      <!-- Randomness source note -->
+      <div id="kw-result-source" style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; color:rgba(255,245,220,0.45); text-align:center; margin-bottom:14px; font-style:italic;"></div>
+
       <!-- Tsutsuji alt logo below answer box -->
       <img src="https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png" alt="Tsutsuji" style="width:48px; height:48px; object-fit:contain; opacity:0.75; margin-bottom:16px;">
 
       <!-- See what Lot says button -->
-      <a id="kw-lot-link" href="#" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px; background:rgba(255,245,220,0.12); border:1px solid rgba(255,245,220,0.3); border-radius:10px; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:rgba(255,245,220,0.8); text-decoration:none; margin-bottom:16px; cursor:pointer;">
+      <a id="kw-lot-link" href="#" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:8px; width:100%; padding:14px; background:rgba(255,245,220,0.12); border:1px solid rgba(255,245,220,0.3); border-radius:10px; font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:rgba(255,245,220,0.8); text-decoration:none; margin-bottom:4px; cursor:pointer;">
         <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" style="width:20px;height:20px;object-fit:contain;">
         <span id="kw-lot-link-text">See what this Lot says ↗</span>
       </a>
+      <div id="kw-tier-note" style="display:none; color:#ff6666; font-size:11px; text-align:center; margin-bottom:12px; font-style:italic;">Reserved for subscribed users</div>
 
       <!-- Section divider -->
       <div style="width:100%; height:1px; background:rgba(255,255,255,0.15); margin-bottom:16px;"></div>
@@ -2014,11 +2026,12 @@ html, body {
   </div>
 
   <div class="cards">
-    <div class="card grayed">
+    <div class="card" id="card-bara" onclick="goTo('screen-bara')">
       <div class="card-icon"><img src="https://i.postimg.cc/5NJLmvn2/bazi_i_Bara.png" alt="Bazi"></div>
       <div class="card-text">
-        <div class="card-title">八字 Bazi <span class="coming-soon-tag">Soon</span></div>
+        <div class="card-title">八字 Bazi (i) Bara</div>
         <div class="card-desc">Bazi (i) Bara</div>
+        <div id="bara-sub-note" style="display:none; color:#ff6666; font-size:11px; margin-top:3px; font-style:italic;">Subscription required</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
@@ -2417,7 +2430,7 @@ html, body {
     </div>
 
     <div class="card fs-tool-gated" onclick="goTo('screen-flying-star')">
-      <div class="card-icon" style="width:48px;flex-shrink:0;"></div>
+      <div class="card-icon"><img src="https://i.postimg.cc/nr5T0JbR/2NW1_1.png" alt="Flying Star" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
         <div class="card-title">Flying Star Charts</div>
         <div class="card-desc">All 飛星 fengshui charts lookup</div>
@@ -2682,6 +2695,8 @@ let currentUser = null;
 let currentUserName = 'Guest';
 let currentFsSubscriber = false;
 let currentHasPortal = false;
+let currentHasBara = false;
+let currentTier = 0; // 1, 2, or 3 (0 = none/guest)
 let isGuest = false;
 let mapInstance = null;
 let drawMode = false;
@@ -2740,6 +2755,8 @@ function checkOAuthReturn() {
         currentUserName = s.name;
         currentFsSubscriber = !!s.fs;
         currentHasPortal = !!s.portal;
+        currentHasBara = !!s.hasBara;
+        currentTier = s.tier || 0;
         isGuest = false;
         setHomeState();
         updateProfileCorner();
@@ -2786,11 +2803,14 @@ async function validateWithToken(token) {
         currentUserName = data.name || data.idCode || email;
         currentFsSubscriber = data.fsSubscriber === true;
         currentHasPortal = data.hasPortal === true;
+        currentHasBara = data.hasBara === true;
+        currentTier = data.tier || 0;
         isGuest = false;
         try {
           localStorage.setItem('go_saved_user', JSON.stringify({
             user: currentUser, name: currentUserName,
             fs: currentFsSubscriber, portal: currentHasPortal,
+            hasBara: currentHasBara, tier: currentTier,
             email: email, savedAt: Date.now()
           }));
         } catch(e) {}
@@ -2837,22 +2857,12 @@ function updateProfileCorner() {
   const img = document.getElementById('profile-corner-img');
   const code = document.getElementById('profile-corner-code');
   if (!corner) return;
-  if (!currentUser || isGuest) {
-    corner.style.display = 'none';
-    return;
-  }
+  if (!currentUser || isGuest) { corner.style.display = 'none'; return; }
   corner.style.display = 'flex';
-  code.textContent = currentUser;
-  // Try to load profile pic; fallback to default avatar
+  const tierLabel = currentTier > 0 ? ('Tier ' + currentTier) : '';
+  code.innerHTML = currentUser + (tierLabel ? '<br><span style="font-size:8px;color:rgba(0,191,255,0.6);letter-spacing:0.05em;">' + tierLabel + '</span>' : '');
   const picUrl = PROFILE_PIC_BASE + encodeURIComponent(currentUser) + '-Profile-Pic-R.png';
-  img.onerror = function() {
-    // No pic available - show initials circle
-    img.src = '';
-    img.style.display = 'none';
-    code.style.fontSize = '10px';
-    code.style.color = 'var(--sky)';
-    code.style.fontWeight = '700';
-  };
+  img.onerror = function() { img.src = ''; img.style.display = 'none'; };
   img.onload = function() { img.style.display = 'block'; };
   img.src = picUrl;
 }
@@ -2915,26 +2925,56 @@ function setHomeState() {
     b3.classList.add('grayed');
     b4.classList.add('grayed');
     b6.classList.add('grayed');
+    const _baraCard = document.getElementById('card-bara');
+    const _baraNote = document.getElementById('bara-sub-note');
+    if (_baraCard) { _baraCard.classList.add('grayed'); if (_baraNote) _baraNote.style.display = 'block'; }
     document.getElementById('home-greeting').textContent = 'Welcome, Guest';
   } else {
     b3.classList.remove('grayed');
     b4.classList.remove('grayed');
-    // Personal portal: only live if column H = X
+    // Personal portal: column C = X (hasPortal)
     if (currentHasPortal) {
       b6.classList.remove('grayed');
     } else {
       b6.classList.add('grayed');
     }
+    // Bara: column G = X (hasBara)
+    const baraCard = document.getElementById('card-bara');
+    const baraNote = document.getElementById('bara-sub-note');
+    if (baraCard) {
+      if (currentHasBara) {
+        baraCard.classList.remove('grayed');
+        if (baraNote) baraNote.style.display = 'none';
+      } else {
+        baraCard.classList.add('grayed');
+        if (baraNote) baraNote.style.display = 'block';
+      }
+    }
     document.getElementById('home-greeting').textContent = getTimeGreeting() + ', ' + currentUserName;
   }
 
-  // Gate fengshui tools based on column C subscriber status
+  // Gate fengshui tools
   applyFsSubscriberGating();
+  // Gate tier-based features
+  applyTierGating();
 
   // Visit counter (localStorage)
   let visits = parseInt(localStorage.getItem('go_portal_visits') || '0') + 1;
   localStorage.setItem('go_portal_visits', visits);
   document.getElementById('visit-count').textContent = visits.toLocaleString() + ' visits';
+}
+
+function applyTierGating() {
+  // "See what Lot says" — grayed for Tier 3 and guests
+  const linkEl = document.getElementById('kw-lot-link');
+  const noteEl = document.getElementById('kw-tier-note');
+  const canSeeLink = !isGuest && (currentTier === 1 || currentTier === 2);
+  if (linkEl) {
+    linkEl.style.pointerEvents = canSeeLink ? 'auto' : 'none';
+    linkEl.style.opacity = canSeeLink ? '1' : '0.3';
+    linkEl.style.cursor = canSeeLink ? 'pointer' : 'default';
+  }
+  if (noteEl) noteEl.style.display = canSeeLink ? 'none' : 'block';
 }
 
 function applyFsSubscriberGating() {
@@ -3435,25 +3475,28 @@ async function rollDice() {
   const rows = document.getElementById('dice-result-rows');
   rows.innerHTML = '';
 
+  function getDiceColor(val, maxVal) {
+    return val >= maxVal - 1 ? '#ccff00' : '#b7b7b7';
+  }
   function getDiceMarker(val, maxVal) {
     if (val === maxVal) return '\u2728';
     if (val === maxVal - 1) return '\u2b50';
-    if (val <= 2) return '\u274c';
     return '';
   }
 
   for (let i = 0; i < count; i++) {
     const marker = getDiceMarker(results[i], type);
+    const numColor = getDiceColor(results[i], type);
     rows.innerHTML += `
       <div class="dice-result-row" style="align-items:center;">
         <span style="display:flex;align-items:center;gap:6px;min-width:56px;">
           <img src="${imgSrc}" style="width:26px;height:26px;object-fit:contain;">
-          <span style="font-family:\'Cinzel\',serif;font-size:12px;color:var(--sky);">${i + 1}</span>
+          <span style="font-family:'Cinzel',serif;font-size:12px;color:var(--sky);">${i + 1}</span>
         </span>
-        <span style="flex:1;font-family:\'Beau Rivage\',cursive;font-size:18px;color:#ffffff;font-style:italic;">${diceReps[i]}</span>
+        <span style="flex:1;font-family:'Beau Rivage',cursive;font-size:18px;color:#ffffff;font-style:italic;">${diceReps[i]}</span>
         <span style="display:flex;align-items:center;justify-content:flex-end;min-width:80px;">
           ${marker ? `<span style="font-size:18px;margin-right:4px;">${marker}</span>` : ''}
-          <span style="font-family:\'Cormorant Garamond\',serif;font-size:2.4rem;font-weight:700;color:#ccff00;text-align:right;">${results[i]}</span>
+          <span style="font-family:'Cormorant Garamond',serif;font-size:2.4rem;font-weight:700;color:${numColor};text-align:right;">${results[i]}</span>
         </span>
       </div>
     `;
@@ -3481,16 +3524,18 @@ function copyDiceResultImage() {
     results.push({ idx: idx + 1, rep, val, marker });
   });
 
+  // d6 = double dice image, d8 and d10 use single
   const DIE_IMGS_MAP = {
-    6:  'https://i.postimg.cc/sXZ0jFn4/d6_yellow_nh%C5%A9_1.png',
+    6:  'https://i.postimg.cc/2Sw1KPTF/2_d6.png',
     8:  'https://i.postimg.cc/W3JfNR9G/d8_white_3.png',
     10: 'https://i.postimg.cc/fbnzz5LY/d10_Blue_solid_1.png'
   };
   const dieType = diceSetup && diceSetup.type ? diceSetup.type : 6;
   const diceImgUrl = DIE_IMGS_MAP[dieType] || DIE_IMGS_MAP[6];
   const tsutsujiUrl = 'https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png';
+  const profileUrl = currentUser ? ('https://raw.githubusercontent.com/dsiiiajisai/Go5/main/Profile%20Pix/' + encodeURIComponent(currentUser) + '-Profile-Pic-R.png') : null;
 
-  const W = 540, rowH = 56, topSection = 200;
+  const W = 560, rowH = 58, topSection = 230;
   const H = topSection + results.length * rowH + 110;
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
@@ -3499,56 +3544,93 @@ function copyDiceResultImage() {
   const bgGrad = ctx.createLinearGradient(0,0,0,H);
   bgGrad.addColorStop(0,'#000073'); bgGrad.addColorStop(1,'#00004a');
   ctx.fillStyle = bgGrad; ctx.fillRect(0,0,W,H);
-  const glow = ctx.createRadialGradient(W/2,60,0,W/2,60,220);
-  glow.addColorStop(0,'rgba(0,191,255,0.15)'); glow.addColorStop(1,'rgba(0,0,0,0)');
+  const glow = ctx.createRadialGradient(W/2,90,0,W/2,90,260);
+  glow.addColorStop(0,'rgba(0,191,255,0.14)'); glow.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle = glow; ctx.fillRect(0,0,W,H);
 
-  function drawAll(diceImg, tsutsujiImg) {
-    ctx.fillStyle='rgba(255,255,255,0.88)'; ctx.font='bold 18px serif'; ctx.textAlign='center';
-    ctx.fillText('Divination (i) Tsutsuji', W/2, 34);
-    ctx.fillStyle='rgba(0,191,255,0.75)'; ctx.font='14px serif';
-    ctx.fillText('Dice Roll', W/2, 58);
-    if (diceImg) {
-      const dH=72, dW=diceImg.width*(dH/diceImg.height);
-      ctx.drawImage(diceImg, W/2-dW/2, 68, dW, dH);
+  let diceImg=null, tsutsujiImg=null, profileImg=null;
+  const totalToLoad = profileUrl ? 3 : 2;
+  let loaded = 0;
+
+  function onLoaded() { loaded++; if (loaded >= totalToLoad) drawAll(); }
+
+  function drawAll() {
+    // Profile pic top-right — same as kwanyin
+    const pSize = 50, pX = W-40, pY = 46;
+    if (profileImg && currentUser) {
+      ctx.save();
+      ctx.beginPath(); ctx.arc(pX, pY, pSize/2, 0, Math.PI*2); ctx.clip();
+      ctx.drawImage(profileImg, pX-pSize/2, pY-pSize/2, pSize, pSize);
+      ctx.restore();
+      ctx.strokeStyle='rgba(0,191,255,0.6)'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(pX, pY, pSize/2+1, 0, Math.PI*2); ctx.stroke();
     }
-    ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font='13px serif';
-    ctx.fillText(dt, W/2, 158);
+    if (currentUser) {
+      ctx.fillStyle='rgba(0,191,255,0.75)'; ctx.font='bold 10px serif'; ctx.textAlign='center';
+      ctx.fillText(currentUser, pX, pY+pSize/2+14);
+      if (currentTier > 0) { ctx.fillStyle='rgba(0,191,255,0.5)'; ctx.font='9px serif'; ctx.fillText('Tier '+currentTier, pX, pY+pSize/2+26); }
+    }
+
+    // Title — dimmer, lower to clear profile pic
+    ctx.fillStyle='rgba(255,255,255,0.42)'; ctx.font='bold 20px serif'; ctx.textAlign='center';
+    ctx.fillText('Divination (i) Tsutsuji', W/2, 84);
+
+    // "Dice Roller" label
+    ctx.fillStyle='rgba(0,191,255,0.72)'; ctx.font='15px serif';
+    ctx.fillText('Dice Roller', W/2, 112);
+
+    // Dice image
+    if (diceImg) {
+      const dH=76, dW=diceImg.width*(dH/diceImg.height);
+      ctx.drawImage(diceImg, W/2-dW/2, 122, dW, dH);
+    }
+
+    // Date/time — lots of space after dice image
+    ctx.fillStyle='rgba(255,255,255,0.48)'; ctx.font='13px serif';
+    ctx.fillText(dt, W/2, 218);
+
+    // Divider
     ctx.strokeStyle='rgba(0,191,255,0.3)'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(40,172); ctx.lineTo(W-40,172); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(40,230); ctx.lineTo(W-40,230); ctx.stroke();
+
+    // Result rows
     results.forEach((r,i) => {
-      const y = topSection + i*rowH - 16;
+      const y = topSection + i*rowH - 12;
       ctx.fillStyle = i%2===0?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.02)';
-      ctx.fillRect(30, y-2, W-60, rowH-4);
+      ctx.fillRect(30, y-4, W-60, rowH-4);
       ctx.fillStyle='rgba(0,191,255,0.8)'; ctx.font='12px serif'; ctx.textAlign='left';
-      ctx.fillText(r.idx, 44, y+32);
+      ctx.fillText(r.idx, 44, y+34);
       ctx.fillStyle='#ffffff'; ctx.font='italic 18px serif';
-      ctx.fillText(r.rep||'(unnamed)', 70, y+34);
+      const repMax = W - 140;
+      ctx.fillText((r.rep||'(unnamed)').substring(0, 28), 68, y+36);
       const ms = r.marker ? r.marker+' ' : '';
-      ctx.fillStyle='#ccff00'; ctx.font='bold 28px serif'; ctx.textAlign='right';
-      ctx.fillText(ms+r.val, W-44, y+36);
+      ctx.fillStyle = r.marker ? '#ccff00' : '#b7b7b7';
+      ctx.font='bold 28px serif'; ctx.textAlign='right';
+      ctx.fillText(ms+r.val, W-44, y+38);
     });
+
+    // Tsutsuji flower anchored above footer
     if (tsutsujiImg) {
       const tH=52, tW=tsutsujiImg.width*(tH/tsutsujiImg.height);
-      ctx.drawImage(tsutsujiImg, W/2-tW/2, H-80, tW, tH);
+      ctx.drawImage(tsutsujiImg, W/2-tW/2, H-86, tW, tH);
     }
     ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.font='11px serif'; ctx.textAlign='center';
-    ctx.fillText("You\u2019re using Super Portal \u4e94 Go", W/2, H-16);
+    ctx.fillText("You\u2019re using Super Portal \u4e94 Go", W/2, H-18);
+
     const link=document.createElement('a');
-    link.download='dice-roll-'+dt.replace(/[: ,]/g,'-')+'.png';
+    link.download='dice-roller-'+dt.replace(/[: ,]/g,'-')+'.png';
     link.href=canvas.toDataURL('image/png'); link.click();
   }
 
-  let diceImg=null, tsutsujiImg=null, loaded=0;
-  function onLoaded(){ loaded++; if(loaded===2) drawAll(diceImg,tsutsujiImg); }
   const di=new Image(); di.crossOrigin='anonymous';
-  di.onload=function(){diceImg=di;onLoaded();}; di.onerror=function(){onLoaded();};
-  di.src=diceImgUrl;
+  di.onload=function(){diceImg=di;onLoaded();}; di.onerror=function(){onLoaded();}; di.src=diceImgUrl;
   const ti=new Image(); ti.crossOrigin='anonymous';
-  ti.onload=function(){tsutsujiImg=ti;onLoaded();}; ti.onerror=function(){onLoaded();};
-  ti.src=tsutsujiUrl;
+  ti.onload=function(){tsutsujiImg=ti;onLoaded();}; ti.onerror=function(){onLoaded();}; ti.src=tsutsujiUrl;
+  if (profileUrl) {
+    const pi=new Image(); pi.crossOrigin='anonymous';
+    pi.onload=function(){profileImg=pi;onLoaded();}; pi.onerror=function(){onLoaded();}; pi.src=profileUrl;
+  }
 }
-
 
 function copyDiceResult() {
   const rows = document.getElementById('dice-result-rows');
@@ -3556,7 +3638,7 @@ function copyDiceResult() {
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const dt = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear()
     + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-  let text = 'Divination (i) Tsutsuji\nDice Roll\n' + dt + '\n\n';
+  let text = 'Divination (i) Tsutsuji\nDice Roller\n' + dt + '\n\n';
   let idx = 1;
   rows.querySelectorAll('.dice-result-row').forEach(r => {
     let rep = '', val = '', marker = '';
@@ -3615,7 +3697,7 @@ function resetKwanyin() {
   const printBtn = document.getElementById('kw-print-btn');
   if (printBtn) printBtn.style.display = 'none';
   const btn = document.getElementById('kw-btn');
-  if (btn) { btn.disabled = false; btn.textContent = 'Draw a lot 🪷'; }
+  if (btn) { btn.disabled = false; btn.textContent = 'Draw a lot'; }
   // Reset method to quantum
   kwSelectedMethod = 'quantum';
   document.querySelectorAll('.kw-method-card').forEach(c => c.classList.remove('active'));
@@ -3679,7 +3761,7 @@ async function kwDraw() {
     if (statusEl && !statusEl.textContent.includes('unreachable')) statusEl.textContent = '';
 
     btn.disabled = false;
-    btn.textContent = 'Draw a lot 🪷';
+    btn.textContent = 'Draw a lot';
     kwIsDrawing = false;
 
     // Show "Print the Result" button (item 5)
@@ -3690,7 +3772,7 @@ async function kwDraw() {
     if (fateEl) fateEl.textContent = 'The oracle is silent';
     if (statusEl) statusEl.textContent = 'Error: ' + err.message;
     btn.disabled = false;
-    btn.textContent = 'Draw a lot 🪷';
+    btn.textContent = 'Draw a lot';
     kwIsDrawing = false;
   }
 }
@@ -3713,7 +3795,7 @@ function kwShowResult() {
 
   const rawQ = (document.getElementById('kw-question') || {}).value || '';
   const smartQ = kwSmartCapitalise(rawQ);
-  document.getElementById('kw-result-question').textContent = smartQ || '(No question entered)';
+  document.getElementById('kw-result-question').textContent = smartQ ? '\u201c' + smartQ + '\u201d' : '(No question entered)';
 
   // Item 7: "Lot" normal size, number 2x bold lime yellow, no "#"
   document.getElementById('kw-result-lot-num').textContent = kwLastNumber;
@@ -3728,6 +3810,12 @@ function kwShowResult() {
   const linkTextEl = document.getElementById('kw-lot-link-text');
   if (linkEl) linkEl.href = LOT_BASE + kwLastNumber;
   if (linkTextEl) linkTextEl.textContent = 'See what Lot ' + kwLastNumber + ' says ↗';
+  applyTierGating();
+
+  // Randomness source note
+  const sourceLabels = { 'quantum': '⚛️ Quantum', 'random-org': '📡 Atm.', 'crypto': '🔐 Crypto' };
+  const srcEl = document.getElementById('kw-result-source');
+  if (srcEl) srcEl.textContent = 'Randomness provided by ' + (sourceLabels[kwLastSource] || kwLastSource || 'Unknown');
 
   window.scrollTo(0, 0);
 }
@@ -3737,11 +3825,11 @@ function kwCopyResultImage() {
   if (!kwLastNumber) return;
   const rawQ = (document.getElementById('kw-question') || {}).value || '';
   const smartQ = kwSmartCapitalise(rawQ);
-  const question = smartQ || '(No question entered)';
+  const question = smartQ ? '\u201c' + smartQ + '\u201d' : '(No question entered)';
   const lotNum = kwLastNumber;
   const dt = kwResultDateTime;
 
-  const W = 560, H = 840;
+  const W = 560, H = 900;
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
@@ -3749,11 +3837,10 @@ function kwCopyResultImage() {
   const bgGrad = ctx.createLinearGradient(0,0,0,H);
   bgGrad.addColorStop(0,'#000073'); bgGrad.addColorStop(1,'#00004a');
   ctx.fillStyle = bgGrad; ctx.fillRect(0,0,W,H);
-  const glow = ctx.createRadialGradient(W/2,120,0,W/2,120,300);
-  glow.addColorStop(0,'rgba(0,191,255,0.15)'); glow.addColorStop(1,'rgba(0,0,0,0)');
+  const glow = ctx.createRadialGradient(W/2,160,0,W/2,160,320);
+  glow.addColorStop(0,'rgba(0,191,255,0.13)'); glow.addColorStop(1,'rgba(0,0,0,0)');
   ctx.fillStyle = glow; ctx.fillRect(0,0,W,H);
 
-  // We need: guanyin + tsutsuji_2 + optionally profile pic
   const guanyinUrl = 'https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png';
   const tsutsujiUrl = 'https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png';
   const profileUrl = currentUser ? ('https://raw.githubusercontent.com/dsiiiajisai/Go5/main/Profile%20Pix/' + encodeURIComponent(currentUser) + '-Profile-Pic-R.png') : null;
@@ -3762,87 +3849,79 @@ function kwCopyResultImage() {
   const totalToLoad = profileUrl ? 3 : 2;
   let loaded = 0;
 
-  function onLoaded() {
-    loaded++;
-    if (loaded < totalToLoad) return;
-    drawCanvas();
-  }
+  function onLoaded() { loaded++; if (loaded >= totalToLoad) drawCanvas(); }
 
   function drawCanvas() {
-    // "Divination (i) Tsutsuji" — larger, dimmer
-    ctx.fillStyle = 'rgba(255,245,220,0.45)';
-    ctx.font = 'bold 22px serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Divination (i) Tsutsuji', W/2, 44);
+    // Profile pic top-right (starts at y=20 for pic, ID below)
+    const pSize = 50;
+    const pX = W - 40, pY = 46;
+    if (profileImg && currentUser) {
+      ctx.save();
+      ctx.beginPath(); ctx.arc(pX, pY, pSize/2, 0, Math.PI*2); ctx.clip();
+      ctx.drawImage(profileImg, pX-pSize/2, pY-pSize/2, pSize, pSize);
+      ctx.restore();
+      ctx.strokeStyle='rgba(0,191,255,0.6)'; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.arc(pX, pY, pSize/2+1, 0, Math.PI*2); ctx.stroke();
+    }
+    // ID code below pic
+    if (currentUser) {
+      ctx.fillStyle='rgba(0,191,255,0.75)'; ctx.font='bold 10px serif'; ctx.textAlign='center';
+      ctx.fillText(currentUser, pX, pY + pSize/2 + 14);
+      if (currentTier > 0) {
+        ctx.fillStyle='rgba(0,191,255,0.5)'; ctx.font='9px serif';
+        ctx.fillText('Tier ' + currentTier, pX, pY + pSize/2 + 26);
+      }
+    }
 
-    // Lots of space then Guanyin image
+    // "Divination (i) Tsutsuji" — bigger, dimmer, starts lower to clear profile area
+    ctx.fillStyle='rgba(255,245,220,0.38)'; ctx.font='bold 20px serif'; ctx.textAlign='center';
+    ctx.fillText('Divination (i) Tsutsuji', W/2, 84);
+
+    // Lots of space then Guanyin
     if (guanyinImg) {
-      const iH = 150, iW = guanyinImg.width * (iH / guanyinImg.height);
-      ctx.drawImage(guanyinImg, W/2 - iW/2, 70, iW, iH);
+      const iH=145, iW=guanyinImg.width*(iH/guanyinImg.height);
+      ctx.drawImage(guanyinImg, W/2-iW/2, 108, iW, iH);
     }
 
     // 觀音靈簽 below guanyin
-    ctx.fillStyle = '#f5f0e8';
-    ctx.font = '26px serif';
-    ctx.fillText('\u89c0\u97f3\u9748\u7c64', W/2, 244);
+    ctx.fillStyle='#f5f0e8'; ctx.font='26px serif'; ctx.textAlign='center';
+    ctx.fillText('\u89c0\u97f3\u9748\u7c64', W/2, 276);
 
     // Lots of space then date/time
-    ctx.fillStyle = 'rgba(255,245,220,0.5)';
-    ctx.font = '13px serif';
-    ctx.fillText(dt, W/2, 290);
+    ctx.fillStyle='rgba(255,245,220,0.48)'; ctx.font='13px serif';
+    ctx.fillText(dt, W/2, 326);
 
-    // Answer box
-    const bx=40, by=316, bw=W-80, bh=280;
-    ctx.fillStyle = 'rgba(255,255,255,0.07)';
+    // Answer box — balanced vertically
+    const bx=36, by=352, bw=W-72, bh=286;
+    ctx.fillStyle='rgba(255,255,255,0.07)';
     kwRoundRect(ctx,bx,by,bw,bh,16); ctx.fill();
-    ctx.strokeStyle='rgba(255,255,255,0.2)'; ctx.lineWidth=1;
+    ctx.strokeStyle='rgba(255,255,255,0.18)'; ctx.lineWidth=1;
     kwRoundRect(ctx,bx,by,bw,bh,16); ctx.stroke();
 
-    ctx.fillStyle='rgba(255,245,220,0.4)'; ctx.font='11px serif'; ctx.textAlign='left';
+    ctx.fillStyle='rgba(255,245,220,0.38)'; ctx.font='11px serif'; ctx.textAlign='left';
     ctx.fillText('THE ANSWER TO YOUR QUESTION:', bx+20, by+30);
 
-    ctx.fillStyle='#00BFFF'; ctx.font='italic 20px serif';
+    // Question in bright blue with quotation marks
+    ctx.fillStyle='#00E5FF'; ctx.font='italic 19px serif';
     kwWrapText(ctx, question, bx+20, by+62, bw-40, 28);
 
-    ctx.fillStyle='rgba(255,245,220,0.4)'; ctx.font='12px serif';
-    ctx.fillText('is:', bx+20, by+192);
+    ctx.fillStyle='rgba(255,245,220,0.38)'; ctx.font='12px serif';
+    ctx.fillText('is:', bx+20, by+196);
 
     ctx.fillStyle='#c8a96e'; ctx.font='28px serif';
-    ctx.fillText('Lot', bx+20, by+248);
-
+    ctx.fillText('Lot', bx+20, by+256);
     ctx.fillStyle='#ccff00'; ctx.font='bold 62px serif';
-    ctx.fillText(String(lotNum), bx+90, by+252);
+    ctx.fillText(String(lotNum), bx+90, by+260);
 
-    // Tsutsuji alt logo image below box
+    // Tsutsuji flower tied to footer — anchored near bottom
     if (tsutsujiImg) {
-      const tH=58, tW=tsutsujiImg.width*(tH/tsutsujiImg.height);
-      ctx.drawImage(tsutsujiImg, W/2-tW/2, by+bh+18, tW, tH);
+      const tH=54, tW=tsutsujiImg.width*(tH/tsutsujiImg.height);
+      ctx.drawImage(tsutsujiImg, W/2-tW/2, H-90, tW, tH);
     }
 
-    // Profile pic + ID code top-right corner
-    if (profileImg && currentUser) {
-      const pSize = 52;
-      // Circle clip
-      ctx.save();
-      ctx.beginPath();
-      ctx.arc(W-40, 40, pSize/2, 0, Math.PI*2);
-      ctx.clip();
-      ctx.drawImage(profileImg, W-40-pSize/2, 40-pSize/2, pSize, pSize);
-      ctx.restore();
-      // Ring
-      ctx.strokeStyle='rgba(0,191,255,0.6)'; ctx.lineWidth=2;
-      ctx.beginPath(); ctx.arc(W-40, 40, pSize/2+1, 0, Math.PI*2); ctx.stroke();
-      // ID code
-      ctx.fillStyle='rgba(0,191,255,0.7)'; ctx.font='bold 11px serif'; ctx.textAlign='center';
-      ctx.fillText(currentUser, W-40, 74);
-    } else if (currentUser) {
-      ctx.fillStyle='rgba(0,191,255,0.6)'; ctx.font='bold 11px serif'; ctx.textAlign='right';
-      ctx.fillText(currentUser, W-16, 28);
-    }
-
-    // Footer
+    // Footer line — small gap after flower
     ctx.fillStyle='rgba(255,245,220,0.2)'; ctx.font='11px serif'; ctx.textAlign='center';
-    ctx.fillText("You\u2019re using Super Portal \u4e94 Go", W/2, H-16);
+    ctx.fillText("You\u2019re using Super Portal \u4e94 Go", W/2, H-18);
 
     const link=document.createElement('a');
     link.download='kwanyin-lot-'+lotNum+'.png';
@@ -3852,7 +3931,6 @@ function kwCopyResultImage() {
       setTimeout(()=>{el.style.opacity='0';el.textContent='Copied!';},2500);}
   }
 
-  // Load images
   const gi=new Image(); gi.crossOrigin='anonymous';
   gi.onload=function(){guanyinImg=gi;onLoaded();}; gi.onerror=function(){onLoaded();}; gi.src=guanyinUrl;
   const ti=new Image(); ti.crossOrigin='anonymous';
@@ -3909,7 +3987,7 @@ function kwAskAnother() {
   const printBtn = document.getElementById('kw-print-btn');
   if (printBtn) printBtn.style.display = 'none';
   const btn = document.getElementById('kw-btn');
-  if (btn) { btn.disabled = false; btn.textContent = 'Draw a lot 🪷'; }
+  if (btn) { btn.disabled = false; btn.textContent = 'Draw a lot'; }
   document.getElementById('kw-result-view').style.display = 'none';
   document.getElementById('kw-main-view').style.display = 'flex';
   window.scrollTo(0, 0);
