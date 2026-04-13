@@ -1530,10 +1530,6 @@ html, body {
     <span class="visit-num" id="visit-count">—</span>
   </div>
 
-  <!-- DEBUG PANEL — remove after fixing -->
-  <div id="debug-panel" style="width:100%;max-width:420px;margin:12px 0;background:rgba(0,0,0,0.7);border:1px solid rgba(255,80,80,0.5);border-radius:8px;padding:10px;color:#ff8;font-family:monospace;font-size:11px;word-break:break-all;">
-    Waiting for login data…
-  </div>
 
   <div class="portal-footer">
     <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
@@ -2724,7 +2720,7 @@ let kwHistory = [];
 // ============================================================
 // UNIFIED JSONP helper for ALL GAS calls (avoids CORS issues)
 // ============================================================
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbyStr5Z1u_zwZ48DbE4N6D-ZOJe8m-GfjTwBAATCYvczpAUyvF7HBji11bhbY3-oI7bDg/exec';
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbwnhEM3zfTLRof65C8KC3Nj4dtt8gACr0kwuzsWQHMls9VcY0aeP7Ba6F_Ntcecpf0QsQ/exec';
 
 function gasJsonp(params, onSuccess, onError, timeoutMs) {
   const cbName = 'gasCB_' + Date.now() + '_' + Math.floor(Math.random()*9999);
@@ -2750,33 +2746,47 @@ const GOOGLE_CLIENT_ID = '656273496716-j3hhabkjpk7e70uqppoqlrqpsammdjia.apps.goo
 // (runs after all functions are defined)
 function checkOAuthReturn() {
   try {
-    // First check for saved login in localStorage (max 30 days)
+    // Check for saved login in localStorage (max 30 days)
     const saved = localStorage.getItem('go_saved_user');
     if (saved && !window.location.hash.includes('access_token')) {
       const s = JSON.parse(saved);
       const age = Date.now() - (s.savedAt || 0);
-      // Invalidate if: too old, OR name looks wrong (equals idCode = old bad mapping)
-      const nameLooksWrong = !s.name || s.name === s.user || s.name === 'X' || s.name === '';
-      if (age < 30 * 24 * 3600 * 1000 && !nameLooksWrong) {
+      if (age < 30 * 24 * 3600 * 1000 && s.user && s.email) {
+        // Restore session immediately so user isn't logged out
         currentUser = s.user;
-        currentUserName = s.name;
+        currentUserName = s.name || s.user;
         currentFsSubscriber = !!s.fs;
         currentHasPortal = !!s.portal;
         currentHasBara = !!s.hasBara;
         currentTier = s.tier || 0;
         isGuest = false;
-        // Show cached data in debug panel
-        const dbg = document.getElementById('debug-panel');
-        if (dbg) dbg.innerHTML = '<pre style="font-size:10px;text-align:left;">FROM CACHE:\n' + JSON.stringify(s, null, 2) + '</pre>';
         setHomeState();
         updateProfileCorner();
         goTo('screen-home');
+        // Re-fetch from GAS in background to refresh name/portal/tier
+        gasJsonp('action=validateEmail&email=' + encodeURIComponent(s.email), function(data) {
+          if (data.valid) {
+            currentUserName = data.name || currentUser;
+            currentFsSubscriber = data.fsSubscriber === true;
+            currentHasPortal = data.hasPortal === true;
+            currentHasBara = data.hasBara === true;
+            currentTier = data.tier || 0;
+            // Update cache with fresh data
+            try {
+              localStorage.setItem('go_saved_user', JSON.stringify({
+                user: currentUser, name: currentUserName,
+                fs: currentFsSubscriber, portal: currentHasPortal,
+                hasBara: currentHasBara, tier: currentTier,
+                email: s.email, savedAt: Date.now()
+              }));
+            } catch(e) {}
+            setHomeState();
+            updateProfileCorner();
+          }
+        }, null);
         return;
       } else {
-        // Bad/stale cache — delete it and force fresh login
         localStorage.removeItem('go_saved_user');
-        const dbg = document.getElementById('debug-panel');
-        if (dbg) dbg.textContent = 'Cache invalidated (name was: ' + (s.name||'empty') + '). Please log in again.';
       }
     }
     const hash = window.location.hash;
@@ -2811,10 +2821,6 @@ async function validateWithToken(token) {
 
     // JSONP to avoid CORS with GAS
     gasJsonp('action=validateEmail&email=' + encodeURIComponent(email), function(data) {
-      // DEBUG — show raw response on screen
-      const dbg = document.getElementById('debug-panel');
-      if (dbg) dbg.innerHTML = '<pre style="font-size:10px;text-align:left;overflow:auto;max-height:200px;">' + JSON.stringify(data, null, 2) + '</pre>';
-
       if (data.valid) {
         currentUser = data.idCode || email;
         currentUserName = data.name || data.idCode || email;
