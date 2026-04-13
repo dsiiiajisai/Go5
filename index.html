@@ -1530,6 +1530,11 @@ html, body {
     <span class="visit-num" id="visit-count">—</span>
   </div>
 
+  <!-- DEBUG PANEL — remove after fixing -->
+  <div id="debug-panel" style="width:100%;max-width:420px;margin:12px 0;background:rgba(0,0,0,0.7);border:1px solid rgba(255,80,80,0.5);border-radius:8px;padding:10px;color:#ff8;font-family:monospace;font-size:11px;word-break:break-all;">
+    Waiting for login data…
+  </div>
+
   <div class="portal-footer">
     <div class="footer-credit">Developed by <strong>Claude</strong> (Anthropic) · Conceived &amp; directed by <strong>FS (ii) Shage</strong></div>
     <div class="footer-copy">© 2026 · FS (ii) Shage · All rights reserved</div>
@@ -2798,6 +2803,10 @@ async function validateWithToken(token) {
 
     // JSONP to avoid CORS with GAS
     gasJsonp('action=validateEmail&email=' + encodeURIComponent(email), function(data) {
+      // DEBUG — show raw response on screen
+      const dbg = document.getElementById('debug-panel');
+      if (dbg) dbg.innerHTML = '<pre style="font-size:10px;text-align:left;overflow:auto;max-height:200px;">' + JSON.stringify(data, null, 2) + '</pre>';
+
       if (data.valid) {
         currentUser = data.idCode || email;
         currentUserName = data.name || data.idCode || email;
