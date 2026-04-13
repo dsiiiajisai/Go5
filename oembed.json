@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "type": "rich",
+  "provider_name": "五 Go Super Portal",
+  "provider_url": "https://dsiiiajisai.github.io/Go5/",
+  "title": "五 Go · Super Portal",
+  "description": "QMDJ, Divination, Fengshui & Life Study — your personal super portal.",
+  "thumbnail_url": "https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png",
+  "thumbnail_width": 200,
+  "thumbnail_height": 200,
+  "html": "<iframe src='https://dsiiiajisai.github.io/Go5/' width='420' height='700' frameborder='0' style='border-radius:16px;'></iframe>",
+  "width": 420,
+  "height": 700
+}
