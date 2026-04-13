@@ -2755,7 +2755,9 @@ function checkOAuthReturn() {
     if (saved && !window.location.hash.includes('access_token')) {
       const s = JSON.parse(saved);
       const age = Date.now() - (s.savedAt || 0);
-      if (age < 30 * 24 * 3600 * 1000) {
+      // Invalidate if: too old, OR name looks wrong (equals idCode = old bad mapping)
+      const nameLooksWrong = !s.name || s.name === s.user || s.name === 'X' || s.name === '';
+      if (age < 30 * 24 * 3600 * 1000 && !nameLooksWrong) {
         currentUser = s.user;
         currentUserName = s.name;
         currentFsSubscriber = !!s.fs;
@@ -2763,11 +2765,20 @@ function checkOAuthReturn() {
         currentHasBara = !!s.hasBara;
         currentTier = s.tier || 0;
         isGuest = false;
+        // Show cached data in debug panel
+        const dbg = document.getElementById('debug-panel');
+        if (dbg) dbg.innerHTML = '<pre style="font-size:10px;text-align:left;">FROM CACHE:\n' + JSON.stringify(s, null, 2) + '</pre>';
         setHomeState();
         updateProfileCorner();
         goTo('screen-home');
         return;
       } else {
+        // Bad/stale cache — delete it and force fresh login
+        localStorage.removeItem('go_saved_user');
+        const dbg = document.getElementById('debug-panel');
+        if (dbg) dbg.textContent = 'Cache invalidated (name was: ' + (s.name||'empty') + '). Please log in again.';
+      }
+    }
         localStorage.removeItem('go_saved_user');
       }
     }
