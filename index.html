@@ -1466,7 +1466,7 @@ html, body {
     <div class="card" onclick="goTo('screen-b1')">
       <div class="card-icon"><img src="https://i.postimg.cc/15ky2Vyf/ajisai-DS.png" alt="DS"></div>
       <div class="card-text">
-        <div class="card-title">📅 擇日 Date Selection DS</div>
+        <div class="card-title">📅 擇日 Date Selection</div>
         <div class="card-desc">DS (iii) Ajisai</div>
       </div>
       <div class="card-arrow">›</div>
@@ -1580,7 +1580,7 @@ html, body {
       <div class="card-arrow">›</div>
     </div>
 
-    <div class="card" onclick="goTo('screen-haircut')">
+    <div class="card" onclick="goTo('screen-haircut-splash')">
       <div class="card-icon">💇🏻</div>
       <div class="card-text">
         <div class="card-title">Haircut Advice</div>
@@ -1627,29 +1627,50 @@ html, body {
 <!-- ============================================================
      SCREEN B1.4: HAIRCUT ADVICE
      ============================================================ -->
+<!-- ============================================================
+     SCREEN: HAIRCUT SPLASH
+     ============================================================ -->
+<div id="screen-haircut-splash" class="screen" style="position:relative; overflow:hidden; cursor:pointer; justify-content:center; align-items:center;" onclick="haircutSplashContinue()">
+  <img src="https://i.postimg.cc/6pZ3W739/Boddhisattva-haircut-fpmt-org-image.png"
+    style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0;">
+  <div style="position:absolute; inset:0; background:rgba(0,0,40,0.45); z-index:1;"></div>
+  <div style="position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; padding:40px 24px; text-align:center;">
+    <div style="font-family:'Cinzel',serif; font-size:20px; font-weight:600; letter-spacing:0.18em; color:#fff; text-shadow:0 2px 16px rgba(0,0,0,0.7); margin-bottom:16px;">Tap anywhere to continue</div>
+    <div style="font-size:13px; color:rgba(255,255,255,0.5); font-style:italic; letter-spacing:0.1em; position:absolute; bottom:28px;">fpmt.org image, enhanced by Gemini</div>
+  </div>
+</div>
+
 <div id="screen-haircut" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-b1')">‹</button>
     <span class="inner-title">DS (iii) Ajisai</span>
   </div>
 
+  <!-- Bodhisattva logo with lime glow -->
+  <div style="text-align:center; margin-bottom:20px;">
+    <img id="haircut-logo-img" src="https://i.postimg.cc/Jn0gckSD/Boddhisattva-cutting-hai.png"
+      style="width:90px; height:90px; object-fit:contain;"
+      alt="Bodhisattva">
+  </div>
+
   <div class="haircut-box">
-    <div class="haircut-box-label">Today's Advice</div>
-    <div class="haircut-date-display" id="haircut-today-date">Loading…</div>
-    <div class="haircut-advice" id="haircut-today-advice">Searching…</div>
+    <div class="haircut-box-label" style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(0,191,255,0.6); margin-bottom:8px;">Advice for Today</div>
+    <div class="haircut-date-display" id="haircut-today-date" style="font-family:'Cinzel',serif; font-size:15px; color:var(--sky); margin-bottom:10px;">Loading…</div>
+    <div class="haircut-advice" id="haircut-today-advice" style="font-weight:400;">Searching…</div>
   </div>
 
   <div class="haircut-box" style="width:100%; max-width:420px;">
-    <div class="haircut-box-label">Check Another Date</div>
+    <div class="haircut-box-label" style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(0,191,255,0.6); margin-bottom:8px;">Look Up Another Date</div>
     <input type="date" class="haircut-date-input" id="haircut-date-picker" onchange="checkHaircutDate()">
     <button class="btn-primary" style="width:100%; height:46px; font-size:14px;" onclick="checkHaircutDate()">Lookup Date</button>
-    <div id="haircut-custom-result" style="margin-top:12px; display:none;">
-      <div style="font-size:13px; color:var(--text-dim); margin-bottom:6px;" id="haircut-custom-date-label"></div>
-      <div class="haircut-advice" id="haircut-custom-advice"></div>
+    <div id="haircut-custom-result" style="margin-top:28px; display:none;">
+      <div class="haircut-box-label" style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(0,191,255,0.6); margin-bottom:8px;">Advice for Selected Date</div>
+      <div class="haircut-date-display" id="haircut-custom-date-label" style="font-family:'Cinzel',serif; font-size:15px; color:var(--sky); margin-bottom:10px;"></div>
+      <div class="haircut-advice" id="haircut-custom-advice" style="font-weight:400;"></div>
     </div>
   </div>
 
-  <p class="haircut-note">
+  <p class="haircut-note" style="margin-top:20px;">
     You can look up any date in the current year.<br>
     Historical data available back to 2025.<br>
     <br>
@@ -2033,30 +2054,69 @@ html, body {
   </div>
 
   <div class="cards">
-    <div class="card" id="card-bara" onclick="goTo('screen-bara')">
+    <!-- B3 Button 1: Bazi (goes to screen-b3-bazi) -->
+    <div class="card" id="card-bara" onclick="goTo('screen-b3-bazi')">
       <div class="card-icon"><img src="https://i.postimg.cc/5NJLmvn2/bazi_i_Bara.png" alt="Bazi"></div>
       <div class="card-text">
-        <div class="card-title">八字 Bazi (i) Bara</div>
-        <div class="card-desc">Bazi (i) Bara</div>
+        <div class="card-title">八字 Bazi</div>
+        <div class="card-desc">Bazi (i) Bara, Bazi (ii) Ran, etc.</div>
         <div id="bara-sub-note" style="display:none; color:#ff6666; font-size:11px; margin-top:3px; font-style:italic;">Subscription required</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
 
-    <div class="card" onclick="goTo('screen-2hs')">
-      <div class="card-icon"><img src="https://i.postimg.cc/MZsnjcLC/Blue_Orchid_Web_Email.png" alt="2Hs"></div>
+    <!-- B3 Button 2: Vedic Portal Fuki -->
+    <div class="card" onclick="goTo('screen-vedic')">
+      <div class="card-icon"><img src="https://i.postimg.cc/7YhrDb9B/Fuki-portal-image.png" alt="Vedic" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
-        <div class="card-title">2Hs Portal</div>
-        <div class="card-desc">Bazi (ii) Ran, Bazi (iii) Yuri</div>
+        <div class="card-title">Vedic Portal Fuki</div>
+        <div class="card-desc">VA (i) Fuki, Vedic Tools, etc.</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> · Conceived &amp; directed by <strong>SPGo</strong></div>
+    <div class="footer-copy">© 2026 · SPGo · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B3-BAZI: Bazi sub-menu
+     ============================================================ -->
+<div id="screen-b3-bazi" class="screen">
+  <div class="inner-header">
+    <button class="back-btn" onclick="goTo('screen-b3')">‹</button>
+    <span class="inner-title">八字 Bazi</span>
+  </div>
+
+  <div class="logo-wrap" style="margin-bottom:20px;">
+    <img src="https://i.postimg.cc/5NJLmvn2/bazi_i_Bara.png" alt="Bara" style="width:60px;height:60px;">
+    <div class="logo-sub">Eight Characters</div>
+  </div>
+
+  <div class="cards">
+    <!-- 3.1: Bazi (i) Bara — go to site -->
+    <div class="card" onclick="window.open('https://sites.google.com/view/baziibara/home','_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/5NJLmvn2/bazi_i_Bara.png" alt="Bara" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title">Bazi (i) Bara</div>
+        <div class="card-desc">🌐 Go to site ↗</div>
+        <div id="bara-sub-note2" style="display:none; color:#ff6666; font-size:11px; margin-top:3px; font-style:italic;">Subscription required</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
 
-    <div class="card" onclick="goTo('screen-vedic')">
-      <div class="card-icon"><img src="https://i.postimg.cc/pLs0GpvV/Fuki_2.png" alt="Vedic"></div>
+    <!-- 3.2: 2Hs Portal (moved from screen-b3) -->
+    <div class="card" onclick="goTo('screen-2hs')">
+      <div class="card-icon" style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+        <img src="https://i.postimg.cc/MZsnjcLC/Blue_Orchid_Web_Email.png" alt="2Hs" style="width:36px;height:36px;object-fit:contain;">
+        <img src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png" alt="Kisuge" style="width:28px;height:28px;object-fit:contain;">
+      </div>
       <div class="card-text">
-        <div class="card-title">ज्योतिष Vedic Astrology</div>
-        <div class="card-desc">VA (i) Fuki</div>
+        <div class="card-title">2Hs Portal</div>
+        <div class="card-desc">Bazi (ii) Ran, Bazi (iii) Yuri</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
@@ -2322,17 +2382,21 @@ html, body {
 <div id="screen-vedic" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
     <button class="back-btn" onclick="goTo('screen-b3')">‹</button>
-    <span class="inner-title">Individual Life Study</span>
+    <span class="inner-title">Vedic Portal Fuki</span>
   </div>
 
-  <div class="logo-wrap" style="margin-bottom: 20px;">
-    <img src="https://i.postimg.cc/pLs0GpvV/Fuki_2.png" alt="Fuki" style="width:60px;height:60px;">
-    <div class="logo-title" style="font-size:16px;">VA (i) Fuki</div>
+  <div class="site-label" style="margin-bottom:10px;">VEDIC PORTAL FUKI</div>
+  <div class="logo-wrap" style="margin-bottom:20px;">
+    <img src="https://i.postimg.cc/7YhrDb9B/Fuki-portal-image.png" alt="Fuki Portal" style="width:70px;height:70px;object-fit:contain;filter:drop-shadow(0 0 14px rgba(0,191,255,0.5));">
   </div>
 
-  <div class="cards">
+  <!-- Tools section -->
+  <div style="width:100%; max-width:420px; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(0,191,255,0.5); margin-bottom:8px; padding:0 4px;">Your Vedic Tools</div>
+  <div style="width:100%; max-width:420px; height:1px; background:rgba(0,191,255,0.2); margin-bottom:14px;"></div>
+
+  <div class="cards" style="margin-bottom:20px;">
     <div class="card" onclick="goTo('screen-vedic-charts')">
-      <div class="card-icon"><img src="https://i.postimg.cc/bwm6CsPv/Fuki_1.png" alt="Charts"></div>
+      <div class="card-icon"><img src="https://i.postimg.cc/bwm6CsPv/Fuki_1.png" alt="Charts" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
         <div class="card-title">Your Divisional Chart Data</div>
         <div class="card-desc">Copy your D1, D9, ... chart data to feed to AI for reading</div>
@@ -2345,6 +2409,21 @@ html, body {
       <div class="card-text">
         <div class="card-title">Your Divisional Charts Images <span class="coming-soon-tag">Soon</span></div>
         <div class="card-desc">Visual chart display</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+
+  <!-- Sites section -->
+  <div style="width:100%; max-width:420px; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(0,191,255,0.5); margin-bottom:8px; padding:0 4px;">Sites</div>
+  <div style="width:100%; max-width:420px; height:1px; background:rgba(0,191,255,0.2); margin-bottom:14px;"></div>
+
+  <div class="cards">
+    <div class="card" onclick="window.open('https://sites.google.com/view/vaifuki','_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/pLs0GpvV/Fuki_2.png" alt="VA Fuki" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title">VA (i) Fuki</div>
+        <div class="card-desc">🌐 Go to site ↗</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
@@ -2372,7 +2451,12 @@ html, body {
       <div class="user-badge" id="vedic-user-badge"></div>
     </div>
 
-    <div id="vedic-loading" style="text-align:center; padding:30px 0; color:var(--text-dim); font-style:italic; font-size:14px;">Loading your charts…</div>
+    <div id="vedic-loading" style="text-align:center; padding:20px 0; display:flex; flex-direction:column; align-items:center; gap:16px;">
+      <img src="https://i.postimg.cc/bwm6CsPv/Fuki_1.png" id="vedic-loading-img"
+        style="width:64px;height:64px;object-fit:contain;animation:haircutGlowBlob 1.6s ease-in-out infinite;"
+        alt="Loading">
+      <div style="font-family:'Cinzel',serif; font-size:13px; animation:haircutPulse 1.2s ease-in-out infinite; color:#ccff00; font-style:italic; letter-spacing:0.1em;">Loading your charts…</div>
+    </div>
 
     <div id="vedic-not-subscribed" style="display:none; text-align:center; padding:20px 0;">
       <p class="red-note" style="margin-bottom:12px;">You haven't subscribed to this service yet.</p>
@@ -2988,9 +3072,13 @@ function setHomeState() {
       if (currentHasBara) {
         baraCard.classList.remove('grayed');
         if (baraNote) baraNote.style.display = 'none';
+        const baraNote2 = document.getElementById('bara-sub-note2');
+        if (baraNote2) baraNote2.style.display = 'none';
       } else {
         baraCard.classList.add('grayed');
         if (baraNote) baraNote.style.display = 'block';
+        const baraNote2 = document.getElementById('bara-sub-note2');
+        if (baraNote2) baraNote2.style.display = 'block';
       }
     }
     document.getElementById('home-greeting').textContent = getTimeGreeting() + ', ' + currentUserName;
@@ -4054,20 +4142,33 @@ function kwBackToMain() {
 // ============================================================
 const HAIRCUT_GAS_URL = GAS_URL; // unified backend
 
+function haircutFormatDate(d) {
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const day = days[d.getDay()];
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  const yyyy = d.getFullYear();
+  return day + ', ' + mm + '/' + dd + '/' + yyyy;
+}
+
+function haircutSplashContinue() {
+  goTo('screen-haircut');
+}
+
 function loadTodayHaircut() {
   const now = new Date();
-  document.getElementById('haircut-today-date').textContent = 'Loading…';
-  document.getElementById('haircut-today-advice').textContent = 'Searching…';
-  document.getElementById('haircut-today-advice').style.color = '';
+  const todayEl = document.getElementById('haircut-today-date');
+  const adviceEl = document.getElementById('haircut-today-advice');
+  const logo = document.getElementById('haircut-logo-img');
+  if (todayEl) todayEl.textContent = haircutFormatDate(now);
+  if (adviceEl) { adviceEl.textContent = 'Loading…'; adviceEl.classList.add('loading-state'); adviceEl.style.color=''; }
+  if (logo) logo.classList.add('loading');
   gasJsonp('action=today', function(data) {
-    const dateText = data.date || now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-    document.getElementById('haircut-today-date').textContent = dateText;
     const text = data.advice || data.result || data.text || data.answer || data.message || 'No data returned.';
-    applyHaircutAdvice(document.getElementById('haircut-today-advice'), text);
+    if (adviceEl) applyHaircutAdvice(adviceEl, text);
   }, function() {
-    document.getElementById('haircut-today-date').textContent = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
-    document.getElementById('haircut-today-advice').textContent = 'Unable to load — check your connection and try again.';
-    document.getElementById('haircut-today-advice').style.color = 'rgba(255,255,255,0.5)';
+    if (adviceEl) { adviceEl.textContent = 'Unable to load — check connection.'; adviceEl.classList.remove('loading-state'); adviceEl.style.color='rgba(255,255,255,0.5)'; }
+    if (logo) logo.classList.remove('loading');
   });
 }
 
@@ -4075,24 +4176,47 @@ function checkHaircutDate() {
   const picker = document.getElementById('haircut-date-picker');
   if (!picker.value) return;
   const d = new Date(picker.value + 'T12:00:00');
-  const dateStr = d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-  document.getElementById('haircut-custom-date-label').textContent = 'Result for: ' + dateStr;
-  document.getElementById('haircut-custom-advice').textContent = 'Loading…';
-  document.getElementById('haircut-custom-result').style.display = 'block';
+  const dateLabel = document.getElementById('haircut-custom-date-label');
+  const adviceEl = document.getElementById('haircut-custom-advice');
+  const resultEl = document.getElementById('haircut-custom-result');
+  const logo = document.getElementById('haircut-logo-img');
+  if (dateLabel) dateLabel.textContent = haircutFormatDate(d);
+  if (adviceEl) { adviceEl.textContent = 'Loading…'; adviceEl.classList.add('loading-state'); adviceEl.style.color=''; }
+  if (resultEl) resultEl.style.display = 'block';
+  if (logo) logo.classList.add('loading');
   gasJsonp('action=date&date=' + encodeURIComponent(picker.value), function(data) {
     const text = data.advice || data.result || data.text || data.answer || data.message || 'No data returned.';
-    applyHaircutAdvice(document.getElementById('haircut-custom-advice'), text);
+    if (adviceEl) applyHaircutAdvice(adviceEl, text);
   }, function() {
-    document.getElementById('haircut-custom-advice').textContent = 'Unable to load — check connection.';
-    document.getElementById('haircut-custom-advice').style.color = 'rgba(255,255,255,0.5)';
+    if (adviceEl) { adviceEl.textContent = 'Unable to load — check connection.'; adviceEl.classList.remove('loading-state'); adviceEl.style.color='rgba(255,255,255,0.5)'; }
+    if (logo) logo.classList.remove('loading');
   });
 }
 
+function cleanHaircutText(text) {
+  return text
+    .replace(/\u2019/g, '')
+    .replace(/\u2018/g, '')
+    .replace(/'/g, '')
+    .replace(/⬛\s*/g, '')
+    .replace(/🔵\s*/g, '')
+    .replace(/^\s*['"]\s*/gm, '')
+    .replace(/\s*['"]\s*$/gm, '')
+    .trim();
+}
+
 function applyHaircutAdvice(el, text) {
-  el.innerHTML = text;
-  if (text && text.includes('⬛')) el.style.color = '#FF3131';
-  else if (text && text.includes('🔵')) el.style.color = '#00E5FF';
+  const isRed = text && text.includes('⬛');
+  const isGreen = text && text.includes('🔵');
+  const cleaned = cleanHaircutText(text);
+  el.innerHTML = cleaned;
+  el.classList.remove('loading-state');
+  el.style.animation = '';
+  if (isRed) el.style.color = '#FF3131';
+  else if (isGreen) el.style.color = '#ccff00';
   else el.style.color = '';
+  const logo = document.getElementById('haircut-logo-img');
+  if (logo) logo.classList.remove('loading');
 }
 
 // ============================================================
@@ -4115,7 +4239,21 @@ function goTo(screenId) {
   history.pushState({ screenId }, '', '#' + screenId);
 
   if (screenId === 'screen-facing-ruler') initMap();
-  if (screenId === 'screen-haircut') loadTodayHaircut();
+  if (screenId === 'screen-haircut-splash') {
+    // Start loading haircut data in background while on splash
+    loadTodayHaircut();
+  }
+  if (screenId === 'screen-haircut') {
+    // Reset custom date picker and result when returning
+    const picker = document.getElementById('haircut-date-picker');
+    if (picker) picker.value = '';
+    const customResult = document.getElementById('haircut-custom-result');
+    if (customResult) customResult.style.display = 'none';
+    const customAdvice = document.getElementById('haircut-custom-advice');
+    if (customAdvice) { customAdvice.textContent = ''; customAdvice.style.color = ''; customAdvice.classList.remove('loading-state'); }
+    const customDate = document.getElementById('haircut-custom-date-label');
+    if (customDate) customDate.textContent = '';
+  }
   if (screenId === 'screen-b4') applyFsSubscriberGating();
   if (screenId === 'screen-vedic-charts') loadVedicCharts();
   if (screenId === 'screen-kwanyin') {
