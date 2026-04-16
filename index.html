@@ -1109,6 +1109,29 @@ html, body {
 @keyframes kw-flicker {
   0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; }
 }
+/* ============================================================
+   UNIVERSAL LOADING STATE — SPGo Super Portal Design System
+   All loading/status text across the portal must use:
+   - Font: Crimson Pro, italic
+   - Color: #ccff00 (lime) while loading, rgba(255,255,255,0.5) on error
+   - Animation: haircutPulse 1.2s ease-in-out infinite
+   - Text: "Loading…" (never "Loading your charts...", "Searching...", etc.)
+   - Apply class "sp-loading" to any loading text element
+   - Apply class "sp-loading-img" to any logo image shown while loading
+   The verifying screen also follows this pattern.
+   ============================================================ */
+.sp-loading {
+  font-family: 'Crimson Pro', serif !important;
+  font-style: italic !important;
+  font-size: 15px !important;
+  color: #ccff00 !important;
+  animation: haircutPulse 1.2s ease-in-out infinite !important;
+  text-align: center;
+}
+.sp-loading-img {
+  animation: haircutGlowBlob 1.6s ease-in-out infinite !important;
+}
+
 @keyframes haircutGlowBlob {
   0%,100% { filter: drop-shadow(0 0 6px rgba(204,255,0,0.9)) drop-shadow(0 0 20px rgba(204,255,0,0.5)); transform: scale(1); }
   50%      { filter: drop-shadow(0 0 18px rgba(204,255,0,1)) drop-shadow(0 0 40px rgba(204,255,0,0.7)); transform: scale(1.07); }
@@ -1454,7 +1477,7 @@ html, body {
 <!-- VERIFYING OVERLAY (shown during OAuth check) -->
 <div id="screen-verifying" class="screen" style="justify-content:center; align-items:center; background:radial-gradient(ellipse at 50% 30%,rgba(0,191,255,0.12) 0%,transparent 65%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
   <img src="https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png" alt="Go" style="width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(0,191,255,0.6));animation:verifyPulse 1.4s ease-in-out infinite;margin-bottom:28px;">
-  <div style="font-family:'Cinzel',serif;font-size:15px;letter-spacing:0.25em;color:var(--sky);animation:verifyDots 1.4s steps(4,end) infinite;" id="verify-text">Verifying</div>
+  <div class="sp-loading" id="verify-text" style="margin-top:20px;">Loading…</div>
 </div>
 
 <!-- ============================================================
@@ -1666,7 +1689,7 @@ html, body {
   <div class="haircut-box">
     <div class="haircut-box-label" style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(0,191,255,0.6); margin-bottom:8px;">Advice for Today</div>
     <div class="haircut-date-display" id="haircut-today-date" style="font-family:'Cinzel',serif; font-size:15px; color:var(--sky); margin-bottom:10px;">Loading…</div>
-    <div class="haircut-advice" id="haircut-today-advice" style="font-weight:400;">Searching…</div>
+    <div class="haircut-advice sp-loading" id="haircut-today-advice">Loading…</div>
   </div>
 
   <div class="haircut-box" style="width:100%; max-width:420px;">
@@ -2001,12 +2024,11 @@ html, body {
         <div id="kw-result-question" style="font-family:'Corinthia',cursive; font-size:28px; color:#00E5FF; line-height:1.5; margin-bottom:14px;"></div>
         <div style="font-family:'Cinzel',serif; font-size:12px; color:rgba(255,245,220,0.5); margin-bottom:6px;">is:</div>
         <div id="kw-result-lot-label" style="font-family:'Cormorant Garamond',serif; font-weight:300; color:#c8a96e; line-height:1.2;">
-          <span style="font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:#c8a96e;">Lot</span><span style="display:inline-block; width:16px;"></span><span id="kw-result-lot-num" style="font-family:'Cormorant Garamond',serif; font-size:56px; font-weight:700; color:#ccff00; line-height:1;"></span>
+          <span style="font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:#c8a96e;">Lot</span><span style="display:inline-block; width:16px;"></span><span id="kw-result-lot-num" style="font-family:'Cormorant Garamond',serif; font-size:72px; font-weight:700; color:#ccff00; line-height:1; text-shadow:0 0 8px rgba(204,255,0,0.95), 0 0 30px rgba(204,255,0,0.6), 0 0 60px rgba(204,255,0,0.3);"></span>
         </div>
+        <!-- Randomness source note INSIDE the box -->
+        <div id="kw-result-source" style="font-family:'Crimson Pro',serif; font-style:italic; font-size:12px; color:rgba(255,245,220,0.45); margin-top:14px;"></div>
       </div>
-
-      <!-- Randomness source note -->
-      <div id="kw-result-source" style="font-family:'Crimson Pro',serif; font-style:italic; font-size:12px; color:rgba(255,245,220,0.45); text-align:center; margin-bottom:14px;"></div>
 
       <!-- Tsutsuji alt logo below answer box -->
       <img src="https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png" alt="Tsutsuji" style="width:48px; height:48px; object-fit:contain; opacity:0.75; margin-bottom:16px;">
@@ -2472,9 +2494,10 @@ html, body {
 
     <div id="vedic-loading" style="text-align:center; padding:20px 0; display:flex; flex-direction:column; align-items:center; gap:16px;">
       <img src="https://i.postimg.cc/bwm6CsPv/Fuki_1.png" id="vedic-loading-img"
-        style="width:64px;height:64px;object-fit:contain;animation:haircutGlowBlob 1.6s ease-in-out infinite;"
+        class="sp-loading-img"
+        style="width:64px;height:64px;object-fit:contain;"
         alt="Loading">
-      <div style="font-family:'Crimson Pro',serif; font-size:15px; animation:haircutPulse 1.2s ease-in-out infinite; color:#ccff00; font-style:italic;">Loading your charts…</div>
+      <div class="sp-loading">Loading…</div>
     </div>
 
     <div id="vedic-not-subscribed" style="display:none; text-align:center; padding:20px 0;">
@@ -4108,8 +4131,18 @@ function kwCopyResultImage() {
     // Lot label + number
     ctx.fillStyle = '#c8a96e'; ctx.font = '28px "Cormorant Garamond", serif';
     ctx.fillText('Lot', bx + 20, by + 72 + qTextH + 50);
-    ctx.fillStyle = '#ccff00'; ctx.font = 'bold 62px "Cormorant Garamond", serif';
-    ctx.fillText(String(lotNum), bx + 90, by + 72 + qTextH + 56);
+    ctx.fillStyle = '#ccff00';
+    ctx.save();
+    ctx.shadowColor = 'rgba(204,255,0,0.9)'; ctx.shadowBlur = 20;
+    ctx.font = 'bold 72px "Cormorant Garamond", serif';
+    ctx.fillText(String(lotNum), bx + 90, by + 72 + qTextH + 58);
+    ctx.restore();
+
+    // Randomness note inside box (matches result screen)
+    const srcLabels = { 'quantum': '⚛️ Quantum', 'random-org': '📡 Atm.', 'crypto': '🔐 Crypto' };
+    const srcText = 'Randomness provided by ' + (srcLabels[kwLastSource] || kwLastSource || 'Unknown');
+    ctx.fillStyle = 'rgba(255,245,220,0.4)'; ctx.font = 'italic 12px serif'; ctx.textAlign = 'left';
+    ctx.fillText(srcText, bx + 20, by + 72 + qTextH + 80);
 
     // --- Tsutsuji flower anchored above footer ---
     if (tsutsujiImg) {
@@ -4122,7 +4155,15 @@ function kwCopyResultImage() {
     ctx.fillText("You\u2019re using Super Portal \u4e94 Go", W/2, H - 18);
 
     const link = document.createElement('a');
-    link.download = 'kwanyin-lot-' + lotNum + '.png';
+    // Filename: GYO [ID] Result Card [mmddyy hhmm]
+    const now = new Date();
+    const mm = String(now.getMonth()+1).padStart(2,'0');
+    const dd = String(now.getDate()).padStart(2,'0');
+    const yy = String(now.getFullYear()).slice(2);
+    const hh = String(now.getHours()).padStart(2,'0');
+    const mn = String(now.getMinutes()).padStart(2,'0');
+    const fname = 'GYO ' + (currentUser || 'Go') + ' Result Card ' + mm + dd + yy + ' ' + hh + mn;
+    link.download = fname + '.png';
     link.href = canvas.toDataURL('image/png'); link.click();
 
     const imgEl = document.getElementById('kw-img-copy-confirm');
@@ -5057,7 +5098,7 @@ function loadVedicChart(chartName) {
   const box = document.getElementById('vedic-data-box');
   const btn = document.getElementById('vedic-copy-btn');
   if (title) title.textContent = chartName;
-  if (box) box.textContent = 'Loading…';
+  if (box) { box.textContent = 'Loading…'; box.className = 'sp-loading'; }
   if (btn) { btn.textContent = 'Copy All'; btn.style.background = 'var(--sky)'; }
   vedicCurrentData = '';
   // Navigate to data detail screen
