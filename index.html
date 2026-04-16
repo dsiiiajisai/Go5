@@ -4319,7 +4319,9 @@ function applyHaircutAdvice(el, text) {
   const cleaned = cleanHaircutText(text);
   el.innerHTML = cleaned;
   el.classList.remove('loading-state');
+  el.classList.remove('sp-loading');
   el.style.animation = '';
+  el.style.fontSize = '';
   if (isRed) el.style.color = '#FF3131';
   else if (isGreen) el.style.color = '#ccff00';
   else el.style.color = '';
@@ -5106,9 +5108,12 @@ function loadVedicChart(chartName) {
 
   gasJsonp('action=vedicData&idCode=' + encodeURIComponent(currentUser) + '&chart=' + encodeURIComponent(chartName), function(data) {
     vedicCurrentData = data.data || '';
-    if (box) box.textContent = vedicCurrentData;
+    if (box) {
+      box.textContent = vedicCurrentData;
+      box.className = ''; // remove sp-loading
+    }
   }, function() {
-    if (box) box.textContent = 'Error loading. Please try again.';
+    if (box) { box.textContent = 'Error loading. Please try again.'; box.className = ''; }
   });
 }
 
