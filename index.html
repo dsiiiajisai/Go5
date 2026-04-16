@@ -237,7 +237,7 @@ html, body {
   background: var(--dim);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 20px 22px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -1109,6 +1109,14 @@ html, body {
 @keyframes kw-flicker {
   0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; }
 }
+@keyframes haircutGlowBlob {
+  0%,100% { filter: drop-shadow(0 0 6px rgba(204,255,0,0.9)) drop-shadow(0 0 20px rgba(204,255,0,0.5)); transform: scale(1); }
+  50%      { filter: drop-shadow(0 0 18px rgba(204,255,0,1)) drop-shadow(0 0 40px rgba(204,255,0,0.7)); transform: scale(1.07); }
+}
+@keyframes haircutPulse {
+  0%,100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
 .kw-fate {
   font-size: 18px;
   font-style: italic;
@@ -1118,7 +1126,7 @@ html, body {
 }
 .kw-btn {
   font-family: 'IM Fell English', serif;
-  font-size: 36px;
+  font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: #000073;
@@ -1376,9 +1384,10 @@ html, body {
 /* ============================================================
    4Cs & STRUCTURE (2Hs module)
    ============================================================ */
+.fcs-container { border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.12); margin-bottom:16px; }
 .fcs-section-label { font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.15em; color:#ffffff; text-transform:uppercase; text-align:center; margin-bottom:12px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.1); }
-.fcs-row { display:flex; flex-direction:row; align-items:stretch; gap:0; margin-bottom:10px; border-radius:12px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
-.fcs-emoji-box { width:64px; min-width:64px; background:rgba(0,0,0,0.3); display:flex; align-items:center; justify-content:center; flex-wrap:wrap; padding:8px; gap:2px; font-size:18px; line-height:1.3; }
+.fcs-row { display:flex; flex-direction:row; align-items:stretch; gap:0; margin-bottom:0; border-radius:0; overflow:hidden; border:none; border-bottom:1px solid rgba(255,255,255,0.06); background:rgba(255,255,255,0.04); }
+.fcs-emoji-box { width:64px; min-width:64px; background:rgba(0,0,0,0.12); display:flex; align-items:center; justify-content:center; flex-wrap:wrap; padding:8px; gap:2px; font-size:18px; line-height:1.3; border-right:1px solid rgba(255,255,255,0.07); }
 .fcs-mr-box { flex:1; background:rgba(255,255,255,0.04); padding:12px 14px; display:flex; flex-direction:column; justify-content:center; gap:3px; }
 .fcs-cn { font-family:'Noto Serif TC',serif; font-size:15px; font-weight:700; color:#ff6666; line-height:1.3; }
 .fcs-vn { font-family:'Noto Serif TC',serif; font-size:13px; color:#cc88ff; line-height:1.3; }
@@ -1458,7 +1467,7 @@ html, body {
       <span>五</span>
       <span>Go</span>
     </div>
-    <div class="logo-sub" id="home-greeting">Welcome to Go, your super portal</div>
+    <div class="logo-sub" id="home-greeting" style="margin-bottom:32px;">Welcome to Go, your super portal</div>
   </div>
 
   <div class="cards">
@@ -1484,7 +1493,7 @@ html, body {
 
     <!-- B3 — locked for guest -->
     <div class="card" id="card-b3" onclick="goTo('screen-b3')">
-      <div class="card-icon" style="display:flex;flex-direction:column;align-items:center;gap:4px;"><img src="https://i.postimg.cc/SR1By1WK/Bara-Orange.png" alt="Life" style="width:36px;height:36px;object-fit:contain;"><img src="https://i.postimg.cc/pLs0GpvV/Fuki_2.png" alt="Fuki" style="width:28px;height:28px;object-fit:contain;"></div>
+      <div class="card-icon"><img src="https://i.postimg.cc/SR1By1WK/Bara-Orange.png" alt="Life" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
         <div class="card-title">🎭 八字, ज्योतिष Individual Life Study</div>
         <div class="card-desc">Bazi, Vedic Astrology</div>
@@ -1811,6 +1820,12 @@ html, body {
     <div style="font-family:'Cinzel',serif; font-size:12px; letter-spacing:0.1em; color:var(--text-dim); margin-bottom:14px; text-align:center; text-transform:uppercase;">Name each die (what it represents)</div>
     <div class="die-rep-grid" id="die-rep-grid"></div>
 
+    <!-- Description field: optimal outcome -->
+    <div style="margin-top:20px; width:100%;">
+      <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-bottom:8px; text-align:center;">Describe your optimal outcome</div>
+      <textarea id="dice-description" placeholder="What would a great outcome look like?" style="width:100%; border-radius:10px; border:1px solid rgba(0,191,255,0.3); background:rgba(0,0,0,0.35); color:white; font-size:16px; font-family:'Crimson Pro',serif; padding:12px 14px; outline:none; resize:none; line-height:1.5; min-height:60px; overflow:hidden; box-sizing:border-box;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+    </div>
+
     <div class="dice-instruction-box" style="margin-top: 20px;">
       <strong>Back Chief direction</strong><br>
       Go into manifestation mode — calm down, slow your breath, and focus.<br><br>
@@ -1833,9 +1848,12 @@ html, body {
 
   <!-- RESULTS -->
   <div id="dice-result-section" class="dice-result-screen">
-    <div style="text-align:center; margin-bottom:20px;">
+    <div style="text-align:center; margin-bottom:12px;">
       <img src="https://i.postimg.cc/2Sw1KPTF/2_d6.png" alt="Dice" style="width:64px; height:64px; object-fit:contain; filter:drop-shadow(0 0 12px rgba(0,191,255,0.4));">
     </div>
+    <!-- Description recap -->
+    <div id="dice-desc-display" style="display:none; font-family:'Corinthia',cursive; font-size:26px; color:#00E5FF; text-align:center; margin-bottom:6px; line-height:1.4; padding:0 8px;"></div>
+    <div id="dice-desc-label" style="display:none; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.1em; color:rgba(255,255,255,0.45); text-align:center; margin-bottom:14px;">the Universe has answered:</div>
     <div id="dice-result-rows"></div>
 
     <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:20px; justify-content:center;">
@@ -1930,7 +1948,7 @@ html, body {
     <!-- Question input -->
     <div style="width:100%; max-width:420px; margin-bottom:16px;">
       <label style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-dim); display:block; margin-bottom:8px;">Type your question here:</label>
-      <textarea id="kw-question" rows="3" placeholder="What would you like to ask Her Holy's Wisdom?" style="width:100%; border-radius:10px; border:1px solid rgba(0,191,255,0.3); background:rgba(0,0,0,0.35); color:white; font-size:16px; font-family:'Corinthia',cursive; padding:12px 14px; outline:none; resize:none; line-height:1.5; min-height:60px; overflow:hidden;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+      <textarea id="kw-question" rows="3" placeholder="What would you like to ask Her Holy's Wisdom?" style="width:100%; border-radius:10px; border:1px solid rgba(0,191,255,0.3); background:rgba(0,0,0,0.35); color:white; font-size:16px; font-family:'Crimson Pro',serif; font-size:16px; padding:12px 14px; outline:none; resize:none; line-height:1.5; min-height:60px; overflow:hidden;" oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
     </div>
 
     <div class="kw-stage">
@@ -1943,7 +1961,7 @@ html, body {
       <div class="kw-status" id="kw-status"></div>
 
       <!-- Number in lime yellow, more space from button -->
-      <div class="kw-number" id="kw-number" style="margin-top:8px; color:#ccff00; font-family:'Cormorant Garamond',serif; font-weight:700; font-size:64px; text-shadow:0 0 20px rgba(204,255,0,0.6);">—</div>
+      <div class="kw-number" id="kw-number" style="margin-top:8px; color:#ccff00; font-family:'Cormorant Garamond',serif; font-weight:700; font-size:128px; line-height:1; text-shadow:0 0 8px rgba(204,255,0,0.95), 0 0 30px rgba(204,255,0,0.6), 0 0 60px rgba(204,255,0,0.3);">—</div>
 
       <!-- Print result button -->
       <button id="kw-print-btn" onclick="kwShowResult()" style="display:none; margin-top:20px; font-family:'Cinzel',serif; font-size:13px; letter-spacing:0.12em; color:var(--navy); background:var(--sky); border:none; border-radius:10px; padding:12px 28px; cursor:pointer; font-weight:700;">
@@ -2003,15 +2021,20 @@ html, body {
       <div style="width:100%; height:1px; background:rgba(255,255,255,0.15); margin-bottom:16px;"></div>
 
       <!-- Two copy buttons side by side -->
-      <div style="display:flex; gap:10px; width:100%; margin-bottom:6px;">
-        <button onclick="kwCopyResultImage()" style="flex:1; padding:12px 8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:white; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; border-radius:10px; cursor:pointer; backdrop-filter:blur(4px);">
-          Copy Result 📷
-        </button>
-        <button onclick="kwCopyResult()" style="flex:1; padding:12px 8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:white; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; border-radius:10px; cursor:pointer; backdrop-filter:blur(4px);">
-          Copy Result 📄
-        </button>
+      <div style="display:flex; gap:10px; width:100%; margin-bottom:2px;">
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <button onclick="kwCopyResultImage()" style="width:100%; padding:12px 8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:white; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; border-radius:10px; cursor:pointer; backdrop-filter:blur(4px);">
+            Copy Result 📷
+          </button>
+          <span id="kw-img-copy-confirm" style="font-size:11px; color:rgba(255,255,255,0.6); font-style:italic; opacity:0; transition:opacity 0.3s; height:16px;">Downloaded!</span>
+        </div>
+        <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+          <button onclick="kwCopyResult()" style="width:100%; padding:12px 8px; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.25); color:white; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.08em; border-radius:10px; cursor:pointer; backdrop-filter:blur(4px);">
+            Copy Result 📄
+          </button>
+          <span id="kw-result-copy-confirm" style="font-size:11px; color:rgba(255,255,255,0.6); font-style:italic; opacity:0; transition:opacity 0.3s; height:16px;">Copied!</span>
+        </div>
       </div>
-      <span id="kw-result-copy-confirm" style="font-size:12px; color:rgba(255,255,255,0.6); font-style:italic; opacity:0; transition:opacity 0.3s; display:block; margin-bottom:4px; text-align:center;">Copied!</span>
 
       <!-- Section divider -->
       <div style="width:100%; height:1px; background:rgba(255,255,255,0.15); margin:12px 0 16px;"></div>
@@ -2053,11 +2076,7 @@ html, body {
   <div class="cards">
     <!-- B3 Button 1: Bazi Portal Bara -->
     <div class="card" id="card-bara" onclick="goTo('screen-b3-bazi')">
-      <div class="card-icon" style="display:flex;flex-direction:column;align-items:center;gap:3px;">
-        <img src="https://i.postimg.cc/SR1By1WK/Bara-Orange.png" alt="Bara" style="width:30px;height:30px;object-fit:contain;">
-        <img src="https://i.postimg.cc/MZsnjcLC/Blue-Orchid-Web-Email.png" alt="Orchid" style="width:26px;height:26px;object-fit:contain;">
-        <img src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png" alt="Kisuge" style="width:24px;height:24px;object-fit:contain;">
-      </div>
+      <div class="card-icon"><img src="https://i.postimg.cc/SR1By1WK/Bara-Orange.png" alt="Bara" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
         <div class="card-title">🎭 Bazi Portal Bara</div>
         <div class="card-desc">2Hs Subportal, Bazi (i) Bara, Bazi (ii) Ran, Bazi (iii) Yuri, etc.</div>
@@ -2094,11 +2113,7 @@ html, body {
 
   <div class="site-label" style="margin-bottom:10px;">BAZI PORTAL</div>
   <div class="logo-wrap" style="margin-bottom:20px;">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <img src="https://i.postimg.cc/SR1By1WK/Bara-Orange.png" alt="Bara" style="width:56px;height:56px;object-fit:contain;">
-      <img src="https://i.postimg.cc/MZsnjcLC/Blue-Orchid-Web-Email.png" alt="Orchid" style="width:48px;height:48px;object-fit:contain;">
-      <img src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png" alt="Kisuge" style="width:44px;height:44px;object-fit:contain;">
-    </div>
+    <img src="https://i.postimg.cc/SR1By1WK/Bara-Orange.png" alt="Bara" style="width:64px;height:64px;object-fit:contain;">
   </div>
 
   <div class="cards">
@@ -2307,9 +2322,9 @@ html, body {
     <span class="hs-btn-hint">Tap to open the 2Hs site ↗</span>
     <div id="fcs-ran-wrap" style="display:none; width:100%; max-width:520px; margin-top:20px;">
       <div class="fcs-section-label">4Cs — Bazi (ii) Ran</div>
-      <div id="fcs-ran-list"></div>
+      <div id="fcs-ran-list" class="fcs-container"></div>
       <div class="fcs-section-label" style="margin-top:20px;">Structure — Bazi (ii) Ran</div>
-      <div id="str-ran-wrap"></div>
+      <div id="str-ran-wrap" class="fcs-container"></div>
     </div>
     <a id="hs-dob-btn-yuri" class="hs-btn" target="_blank" style="margin-top:32px;">
       <img class="hs-btn-orchid" src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png">
@@ -2318,9 +2333,9 @@ html, body {
     <span class="hs-btn-hint">Tap to open the 2Hs site ↗</span>
     <div id="fcs-yuri-wrap" style="display:none; width:100%; max-width:520px; margin-top:20px;">
       <div class="fcs-section-label">4Cs — Bazi (iii) Yuri</div>
-      <div id="fcs-yuri-list"></div>
+      <div id="fcs-yuri-list" class="fcs-container"></div>
       <div class="fcs-section-label" style="margin-top:20px;">Structure — Bazi (iii) Yuri</div>
-      <div id="str-yuri-wrap"></div>
+      <div id="str-yuri-wrap" class="fcs-container"></div>
     </div>
     <!-- Copy buttons row -->
     <div style="display:flex; gap:10px; width:100%; margin-top:28px;">
@@ -2458,7 +2473,7 @@ html, body {
       <img src="https://i.postimg.cc/bwm6CsPv/Fuki_1.png" id="vedic-loading-img"
         style="width:64px;height:64px;object-fit:contain;animation:haircutGlowBlob 1.6s ease-in-out infinite;"
         alt="Loading">
-      <div style="font-family:'Cinzel',serif; font-size:13px; animation:haircutPulse 1.2s ease-in-out infinite; color:#ccff00; font-style:italic; letter-spacing:0.1em;">Loading your charts…</div>
+      <div style="font-family:'Crimson Pro',serif; font-size:15px; animation:haircutPulse 1.2s ease-in-out infinite; color:#ccff00; font-style:italic;">Loading your charts…</div>
     </div>
 
     <div id="vedic-not-subscribed" style="display:none; text-align:center; padding:20px 0;">
@@ -3635,6 +3650,19 @@ async function rollDice() {
       </div>
     `;
   }
+  // Show description if entered
+  const descVal = (document.getElementById('dice-description') || {}).value || '';
+  const descDisplay = document.getElementById('dice-desc-display');
+  const descLabel = document.getElementById('dice-desc-label');
+  if (descVal.trim() && descDisplay) {
+    descDisplay.textContent = '\u201c' + descVal.trim() + '\u201d';
+    descDisplay.style.display = 'block';
+    if (descLabel) descLabel.style.display = 'block';
+  } else {
+    if (descDisplay) descDisplay.style.display = 'none';
+    if (descLabel) descLabel.style.display = 'none';
+  }
+
   resSection._results = results;
 }
 
@@ -3668,6 +3696,7 @@ function copyDiceResultImage() {
   const diceImgUrl = DIE_IMGS_MAP[dieType] || DIE_IMGS_MAP[6];
   const tsutsujiUrl = 'https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png';
   const profileUrl = currentUser ? ('https://raw.githubusercontent.com/dsiiiajisai/Go5/main/Profile%20Pix/' + encodeURIComponent(currentUser) + '-Profile-Pic-R.png') : null;
+  const descText = (document.getElementById('dice-description') || {}).value || '';
 
   const W = 560, rowH = 58, topSection = 230;
   const H = topSection + results.length * rowH + 110;
@@ -3713,15 +3742,27 @@ function copyDiceResultImage() {
     ctx.fillStyle='rgba(0,191,255,0.72)'; ctx.font='15px serif';
     ctx.fillText('Dice Roller', W/2, 112);
 
+    // Description below "Dice Roller"
+    let diceImageY = 122;
+    if (descText.trim()) {
+      ctx.fillStyle='#00E5FF'; ctx.font='italic 22px Corinthia, serif';
+      const descWrapped = '\u201c' + descText.trim() + '\u201d';
+      kwWrapText(ctx, descWrapped, 40, 138, W-80, 28);
+      // Estimate lines for Y offset
+      ctx.font='italic 22px Corinthia, serif';
+      const descLines = Math.ceil(ctx.measureText(descWrapped).width / (W-80)) + 1;
+      diceImageY = 138 + descLines * 28 + 8;
+    }
+
     // Dice image
     if (diceImg) {
       const dH=76, dW=diceImg.width*(dH/diceImg.height);
-      ctx.drawImage(diceImg, W/2-dW/2, 122, dW, dH);
+      ctx.drawImage(diceImg, W/2-dW/2, diceImageY, dW, dH);
     }
 
     // Date/time — lots of space after dice image
     ctx.fillStyle='rgba(255,255,255,0.48)'; ctx.font='13px serif';
-    ctx.fillText(dt, W/2, 218);
+    ctx.fillText(dt, W/2, diceImageY + 90);
 
     // Divider
     ctx.strokeStyle='rgba(0,191,255,0.3)'; ctx.lineWidth=1;
@@ -3768,11 +3809,13 @@ function copyDiceResultImage() {
 
 function copyDiceResult() {
   const rows = document.getElementById('dice-result-rows');
+  const desc = (document.getElementById('dice-description') || {}).value || '';
   const now = new Date();
   const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   const dt = months[now.getMonth()] + ' ' + now.getDate() + ', ' + now.getFullYear()
     + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
-  let text = 'Divination (i) Tsutsuji\nDice Roller\n' + dt + '\n\n';
+  let text = 'Divination (i) Tsutsuji\nDice Roller\n' + dt + '\n';
+  if (desc.trim()) text += '\n\u201c' + desc.trim() + '\u201d\n';
   let idx = 1;
   rows.querySelectorAll('.dice-result-row').forEach(r => {
     let rep = '', val = '', marker = '';
@@ -3963,7 +4006,19 @@ function kwCopyResultImage() {
   const lotNum = kwLastNumber;
   const dt = kwResultDateTime;
 
-  const W = 560, H = 900;
+  const W = 560;
+  // Measure question text height dynamically
+  const tmpC = document.createElement('canvas'); tmpC.width = W;
+  const tmpCtx = tmpC.getContext('2d');
+  tmpCtx.font = 'italic 26px Corinthia, serif';
+  const qBoxW = W - 72 - 40;
+  const qLineH = 34;
+  function _measureH(text, font, maxW, lh) {
+    tmpCtx.font = font; const words = text.split(' '); let line = '', ls = 1;
+    for (let j=0;j<words.length;j++){const t=line+words[j]+' ';if(tmpCtx.measureText(t).width>maxW&&j>0){line=words[j]+' ';ls++;}else line=t;} return ls*lh;
+  }
+  const qH = _measureH(question, 'italic 26px Corinthia, serif', qBoxW, qLineH);
+  const H = Math.max(880, 560 + Math.max(0, qH - 120));
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
@@ -4065,9 +4120,8 @@ function kwCopyResultImage() {
     const link=document.createElement('a');
     link.download='kwanyin-lot-'+lotNum+'.png';
     link.href=canvas.toDataURL('image/png'); link.click();
-    const el=document.getElementById('kw-result-copy-confirm');
-    if(el){el.textContent='Image downloaded!';el.style.opacity='1';
-      setTimeout(()=>{el.style.opacity='0';el.textContent='Copied!';},2500);}
+    const imgEl=document.getElementById('kw-img-copy-confirm');
+    if(imgEl){imgEl.style.opacity='1';setTimeout(()=>{imgEl.style.opacity='0';},2500);}
   }
 
   const gi=new Image(); gi.crossOrigin='anonymous';
@@ -4271,6 +4325,12 @@ function goTo(screenId) {
   if (screenId === 'screen-dice') {
     // Reset dice to fresh setup screen
     resetDiceToSetup();
+    const diceDesc = document.getElementById('dice-description');
+    if (diceDesc) { diceDesc.value = ''; diceDesc.style.height = 'auto'; }
+    const descDisplay = document.getElementById('dice-desc-display');
+    const descLabel = document.getElementById('dice-desc-label');
+    if (descDisplay) descDisplay.style.display = 'none';
+    if (descLabel) descLabel.style.display = 'none';
   }
   if (screenId === 'screen-2hs-find') {
     // Clear old entries so user always starts fresh
