@@ -4218,6 +4218,8 @@ function kwCopyResultImage() {
     const fname = 'GYO ' + (currentUser||'Go') + ' Result Card ' + mm+dd2+yy+' '+hh+mn;
 
     // Export the full 2x canvas directly — high resolution
+    const link = document.createElement('a');
+    link.download = fname + '.png';
     link.href = canvas.toDataURL('image/png'); link.click();
 
     const imgEl = document.getElementById('kw-img-copy-confirm');
