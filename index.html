@@ -2026,9 +2026,10 @@ html, body {
         <div id="kw-result-lot-label" style="font-family:'Cormorant Garamond',serif; font-weight:300; color:#c8a96e; line-height:1.2;">
           <span style="font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:#c8a96e;">Lot</span><span style="display:inline-block; width:16px;"></span><span id="kw-result-lot-num" style="font-family:'Cormorant Garamond',serif; font-size:72px; font-weight:700; color:#ccff00; line-height:1; text-shadow:0 0 8px rgba(204,255,0,0.95), 0 0 30px rgba(204,255,0,0.6), 0 0 60px rgba(204,255,0,0.3);"></span>
         </div>
-        <!-- Randomness source note INSIDE the box -->
-        <div id="kw-result-source" style="font-family:'Crimson Pro',serif; font-style:italic; font-size:12px; color:rgba(255,245,220,0.45); margin-top:14px;"></div>
       </div>
+
+      <!-- Randomness source note — BELOW the answer box -->
+      <div id="kw-result-source" style="font-family:'Crimson Pro',serif; font-style:italic; font-size:12px; color:rgba(255,245,220,0.45); text-align:center; margin-bottom:14px;"></div>
 
       <!-- Tsutsuji alt logo below answer box -->
       <img src="https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png" alt="Tsutsuji" style="width:48px; height:48px; object-fit:contain; opacity:0.75; margin-bottom:16px;">
@@ -3679,7 +3680,7 @@ async function rollDice() {
   const descDisplay = document.getElementById('dice-desc-display');
   const descLabel = document.getElementById('dice-desc-label');
   if (descVal.trim() && descDisplay) {
-    descDisplay.textContent = '\u201c' + descVal.trim() + '\u201d';
+    descDisplay.textContent = descVal.trim();
     descDisplay.style.display = 'block';
     if (descLabel) descLabel.style.display = 'block';
   } else {
@@ -3770,7 +3771,8 @@ function copyDiceResultImage() {
     let diceImageY = 122;
     if (descText.trim()) {
       ctx.fillStyle='#00E5FF'; ctx.font='italic 22px Corinthia, serif';
-      const descWrapped = '\u201c' + descText.trim() + '\u201d';
+      // No quotation marks on image (same as screen display)
+      const descWrapped = descText.trim();
       kwWrapText(ctx, descWrapped, 40, 138, W-80, 28);
       // Estimate lines for Y offset
       ctx.font='italic 22px Corinthia, serif';
@@ -3996,7 +3998,7 @@ function kwShowResult() {
 
   const rawQ = (document.getElementById('kw-question') || {}).value || '';
   const smartQ = kwSmartCapitalise(rawQ);
-  document.getElementById('kw-result-question').textContent = smartQ ? '\u201c' + smartQ + '\u201d' : '(No question entered)';
+  document.getElementById('kw-result-question').textContent = smartQ || '(No question entered)';
 
   // Item 7: "Lot" normal size, number 2x bold lime yellow, no "#"
   document.getElementById('kw-result-lot-num').textContent = kwLastNumber;
@@ -4026,157 +4028,216 @@ function kwCopyResultImage() {
   if (!kwLastNumber) return;
   const rawQ = (document.getElementById('kw-question') || {}).value || '';
   const smartQ = kwSmartCapitalise(rawQ);
-  const question = smartQ ? '\u201c' + smartQ + '\u201d' : '(No question entered)';
+  // No quotation marks on the image (same as result screen)
+  const question = smartQ || '(No question entered)';
   const lotNum = kwLastNumber;
   const dt = kwResultDateTime;
+  const src = kwLastSource;
 
-  // --- Measure question height first ---
-  const W = 560;
+  // === EXACT MATCH to result screen layout ===
+  // Screen uses max-width:420px padded container
+  // We render at 2x for sharpness: 420px * 2 = 840px canvas width, scale down
+  const SCALE = 2;
+  const SW = 420; // screen width in px
+  const W = SW * SCALE;
+
+  // Measure question text height (Corinthia 28px, screen line-height:1.5)
   const tmpC = document.createElement('canvas'); tmpC.width = W;
   const tmpCtx = tmpC.getContext('2d');
-  const qFont = 'italic 26px Corinthia, cursive';
-  const qBoxW = W - 72 - 40; // box x=36 padding=20 each side
-  const qLineH = 34;
+  const qFontSize = 28 * SCALE;
+  const qFont = 'italic ' + qFontSize + 'px Corinthia, cursive';
   tmpCtx.font = qFont;
-  const qWords = question.split(' ');
+  const boxPad = 22 * SCALE;
+  const boxInnerW = W - 2 * (20 * SCALE) - 2 * boxPad;
+  const qLineH = Math.round(28 * 1.5 * SCALE);
   let qLine = '', qLines = 1;
+  const qWords = question.split(' ');
   for (let i = 0; i < qWords.length; i++) {
     const test = qLine + qWords[i] + ' ';
-    if (tmpCtx.measureText(test).width > qBoxW && i > 0) { qLine = qWords[i] + ' '; qLines++; } else qLine = test;
+    if (tmpCtx.measureText(test).width > boxInnerW && i > 0) { qLine = qWords[i] + ' '; qLines++; } else qLine = test;
   }
   const qTextH = qLines * qLineH;
-  const boxH = Math.max(220, 60 + qTextH + 90); // label + question + gap + "is:" + lot
-  const H = 60 + 40 + 150 + 30 + 44 + 16 + boxH + 80 + 80; // top + title + guanyin + 觀音 + date + gap + box + flower + footer
+
+  // Layout constants — mirror screen exactly
+  const titleY   = 56 * SCALE;   // "Divination (i) Tsutsuji"
+  const imgTop   = 78 * SCALE;   // Guanyin top
+  const imgH     = 120 * SCALE;  // Guanyin height (max-height:120px)
+  const kanjiY   = imgTop + imgH + 28 * SCALE; // 觀音靈簽
+  const dateY    = kanjiY + 44 * SCALE;
+  const boxTop   = dateY + 28 * SCALE;
+  // Box height: top label (32px) + question + is: (32px) + Lot (90px) = dynamic
+  const boxLabelH = 32 * SCALE;
+  const isLabelH  = 32 * SCALE;
+  const lotH      = 90 * SCALE;
+  const boxPadV   = 20 * SCALE;
+  const boxH_content = boxPadV + boxLabelH + qTextH + isLabelH + lotH + boxPadV;
+  const boxBottom = boxTop + boxH_content;
+  const srcNoteY  = boxBottom + 24 * SCALE;   // randomness note below box
+  const flowerY   = srcNoteY + 40 * SCALE;    // tsutsuji flower
+  const footerY   = flowerY + 64 * SCALE;     // "You're using..."
+  const H = footerY + 30 * SCALE;
 
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
 
-  // Background — exact match to screen
+  // Background gradient — #000073 to #00004a (matches screen)
   const bg = ctx.createLinearGradient(0, 0, 0, H);
   bg.addColorStop(0, '#000073'); bg.addColorStop(1, '#00004a');
   ctx.fillStyle = bg; ctx.fillRect(0, 0, W, H);
-  const glow = ctx.createRadialGradient(W/2, 160, 0, W/2, 160, 300);
-  glow.addColorStop(0, 'rgba(0,50,150,0.18)'); glow.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = glow; ctx.fillRect(0, 0, W, H);
 
-  const guanyinUrl = 'https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png';
+  const guanyinUrl  = 'https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png';
   const tsutsujiUrl = 'https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png';
-  const profileUrl = currentUser ? ('https://raw.githubusercontent.com/dsiiiajisai/Go5/main/Profile%20Pix/' + encodeURIComponent(currentUser) + '-Profile-Pic-R.png') : null;
+  const profileUrl  = currentUser
+    ? 'https://raw.githubusercontent.com/dsiiiajisai/Go5/main/Profile%20Pix/'
+      + encodeURIComponent(currentUser) + '-Profile-Pic-R.png'
+    : null;
 
   let guanyinImg = null, tsutsujiImg = null, profileImg = null;
   const totalToLoad = profileUrl ? 3 : 2;
   let loaded = 0;
+  function onLoaded() { loaded++; if (loaded >= totalToLoad) draw(); }
 
-  function onLoaded() { loaded++; if (loaded >= totalToLoad) drawCanvas(); }
+  function px(n) { return n * SCALE; }
 
-  function drawCanvas() {
-    // --- Profile corner top-right ---
-    const pSize = 50, pX = W - 40, pY = 46;
+  function draw() {
+    const mid = W / 2;
+
+    // === Profile corner top-right ===
+    const pR = px(25), pX = W - px(40), pY = px(46);
     if (profileImg && currentUser) {
       ctx.save();
-      ctx.beginPath(); ctx.arc(pX, pY, pSize/2, 0, Math.PI*2); ctx.clip();
-      ctx.drawImage(profileImg, pX - pSize/2, pY - pSize/2, pSize, pSize);
+      ctx.beginPath(); ctx.arc(pX, pY, pR, 0, Math.PI*2); ctx.clip();
+      ctx.drawImage(profileImg, pX-pR, pY-pR, pR*2, pR*2);
       ctx.restore();
-      ctx.strokeStyle = 'rgba(0,191,255,0.6)'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.arc(pX, pY, pSize/2 + 1, 0, Math.PI*2); ctx.stroke();
+      ctx.strokeStyle = 'rgba(0,191,255,0.6)'; ctx.lineWidth = px(1);
+      ctx.beginPath(); ctx.arc(pX, pY, pR+px(1), 0, Math.PI*2); ctx.stroke();
     }
     if (currentUser) {
-      ctx.fillStyle = 'rgba(0,191,255,0.75)'; ctx.font = 'bold 10px serif'; ctx.textAlign = 'center';
-      ctx.fillText(currentUser, pX, pY + pSize/2 + 14);
-      if (currentTier > 0) { ctx.fillStyle = 'rgba(0,191,255,0.5)'; ctx.font = '9px serif'; ctx.fillText('Tier ' + currentTier, pX, pY + pSize/2 + 26); }
+      ctx.fillStyle = 'rgba(0,191,255,0.75)'; ctx.font = 'bold ' + px(10) + 'px serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(currentUser, pX, pY + pR + px(14));
+      if (currentTier > 0) {
+        ctx.fillStyle = 'rgba(0,191,255,0.5)'; ctx.font = px(9) + 'px serif';
+        ctx.fillText('Tier ' + currentTier + (currentTier===1?' \uD83D\uDC8E':''), pX, pY + pR + px(25));
+      }
     }
 
-    // --- "Divination (i) Tsutsuji" title — dim, lower ---
-    ctx.fillStyle = 'rgba(255,245,220,0.38)'; ctx.font = 'bold 20px serif'; ctx.textAlign = 'center';
-    ctx.fillText('Divination (i) Tsutsuji', W/2, 88);
+    // === Title: Divination (i) Tsutsuji ===
+    // Screen: font-weight:600, Cinzel 15px, color:rgba(255,245,220,0.9)
+    ctx.fillStyle = 'rgba(255,245,220,0.9)'; ctx.font = '600 ' + px(15) + 'px Cinzel, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Divination (i) Tsutsuji', mid, titleY);
 
-    // --- Guanyin with lime glow ---
+    // === Guanyin with lime glow ===
     if (guanyinImg) {
-      const iH = 145, iW = guanyinImg.width * (iH / guanyinImg.height);
+      const ratio = guanyinImg.width / guanyinImg.height;
+      const iH = imgH, iW = ratio * iH;
       ctx.save();
-      ctx.shadowColor = 'rgba(204,255,0,0.9)'; ctx.shadowBlur = 28;
-      ctx.drawImage(guanyinImg, W/2 - iW/2, 106, iW, iH);
+      ctx.shadowColor = 'rgba(204,255,0,0.9)'; ctx.shadowBlur = px(14);
+      ctx.drawImage(guanyinImg, mid - iW/2, imgTop, iW, iH);
       ctx.shadowBlur = 0; ctx.restore();
     }
 
-    // --- 觀音靈簽 below guanyin ---
-    ctx.fillStyle = '#f5f0e8'; ctx.font = '26px "Klee One", serif'; ctx.textAlign = 'center';
-    ctx.fillText('\u89c0\u97f3\u9748\u7c64', W/2, 274);
-
-    // --- Date/time ---
-    ctx.fillStyle = 'rgba(255,245,220,0.48)'; ctx.font = '13px serif';
-    ctx.fillText(dt, W/2, 318);
-
-    // --- Answer box ---
-    const bx = 36, by = 344, bw = W - 72;
-    // Box background + border
-    ctx.fillStyle = 'rgba(255,255,255,0.07)';
-    kwRoundRect(ctx, bx, by, bw, boxH, 16); ctx.fill();
-    ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = 1;
-    kwRoundRect(ctx, bx, by, bw, boxH, 16); ctx.stroke();
-
-    // "THE ANSWER TO YOUR QUESTION:"
-    ctx.fillStyle = 'rgba(255,245,220,0.38)'; ctx.font = '11px serif'; ctx.textAlign = 'left';
-    ctx.fillText('THE ANSWER TO YOUR QUESTION:', bx + 20, by + 30);
-
-    // Question in Corinthia bright blue
-    ctx.fillStyle = '#00E5FF'; ctx.font = qFont;
-    kwWrapText(ctx, question, bx + 20, by + 66, bw - 40, qLineH);
-
-    // "is:"
-    ctx.fillStyle = 'rgba(255,245,220,0.38)'; ctx.font = '12px serif';
-    ctx.fillText('is:', bx + 20, by + 72 + qTextH);
-
-    // Lot label + number
-    ctx.fillStyle = '#c8a96e'; ctx.font = '28px "Cormorant Garamond", serif';
-    ctx.fillText('Lot', bx + 20, by + 72 + qTextH + 50);
-    ctx.fillStyle = '#ccff00';
+    // === 觀音靈簽 — Klee One 24px, color #f5f0e8, text-shadow gold ===
+    ctx.fillStyle = '#f5f0e8'; ctx.font = px(24) + 'px "Klee One", serif';
+    ctx.textAlign = 'center';
     ctx.save();
-    ctx.shadowColor = 'rgba(204,255,0,0.9)'; ctx.shadowBlur = 20;
-    ctx.font = 'bold 72px "Cormorant Garamond", serif';
-    ctx.fillText(String(lotNum), bx + 90, by + 72 + qTextH + 58);
+    ctx.shadowColor = 'rgba(255,245,80,0.8)'; ctx.shadowBlur = px(4);
+    ctx.fillText('\u89C0\u97F3\u9748\u7C64', mid, kanjiY);
     ctx.restore();
 
-    // Randomness note inside box (matches result screen)
-    const srcLabels = { 'quantum': '⚛️ Quantum', 'random-org': '📡 Atm.', 'crypto': '🔐 Crypto' };
-    const srcText = 'Randomness provided by ' + (srcLabels[kwLastSource] || kwLastSource || 'Unknown');
-    ctx.fillStyle = 'rgba(255,245,220,0.4)'; ctx.font = 'italic 12px serif'; ctx.textAlign = 'left';
-    ctx.fillText(srcText, bx + 20, by + 72 + qTextH + 80);
+    // === Date — Cinzel 11px, color rgba(255,245,220,0.55) ===
+    ctx.fillStyle = 'rgba(255,245,220,0.55)'; ctx.font = px(11) + 'px Cinzel, serif';
+    ctx.textAlign = 'center'; ctx.letterSpacing = px(1.2) + 'px';
+    ctx.fillText(dt, mid, dateY);
+    ctx.letterSpacing = '0px';
 
-    // --- Tsutsuji flower anchored above footer ---
+    // === Answer box ===
+    const bx = px(20), bw = W - bx*2, by = boxTop, bh = boxH_content;
+    ctx.fillStyle = 'rgba(255,255,255,0.07)';
+    kwRoundRect(ctx, bx, by, bw, bh, px(12)); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)'; ctx.lineWidth = px(1);
+    kwRoundRect(ctx, bx, by, bw, bh, px(12)); ctx.stroke();
+
+    // "THE ANSWER TO YOUR QUESTION:" — Cinzel 11px, rgba(255,245,220,0.5), uppercase, spacing 0.15em
+    ctx.fillStyle = 'rgba(255,245,220,0.5)';
+    ctx.font = px(11) + 'px Cinzel, serif';
+    ctx.textAlign = 'left';
+    ctx.fillText('THE ANSWER TO YOUR QUESTION:', bx + boxPad, by + boxPadV + px(18));
+
+    // Question — Corinthia 28px, #00E5FF, line-height 1.5 (NO quotes)
+    ctx.fillStyle = '#00E5FF'; ctx.font = qFont;
+    const qStartY = by + boxPadV + boxLabelH;
+    kwWrapText(ctx, question, bx + boxPad, qStartY + qLineH * 0.75, boxInnerW, qLineH);
+
+    // "is:" — Cinzel 12px, rgba(255,245,220,0.5)
+    ctx.fillStyle = 'rgba(255,245,220,0.5)'; ctx.font = px(12) + 'px Cinzel, serif';
+    const isY = by + boxPadV + boxLabelH + qTextH + px(20);
+    ctx.fillText('is:', bx + boxPad, isY);
+
+    // "Lot" — Cormorant Garamond 28px light, #c8a96e
+    ctx.fillStyle = '#c8a96e'; ctx.font = '300 ' + px(28) + 'px "Cormorant Garamond", serif';
+    const lotLineY = isY + px(32) + px(52);
+    ctx.fillText('Lot', bx + boxPad, lotLineY);
+
+    // Lot number — Cormorant Garamond 72px bold, #ccff00, glow
+    ctx.fillStyle = '#ccff00'; ctx.font = '700 ' + px(72) + 'px "Cormorant Garamond", serif';
+    ctx.save();
+    ctx.shadowColor = 'rgba(204,255,0,0.9)'; ctx.shadowBlur = px(8);
+    ctx.fillText(String(lotNum), bx + boxPad + px(80), lotLineY);
+    ctx.restore();
+
+    // === Randomness note — BELOW answer box ===
+    const srcLabels = { 'quantum': '\u269B\uFE0F Quantum', 'random-org': '\uD83D\uDCE1 Atm.', 'crypto': '\uD83D\uDD10 Crypto' };
+    const srcText = 'Randomness provided by ' + (srcLabels[src] || src || 'Unknown');
+    ctx.fillStyle = 'rgba(255,245,220,0.45)'; ctx.font = 'italic ' + px(12) + 'px "Crimson Pro", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(srcText, mid, srcNoteY);
+
+    // === Tsutsuji flower ===
     if (tsutsujiImg) {
-      const tH = 52, tW = tsutsujiImg.width * (tH / tsutsujiImg.height);
-      ctx.drawImage(tsutsujiImg, W/2 - tW/2, H - 82, tW, tH);
+      const tH = px(48), tW = tsutsujiImg.width * (tH / tsutsujiImg.height);
+      ctx.globalAlpha = 0.85;
+      ctx.drawImage(tsutsujiImg, mid - tW/2, flowerY, tW, tH);
+      ctx.globalAlpha = 1;
     }
 
-    // --- Footer ---
-    ctx.fillStyle = 'rgba(255,245,220,0.2)'; ctx.font = '11px serif'; ctx.textAlign = 'center';
-    ctx.fillText("You\u2019re using Super Portal \u4e94 Go", W/2, H - 18);
+    // === Footer ===
+    ctx.fillStyle = 'rgba(255,245,220,0.2)'; ctx.font = px(11) + 'px "Cinzel", serif';
+    ctx.textAlign = 'center';
+    ctx.fillText("You\u2019re using Super Portal \u4E94 Go", mid, footerY);
 
-    const link = document.createElement('a');
-    // Filename: GYO [ID] Result Card [mmddyy hhmm]
+    // === Download ===
     const now = new Date();
     const mm = String(now.getMonth()+1).padStart(2,'0');
-    const dd = String(now.getDate()).padStart(2,'0');
+    const dd2 = String(now.getDate()).padStart(2,'0');
     const yy = String(now.getFullYear()).slice(2);
     const hh = String(now.getHours()).padStart(2,'0');
     const mn = String(now.getMinutes()).padStart(2,'0');
-    const fname = 'GYO ' + (currentUser || 'Go') + ' Result Card ' + mm + dd + yy + ' ' + hh + mn;
+    const fname = 'GYO ' + (currentUser||'Go') + ' Result Card ' + mm+dd2+yy+' '+hh+mn;
+
+    // Export at half scale so file is 420px wide (screen size)
+    const out = document.createElement('canvas');
+    out.width = SW; out.height = Math.round(H / SCALE);
+    const outCtx = out.getContext('2d');
+    outCtx.drawImage(canvas, 0, 0, W, H, 0, 0, SW, Math.round(H/SCALE));
+
+    const link = document.createElement('a');
     link.download = fname + '.png';
-    link.href = canvas.toDataURL('image/png'); link.click();
+    link.href = out.toDataURL('image/png'); link.click();
 
     const imgEl = document.getElementById('kw-img-copy-confirm');
-    if (imgEl) { imgEl.style.opacity = '1'; setTimeout(() => { imgEl.style.opacity = '0'; }, 2500); }
+    if (imgEl) { imgEl.style.opacity = '1'; setTimeout(() => imgEl.style.opacity = '0', 2500); }
   }
 
   const gi = new Image(); gi.crossOrigin = 'anonymous';
-  gi.onload = function() { guanyinImg = gi; onLoaded(); }; gi.onerror = function() { onLoaded(); }; gi.src = guanyinUrl;
+  gi.onload = () => { guanyinImg = gi; onLoaded(); }; gi.onerror = () => onLoaded(); gi.src = guanyinUrl;
   const ti = new Image(); ti.crossOrigin = 'anonymous';
-  ti.onload = function() { tsutsujiImg = ti; onLoaded(); }; ti.onerror = function() { onLoaded(); }; ti.src = tsutsujiUrl;
+  ti.onload = () => { tsutsujiImg = ti; onLoaded(); }; ti.onerror = () => onLoaded(); ti.src = tsutsujiUrl;
   if (profileUrl) {
     const pi = new Image(); pi.crossOrigin = 'anonymous';
-    pi.onload = function() { profileImg = pi; onLoaded(); }; pi.onerror = function() { onLoaded(); }; pi.src = profileUrl;
+    pi.onload = () => { profileImg = pi; onLoaded(); }; pi.onerror = () => onLoaded(); pi.src = profileUrl;
   }
 }
 
@@ -4204,7 +4265,7 @@ function kwCopyResult() {
   const rawQ = (document.getElementById('kw-question') || {}).value || '';
   const smartQ = kwSmartCapitalise(rawQ);
   const text = 'Divination (i) Tsutsuji\n觀音靈簽\n' + kwResultDateTime
-    + '\n\nThe answer to your question:\n' + (smartQ || '(No question entered)')
+    + '\n\nThe answer to your question:\n\u201c' + (smartQ || '(No question entered)') + '\u201d'
     + '\nis:\nLot ' + kwLastNumber;
   navigator.clipboard.writeText(text).then(() => {
     const el = document.getElementById('kw-result-copy-confirm');
