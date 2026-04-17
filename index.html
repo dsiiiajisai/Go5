@@ -4217,15 +4217,8 @@ function kwCopyResultImage() {
     const mn = String(now.getMinutes()).padStart(2,'0');
     const fname = 'GYO ' + (currentUser||'Go') + ' Result Card ' + mm+dd2+yy+' '+hh+mn;
 
-    // Export at half scale so file is 420px wide (screen size)
-    const out = document.createElement('canvas');
-    out.width = SW; out.height = Math.round(H / SCALE);
-    const outCtx = out.getContext('2d');
-    outCtx.drawImage(canvas, 0, 0, W, H, 0, 0, SW, Math.round(H/SCALE));
-
-    const link = document.createElement('a');
-    link.download = fname + '.png';
-    link.href = out.toDataURL('image/png'); link.click();
+    // Export the full 2x canvas directly — high resolution
+    link.href = canvas.toDataURL('image/png'); link.click();
 
     const imgEl = document.getElementById('kw-img-copy-confirm');
     if (imgEl) { imgEl.style.opacity = '1'; setTimeout(() => imgEl.style.opacity = '0', 2500); }
