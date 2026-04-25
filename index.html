@@ -17,7 +17,7 @@
 <meta name="twitter:card" content="summary">
 <link rel="icon" type="image/png" href="https://i.postimg.cc/ryZgWswz/Go5_favicon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400&family=Ma+Shan+Zheng&family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Beau+Rivage&family=Klee+One&family=Corinthia&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Noto+Serif+TC:wght@300;400&family=Ma+Shan+Zheng&family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Beau+Rivage&family=Klee+One&family=Corinthia&family=Aleo:wght@300;400;700&display=swap" rel="stylesheet">
 <!-- Leaflet for map -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -490,7 +490,7 @@ html, body {
 /* ============================================================
    SCREEN 0 — LOGIN
    ============================================================ */
-#screen-login .id-input {
+#screen-B0-login .id-input {
   width: 100%;
   max-width: 420px;
   padding: 14px 16px;
@@ -507,8 +507,8 @@ html, body {
   display: none;
   margin-top: 14px;
 }
-#screen-login .id-input::placeholder { color: rgba(255,255,255,0.25); }
-#screen-login .id-input:focus { border-color: var(--sky); }
+#screen-B0-login .id-input::placeholder { color: rgba(255,255,255,0.25); }
+#screen-B0-login .id-input:focus { border-color: var(--sky); }
 #btn-go-id {
   width: 100%;
   max-width: 420px;
@@ -1026,7 +1026,7 @@ html, body {
 /* ============================================================
    B2.2 — KWANYIN
    ============================================================ */
-#screen-kwanyin {
+#screen-B2-2-2-T2 {
   padding-bottom: 60px;
 }
 .kwanyin-title {
@@ -1433,14 +1433,12 @@ html, body {
 <!-- ============================================================
      SCREEN 0: LOGIN
      ============================================================ -->
-<div id="screen-login" class="screen active">
+<div id="screen-B0-login" class="screen active">
   <div class="site-label">SUPER PORTAL</div>
   <div class="logo-wrap">
     <img src="https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png" alt="Go">
-    <div class="logo-title" style="display:flex; flex-direction:column; align-items:center; line-height:1.3;">
-      <span>五</span>
-      <span>Go</span>
-    </div>
+    <div style="font-family:'Aleo',serif; font-size:22px; font-weight:400; color:var(--sky); text-align:center; letter-spacing:0.08em; line-height:1.2;">SUPER PORTAL</div>
+    <div style="font-family:'Cinzel',serif; font-size:18px; font-weight:400; color:#e0b0ff; text-align:center; letter-spacing:0.25em; line-height:1.5;">五 GO</div>
   </div>
 
   <div class="cards" style="margin-top: 24px;">
@@ -1475,7 +1473,7 @@ html, body {
 </div>
 
 <!-- VERIFYING OVERLAY (shown during OAuth check) -->
-<div id="screen-verifying" class="screen" style="justify-content:center; align-items:center; background:radial-gradient(ellipse at 50% 30%,rgba(0,191,255,0.12) 0%,transparent 65%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
+<div id="screen-B0-verify" class="screen" style="justify-content:center; align-items:center; background:radial-gradient(ellipse at 50% 30%,rgba(0,191,255,0.12) 0%,transparent 65%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
   <img src="https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png" alt="Go" style="width:90px;height:90px;object-fit:contain;filter:drop-shadow(0 0 20px rgba(0,191,255,0.6));animation:verifyPulse 1.4s ease-in-out infinite;margin-bottom:28px;">
   <div class="sp-loading" id="verify-text" style="margin-top:20px;">Loading…</div>
 </div>
@@ -1483,54 +1481,52 @@ html, body {
 <!-- ============================================================
      SCREEN 1: HOMEPAGE
      ============================================================ -->
-<div id="screen-home" class="screen">
+<div id="screen-B0" class="screen">
   <div class="site-label">SUPER PORTAL</div>
-  <div class="logo-wrap" style="cursor:pointer; margin-top:8px;" onclick="goTo('screen-login')">
+  <div class="logo-wrap" style="cursor:pointer; margin-top:8px;" onclick="goTo('screen-B0-login')">
     <img src="https://i.postimg.cc/fRdF8YCj/Hibiscus_orange_5.png" alt="Go">
-    <div class="logo-title" style="display:flex; flex-direction:column; align-items:center; line-height:1.3;">
-      <span>五</span>
-      <span>Go</span>
-    </div>
+    <div style="font-family:'Aleo',serif; font-size:22px; font-weight:400; color:var(--sky); text-align:center; letter-spacing:0.08em; line-height:1.2;">SUPER PORTAL</div>
+    <div style="font-family:'Cinzel',serif; font-size:18px; font-weight:400; color:#e0b0ff; text-align:center; letter-spacing:0.25em; line-height:1.5;">五 GO</div>
     <div class="logo-sub" id="home-greeting" style="margin-bottom:32px;">Welcome to Go, your super portal</div>
   </div>
 
   <div class="cards">
     <!-- B1 -->
-    <div class="card" onclick="goTo('screen-b1')">
+    <div class="card" onclick="goTo('screen-B1-1')">
       <div class="card-icon"><img src="https://i.postimg.cc/15ky2Vyf/ajisai-DS.png" alt="DS"></div>
       <div class="card-text">
-        <div class="card-title">📅 擇日 Date Selection</div>
-        <div class="card-desc">DS (iii) Ajisai</div>
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">📅 Date Selection</span> <span style="font-family:'Cinzel',serif; font-size:13px; color:#e0b0ff; letter-spacing:0.05em;">Ajisai</span></div>
+        <div class="card-desc">Date Selection Tools &amp; Sites</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
 
     <!-- B2 -->
-    <div class="card" onclick="goTo('screen-b2')">
+    <div class="card" onclick="goTo('screen-B1-2')">
       <div class="card-icon" style="display:flex;flex-direction:column;align-items:center;gap:4px;"><img src="https://i.postimg.cc/SRYGBpwy/QMDJ-i-Botan.png" alt="QMDJ" style="width:36px;height:36px;object-fit:contain;"><img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" alt="Tsutsuji" style="width:28px;height:28px;object-fit:contain;"></div>
       <div class="card-text">
-        <div class="card-title">☯️ 奇門遁甲 QMDJ<br>🔮 Divination</div>
-        <div class="card-desc">QMDJ (i) Botan, Divination (i) Tsutsuji, etc.</div>
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">☯️ QMDJ &amp; 🔮 Divination</span></div>
+        <div class="card-desc">QMDJ sites, Divination Tools 🛠️, Divination sites</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
 
     <!-- B3 — locked for guest -->
-    <div class="card" id="card-b3" onclick="goTo('screen-b3')">
-      <div class="card-icon"><img src="https://i.postimg.cc/SR1By1WK/Bara-Orange.png" alt="Life" style="width:42px;height:42px;object-fit:contain;"></div>
+    <div class="card" id="card-b3" onclick="goTo('screen-B1-3')">
+      <div class="card-icon"><img src="https://i.postimg.cc/TwN0qW23/Rose-Thao-Dien-Mam-03-26.png" alt="Life" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
-        <div class="card-title">🎭 八字, ज्योतिष Individual Life Study</div>
-        <div class="card-desc">Bazi, Vedic Astrology</div>
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">🎭 Individual Life Study</span></div>
+        <div class="card-desc">Bazi &amp; Vedic sites &amp; Tools 🛠️</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
 
     <!-- B4 — locked for guest -->
-    <div class="card" id="card-b4" onclick="goTo('screen-b4')">
+    <div class="card" id="card-b4" onclick="goTo('screen-B1-4')">
       <div class="card-icon" style="display:flex;flex-direction:column;align-items:center;gap:4px;"><img src="https://i.postimg.cc/13SDRFLD/FS-i-Manju.png" alt="FS" style="width:36px;height:36px;object-fit:contain;"><img src="https://i.postimg.cc/VsSqKmq5/FS_ii_Shage.png" alt="Shage" style="width:28px;height:28px;object-fit:contain;"></div>
       <div class="card-text">
-        <div class="card-title">🏡 風水 Fengshui</div>
-        <div class="card-desc">FS (i) Manju, FS (ii) Shage</div>
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">🏘️ Fengshui Portal</span> <span style="font-family:'Cinzel',serif; font-size:13px; color:#e0b0ff; letter-spacing:0.05em;">Manjushage</span></div>
+        <div class="card-desc">Fengshui Sites &amp; Tools 🛠️</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
@@ -1539,8 +1535,7 @@ html, body {
     <div class="card grayed">
       <div class="card-icon"><img src="https://i.postimg.cc/g0MQdmBz/Yijing_I_tenjiku.png" alt="Yijing"></div>
       <div class="card-text">
-        <div class="card-title">易經 Yijing <span class="coming-soon-tag">Soon</span></div>
-        <div class="card-desc">Yijing (i) Tenjiku</div>
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">☯ Yijing</span> <span style="font-family:'Cinzel',serif; font-size:13px; color:#e0b0ff; letter-spacing:0.05em;">Tenjiku</span> <span class="coming-soon-tag">Soon</span></div>
       </div>
       <div class="card-arrow">›</div>
     </div>
@@ -1551,7 +1546,7 @@ html, body {
     <div class="card" id="card-b6" onclick="openPersonalPortal()">
       <div class="card-icon"><img src="https://i.postimg.cc/ZnmgZHzM/FS-vi-Kuchinashi-2.png" alt="Kuchinashi"></div>
       <div class="card-text">
-        <div class="card-title">Your Personal Kuchinashi Portal</div>
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">👤 Your Personal Portal</span> <span style="font-family:'Cinzel',serif; font-size:13px; color:#e0b0ff; letter-spacing:0.05em;">Kuchinashi</span></div>
         <div class="card-desc-2 card-desc2" id="portal-link-text">🌐 Portal site ↗</div>
       </div>
       <div class="card-arrow">›</div>
@@ -1573,16 +1568,17 @@ html, body {
 <!-- ============================================================
      SCREEN B1: DATE SELECTION
      ============================================================ -->
-<div id="screen-b1" class="screen">
+<div id="screen-B1-1" class="screen">
   <div class="inner-header">
-    <button class="back-btn" onclick="goTo('screen-home')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B0')">‹</button>
     <span class="inner-title">五 Go Main Menu</span>
   </div>
 
-  <div class="site-label" style="margin-bottom:12px;">DS Portal Ajisai</div>
-  <div class="logo-wrap" style="margin-bottom: 20px;">
-    <img src="https://i.postimg.cc/15ky2Vyf/ajisai-DS.png" alt="Ajisai" style="width:60px;height:60px;">
+  <div style="font-family:'Aleo',serif; font-size:20px; font-weight:400; color:var(--sky); text-align:center; letter-spacing:0.05em; margin-bottom:12px;">📅 DS Portal</div>
+  <div style="margin-bottom:8px; display:flex; justify-content:center;">
+    <img src="https://i.postimg.cc/Sx8v5zcW/Ajisai-Portal-2.png" alt="Ajisai" style="width:70px;height:70px;object-fit:contain; filter:drop-shadow(0 0 12px rgba(0,191,255,0.5));">
   </div>
+  <div style="font-family:'Cinzel',serif; font-size:16px; color:#e0b0ff; text-align:center; letter-spacing:0.2em; margin-top:6px; margin-bottom:16px;">Ajisai</div>
 
   <div class="cards">
     <div class="card grayed">
@@ -1612,7 +1608,7 @@ html, body {
       <div class="card-arrow">›</div>
     </div>
 
-    <div class="card" onclick="goTo('screen-haircut-splash')">
+    <div class="card" onclick="goTo('screen-B2-1-T5-splash')">
       <div class="card-icon">💇🏻</div>
       <div class="card-text">
         <div class="card-title">Haircut Advice</div>
@@ -1662,7 +1658,7 @@ html, body {
 <!-- ============================================================
      SCREEN: HAIRCUT SPLASH
      ============================================================ -->
-<div id="screen-haircut-splash" class="screen" style="padding:0; position:relative; overflow:hidden;" onclick="haircutSplashContinue()">
+<div id="screen-B2-1-T5-splash" class="screen" style="padding:0; position:relative; overflow:hidden;" onclick="haircutSplashContinue()">
   <div style="position:absolute; inset:0; background-image:url('https://i.postimg.cc/6pZ3W739/Boddhisattva-haircut-fpmt-org-image.png'); background-size:auto 100%; background-repeat:no-repeat; background-position:center; z-index:0;"></div>
   <div style="position:absolute; inset:0; background:rgba(0,0,50,0.45); z-index:1;"></div>
   <div style="position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100dvh; padding:40px 20px; text-align:center;">
@@ -1673,10 +1669,10 @@ html, body {
   </div>
 </div>
 
-<div id="screen-haircut" class="screen">
+<div id="screen-B2-1-T5" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-b1')">‹</button>
-    <span class="inner-title">DS Portal Ajisai</span>
+    <button class="back-btn" onclick="goTo('screen-B1-1')">‹</button>
+    <span class="inner-title">📅 DS Portal Ajisai</span>
   </div>
 
   <!-- Bodhisattva logo with lime glow -->
@@ -1719,21 +1715,66 @@ html, body {
 <!-- ============================================================
      SCREEN B2: QMDJ & DIVINATIONS
      ============================================================ -->
-<div id="screen-b2" class="screen">
+<div id="screen-B1-2" class="screen">
   <div class="inner-header">
-    <button class="back-btn" onclick="goTo('screen-home')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B0')">‹</button>
     <span class="inner-title">五 Go Main Menu</span>
   </div>
 
-  <!-- QMDJ (i) Botan section -->
-  <div class="logo-wrap" style="margin-bottom: 12px;">
-    <img src="https://i.postimg.cc/SRYGBpwy/QMDJ-i-Botan.png" alt="Botan" style="width:60px;height:60px; filter:drop-shadow(0 0 14px rgba(0,191,255,0.4));">
-    <div class="logo-title" style="font-size:16px;">QMDJ (i) Botan</div>
+  <div style="font-family:'Aleo',serif; font-size:20px; font-weight:400; color:var(--sky); text-align:center; letter-spacing:0.05em; margin-bottom:12px;">☯️ QMDJ & 🔮 Divination</div>
+  <div style="margin-bottom:8px; display:flex; justify-content:center; gap:14px;">
+    <img src="https://i.postimg.cc/SRYGBpwy/QMDJ-i-Botan.png" alt="" style="width:64px;height:64px;object-fit:contain; filter:drop-shadow(0 0 12px rgba(0,191,255,0.4));">
+    <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" alt="" style="width:56px;height:56px;object-fit:contain; filter:drop-shadow(0 0 10px rgba(255,100,150,0.4));">
   </div>
+  <div style="margin-bottom:20px;"></div>
+
+  <!-- EXACTLY 2 BUTTONS per Excel Level ID B2.2.1 and B2.2.2 -->
+  <div class="cards">
+    <!-- B2.2.1: QMDJ -->
+    <div class="card" onclick="goTo('screen-B2-2-1')">
+      <div class="card-icon"><img src="https://i.postimg.cc/SRYGBpwy/QMDJ-i-Botan.png" alt="Botan" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">☯️ 奇門遁甲 QMDJ</span></div>
+        <div class="card-desc">QMDJ sites, Divination Tools 🛠️</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <!-- B2.2.2: Divination Portal Tsutsuji -->
+    <div class="card" onclick="goTo('screen-B2-2-2-splash')">
+      <div class="card-icon"><img src="https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png" alt="Tsutsuji" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">🔮 Divination Portal</span> <span style="font-family:'Cinzel',serif; font-size:13px; color:#e0b0ff; letter-spacing:0.05em;">Tsutsuji</span></div>
+        <div class="card-desc">🔮 觀音靈簽 Guan Yin Oracle, 🎲 Dice Roller</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> · Conceived &amp; directed by <strong>SPGo</strong></div>
+    <div class="footer-copy">© 2026 · SPGo · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B2-2-1: QMDJ Sites
+     ============================================================ -->
+<div id="screen-B2-2-1" class="screen">
+  <div class="inner-header">
+    <button class="back-btn" onclick="goTo('screen-B1-2')">‹</button>
+    <span class="inner-title">☯️ QMDJ</span>
+  </div>
+
+  <div style="font-family:'Aleo',serif; font-size:20px; font-weight:400; color:var(--sky); text-align:center; letter-spacing:0.05em; margin-bottom:12px;">☯️ 奇門遁甲 QMDJ</div>
+  <div style="margin-bottom:8px; display:flex; justify-content:center;">
+    <img src="https://i.postimg.cc/SRYGBpwy/QMDJ-i-Botan.png" alt="" style="width:70px;height:70px;object-fit:contain; filter:drop-shadow(0 0 12px rgba(0,191,255,0.4));">
+  </div>
+  <div style="margin-bottom:20px;"></div>
 
   <div class="cards">
     <div class="card grayed">
-      <div class="card-icon" style="width:48px;flex-shrink:0;"></div>
+      <div class="card-icon" style="width:42px;flex-shrink:0;"></div>
       <div class="card-text">
         <div class="card-title">奇門遁甲 Charts <span class="coming-soon-tag">Soon</span></div>
         <div class="card-desc">QMDJ Y/M/D/H charts</div>
@@ -1742,30 +1783,119 @@ html, body {
     </div>
   </div>
 
-  <!-- Divider -->
-  <div style="width:100%; max-width:420px; height:1px; background:rgba(255,255,255,0.1); margin:20px 0;"></div>
-
-  <!-- Divination (i) Tsutsuji section -->
-  <div class="logo-wrap" style="margin-bottom: 12px;">
-    <img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" alt="Tsutsuji" style="width:60px;height:60px; filter:drop-shadow(0 0 14px rgba(255,100,150,0.5));">
-    <div class="logo-title" style="font-size:16px;">Divination (i) Tsutsuji</div>
-  </div>
+  <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(0,191,255,0.6); padding:6px 0 8px; width:100%; max-width:420px;">🌐 Sites:</div>
+  <div style="width:100%; max-width:420px; height:1px; background:rgba(255,255,255,0.1); margin:0 0 8px;"></div>
 
   <div class="cards">
-    <div class="card" onclick="goTo('screen-dice')">
-      <div class="card-icon"><img src="https://i.postimg.cc/2Sw1KPTF/2_d4.png" alt="Dice" style="width:42px;height:42px;object-fit:contain;"></div>
+    <div class="card" onclick="window.open('https://sites.google.com/view/qmdjibotan','_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/SRYGBpwy/QMDJ-i-Botan.png" alt="Botan" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
-        <div class="card-title">🔮 Rolling Dice 🎲</div>
-        <div class="card-desc">QMDJ Divination with dice</div>
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">QMDJ (i)</span> <span style="font-family:'Cinzel',serif; font-size:13px; color:#e0b0ff;">Botan</span></div>
+        <div class="card-desc">QMDJ foundation · 🌐 Go to site ↗</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
-
-    <div class="card" onclick="goTo('screen-kwanyin-splash')">
-      <div class="card-icon"><img src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin"></div>
+    <div class="card" onclick="window.open('https://sites.google.com/view/qmdjiitake','_blank')">
+      <div class="card-icon">🌸</div>
       <div class="card-text">
-        <div class="card-title">觀音靈簽</div>
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">QMDJ (ii)</span> <span style="font-family:'Cinzel',serif; font-size:13px; color:#e0b0ff;">Take</span></div>
+        <div class="card-desc">🔮 QMDJ divination · 🌐 Go to site ↗</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+    <div class="card" onclick="window.open('https://sites.google.com/view/qmdjvmiiishobu','_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/0ygb2Fbw/Iris-Shobu-logo-web.png" alt="Shobu" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">QMDJ (iii)</span> <span style="font-family:'Cinzel',serif; font-size:13px; color:#e0b0ff;">Shobu</span></div>
+        <div class="card-desc">🏘️ QMDJ fengshui · 🌐 Go to site ↗</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+    <div class="card" onclick="window.open('https://sites.google.com/view/qmdjivtsubaki','_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/vHr8vzQj/Tsubaki-3.png" alt="Tsubaki" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">QMDJ (iv)</span> <span style="font-family:'Cinzel',serif; font-size:13px; color:#e0b0ff;">Tsubaki</span></div>
+        <div class="card-desc">QMDJ charting · 🌐 Go to site ↗</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+    <div class="card" onclick="window.open('https://sites.google.com/view/qmdjvmizuka/','_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/15ybjZP5/Mizuka.png" alt="Mizuka" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">QMDJ (v)</span> <span style="font-family:'Cinzel',serif; font-size:13px; color:#e0b0ff;">Mizuka</span></div>
+        <div class="card-desc">♟️ QMDJ Formations · 🌐 Go to site ↗</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+
+  <div class="portal-footer">
+    <div class="footer-credit">Developed by <strong>Claude</strong> · Conceived &amp; directed by <strong>SPGo</strong></div>
+    <div class="footer-copy">© 2026 · SPGo · All rights reserved</div>
+  </div>
+</div>
+
+<!-- ============================================================
+     SCREEN B2-2-2 (Divination Portal Tsutsuji)
+     ============================================================ -->
+<div id="screen-B2-2-2" class="screen">
+  <div class="inner-header">
+    <button class="back-btn" onclick="goTo('screen-B1-2')">‹</button>
+    <span class="inner-title">🔮 Divination Portal</span>
+  </div>
+
+  <div style="font-family:'Aleo',serif; font-size:20px; font-weight:400; color:var(--sky); text-align:center; letter-spacing:0.05em; margin-bottom:12px;">🔮 Divination Portal</div>
+  <div style="margin-bottom:8px; display:flex; justify-content:center;">
+    <img src="https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png" alt="Tsutsuji" style="width:70px;height:70px;object-fit:contain; filter:drop-shadow(0 0 10px rgba(255,100,150,0.5));">
+  </div>
+  <div style="font-family:'Cinzel',serif; font-size:16px; color:#e0b0ff; text-align:center; letter-spacing:0.2em; margin-top:6px; margin-bottom:20px;">Tsutsuji</div>
+
+  <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(0,191,255,0.6); padding:6px 0 8px; width:100%; max-width:420px;">🛠️ Tools</div>
+  <div style="width:100%; max-width:420px; height:1px; background:rgba(255,255,255,0.1); margin:0 0 8px;"></div>
+
+  <div class="cards">
+    <div class="card" onclick="goTo('screen-B2-2-2-T1')">
+      <div class="card-icon"><img src="https://i.postimg.cc/2Sw1KPTF/2_d6.png" alt="Dice" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">🎲 Dice Roller</span></div>
+        <div class="card-desc">QMDJ Divine Wisdom Sourcing</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+    <div class="card" onclick="goTo('screen-B2-2-2-splash')">
+      <div class="card-icon"><img src="https://i.postimg.cc/cLc0dSD1/Kwan-Yin.png" alt="Kwanyin" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">🔮 觀音靈簽 Guan Yin Oracle</span></div>
         <div class="card-desc">Kwan-Yin Oracle</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+    <div class="card grayed">
+      <div class="card-icon">🔮</div>
+      <div class="card-text">
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400;">🔮 郭璞數 Oracle</span> <span class="coming-soon-tag">Soon</span></div>
+        <div class="card-desc">From one of Fengshui's greatest Grandmasters</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+    <div class="card grayed">
+      <div class="card-icon">🎡</div>
+      <div class="card-text">
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400;">Fortune Wheel</span> <span class="coming-soon-tag">Soon</span></div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+  </div>
+
+  <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(0,191,255,0.6); padding:6px 0 8px; width:100%; max-width:420px;">🌐 Sites</div>
+  <div style="width:100%; max-width:420px; height:1px; background:rgba(255,255,255,0.1); margin:0 0 8px;"></div>
+
+  <div class="cards">
+    <div class="card" onclick="window.open('https://sites.google.com/view/divinationitsutsuji','_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/kgmb9JGx/tsutsuji_1_no_leave_2.png" alt="Tsutsuji" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title"><span style="font-family:'Aleo',serif; font-weight:400; color:white;">Divination (i)</span> <span style="font-family:'Cinzel',serif; font-size:13px; color:#e0b0ff;">Tsutsuji</span></div>
+        <div class="card-desc">Divination overview & 100 觀音靈簽 Lots · 🌐 Go to site ↗</div>
       </div>
       <div class="card-arrow">›</div>
     </div>
@@ -1780,9 +1910,9 @@ html, body {
 <!-- ============================================================
      SCREEN B2.1: DICE ROLLER
      ============================================================ -->
-<div id="screen-dice" class="screen">
+<div id="screen-B2-2-2-T1" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-b2')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B1-2')">‹</button>
     <span class="inner-title">QMDJ &amp; Divinations</span>
   </div>
 
@@ -1876,7 +2006,7 @@ html, body {
       <img src="https://i.postimg.cc/2Sw1KPTF/2_d6.png" alt="Dice" style="width:64px; height:64px; object-fit:contain; filter:drop-shadow(0 0 12px rgba(0,191,255,0.4));">
     </div>
     <!-- Description recap -->
-    <div id="dice-desc-display" style="display:none; font-family:'Corinthia',cursive; font-size:26px; color:#00E5FF; text-align:center; margin-bottom:6px; line-height:1.4; padding:0 8px;"></div>
+    <div id="dice-desc-display" style="display:none; font-family:'Corinthia',cursive; font-size:26px; color:#00E5FF; text-align:center; margin-bottom:6px; line-height:1.4; padding:0 8px; font-style:normal;"></div>
     <div id="dice-desc-label" style="display:none; font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.1em; color:rgba(255,255,255,0.45); text-align:center; margin-bottom:14px;">the Universe has answered:</div>
     <div id="dice-result-rows"></div>
 
@@ -1888,7 +2018,7 @@ html, body {
       </button>
     </div>
     <div style="font-size:11px; color:var(--text-dim); text-align:center; margin-top:6px; font-style:italic;">Do not roll again for the same question</div>
-    <button class="btn-secondary" style="margin: 16px auto 0; display:block;" onclick="goTo('screen-b2')">↩ Back to Divinations</button>
+    <button class="btn-secondary" style="margin: 16px auto 0; display:block;" onclick="goTo('screen-B2-2-2')">21a9 Back to Divinations</button>
   </div>
 
   <div style="text-align:center; margin-top:40px; padding-bottom:20px;">
@@ -1903,7 +2033,7 @@ html, body {
 <!-- ============================================================
      SCREEN B2.2: KWANYIN ORACLE - SPLASH
      ============================================================ -->
-<div id="screen-kwanyin-splash" class="screen" style="padding:0; position:relative; overflow:hidden;">
+<div id="screen-B2-2-2-splash" class="screen" style="padding:0; position:relative; overflow:hidden;">
   <div style="
     position:absolute; inset:0;
     background-image: url('https://i.postimg.cc/QNzjqmR1/Draw-AKwan-Yin-Lot.png');
@@ -1923,7 +2053,7 @@ html, body {
     align-items:center; justify-content:center;
     min-height:100dvh; padding: 40px 20px;
     text-align:center;
-  " onclick="goTo('screen-kwanyin')">
+  " onclick="goTo('screen-B2-2-2-T2')">
     <div style="font-family:'Klee One','Ma Shan Zheng',cursive; font-size:52px; color:#f5f0e8;
       text-shadow: 0 0 8px rgba(255,245,80,0.9), 0 0 30px rgba(255,243,100,0.6);
       margin-bottom:20px;">觀音靈簽</div>
@@ -1938,7 +2068,7 @@ html, body {
 <!-- ============================================================
      SCREEN B2.2: KWANYIN ORACLE - MAIN
      ============================================================ -->
-<div id="screen-kwanyin" class="screen">
+<div id="screen-B2-2-2-T2" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
     <button class="back-btn" onclick="goBack()">‹</button>
     <span class="inner-title">Draw a lot</span>
@@ -2021,7 +2151,7 @@ html, body {
       <!-- Answer box -->
       <div style="width:100%; margin-bottom:10px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.15); border-radius:12px; padding:20px 22px; text-align:left;">
         <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,245,220,0.5); margin-bottom:12px;">The answer to your question:</div>
-        <div id="kw-result-question" style="font-family:'Corinthia',cursive; font-size:28px; color:#00E5FF; line-height:1.5; margin-bottom:14px;"></div>
+        <div id="kw-result-question" style="font-family:'Corinthia',cursive; font-size:28px; color:#00E5FF; line-height:1.5; margin-bottom:14px; font-style:normal;"></div>
         <div style="font-family:'Cinzel',serif; font-size:12px; color:rgba(255,245,220,0.5); margin-bottom:6px;">is:</div>
         <div id="kw-result-lot-label" style="font-family:'Cormorant Garamond',serif; font-weight:300; color:#c8a96e; line-height:1.2;">
           <span style="font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:300; color:#c8a96e;">Lot</span><span style="display:inline-block; width:16px;"></span><span id="kw-result-lot-num" style="font-family:'Cormorant Garamond',serif; font-size:72px; font-weight:700; color:#ccff00; line-height:1; text-shadow:0 0 8px rgba(204,255,0,0.95), 0 0 30px rgba(204,255,0,0.6), 0 0 60px rgba(204,255,0,0.3);"></span>
@@ -2083,23 +2213,21 @@ html, body {
 <!-- ============================================================
      SCREEN B3: INDIVIDUAL LIFE STUDY
      ============================================================ -->
-<div id="screen-b3" class="screen">
+<div id="screen-B1-3" class="screen">
   <div class="inner-header">
-    <button class="back-btn" onclick="goTo('screen-home')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B0')">‹</button>
     <span class="inner-title">五 Go Main Menu</span>
   </div>
 
-  <div class="logo-sub" style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; color:rgba(0,191,255,0.5); margin-bottom:10px;">Bazi, Vedic Astrology</div>
-  <div class="logo-wrap" style="margin-bottom: 20px;">
-    <div style="display:flex;align-items:center;gap:14px;">
-      <img src="https://i.postimg.cc/SR1By1WK/Bara-Orange.png" alt="Bara" style="width:60px;height:60px;object-fit:contain;">
-      <img src="https://i.postimg.cc/7YhrDb9B/Fuki-portal-image.png" alt="Fuki" style="width:52px;height:52px;object-fit:contain; filter:drop-shadow(0 0 10px rgba(0,191,255,0.4));">
-    </div>
-  </div>
+  <div style="font-family:'Aleo',serif; font-size:20px; font-weight:400; color:var(--sky); text-align:center; letter-spacing:0.05em; margin-bottom:12px;">🎭 Individual Life Study</div>
+  <div style="margin-bottom:8px; display:flex; justify-content:center;"><div style="display:flex;align-items:center;justify-content:center;gap:14px;">
+      <img src="https://i.postimg.cc/TwN0qW23/Rose-Thao-Dien-Mam-03-26.png" alt="" style="width:64px;height:64px;object-fit:contain; filter:drop-shadow(0 0 12px rgba(0,191,255,0.4));">
+      <img src="https://i.postimg.cc/7YhrDb9B/Fuki-portal-image.png" alt="" style="width:56px;height:56px;object-fit:contain; filter:drop-shadow(0 0 10px rgba(255,100,150,0.4));">
+    </div></div><div style="margin-bottom:16px;"></div>
 
   <div class="cards">
     <!-- B3 Button 1: Bazi Portal Bara -->
-    <div class="card" id="card-bara" onclick="goTo('screen-b3-bazi')">
+    <div class="card" id="card-bara" onclick="goTo('screen-B2-3-1-splash')">
       <div class="card-icon"><img src="https://i.postimg.cc/SR1By1WK/Bara-Orange.png" alt="Bara" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
         <div class="card-title">🎭 Bazi Portal Bara</div>
@@ -2110,7 +2238,7 @@ html, body {
     </div>
 
     <!-- B3 Button 2: Vedic Portal Fuki -->
-    <div class="card" onclick="goTo('screen-vedic')">
+    <div class="card" onclick="goTo('screen-B2-3-2')">
       <div class="card-icon"><img src="https://i.postimg.cc/7YhrDb9B/Fuki-portal-image.png" alt="Vedic" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
         <div class="card-title">Vedic Portal Fuki</div>
@@ -2129,15 +2257,27 @@ html, body {
 <!-- ============================================================
      SCREEN B3-BAZI: Bazi sub-menu
      ============================================================ -->
-<div id="screen-b3-bazi" class="screen">
+<!-- ============================================================
+     SCREEN B2-3-1-splash: Bazi Portal full-screen overlay
+     ============================================================ -->
+<div id="screen-B2-3-1-splash" class="screen" style="padding:0; position:relative; overflow:hidden;" onclick="goTo('screen-B2-3-1')">
+  <div style="position:absolute; inset:0; background-image:url('https://i.postimg.cc/0jWNNPCf/Rose-Leaning-Medium.jpg'); background-size:cover; background-position:center; z-index:0;"></div>
+  <div style="position:absolute; inset:0; background:rgba(0,0,80,0.45); z-index:1;"></div>
+  <div style="position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100dvh; padding:40px 20px; text-align:center;">
+    <div style="font-family:'IM Fell English',serif; font-size:18px; font-style:italic; color:rgba(255,245,220,0.8); margin-bottom:40px;">Tap anywhere to enter</div>
+    <div style="position:absolute; bottom:28px; font-family:'Crimson Pro',serif; font-size:12px; font-style:italic; color:rgba(255,255,255,0.4);">🎭 Bazi Portal</div>
+  </div>
+</div>
+
+<div id="screen-B2-3-1" class="screen">
   <div class="inner-header">
-    <button class="back-btn" onclick="goTo('screen-b3')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B1-3')">‹</button>
     <span class="inner-title">八字 Bazi</span>
   </div>
 
   <div class="site-label" style="margin-bottom:10px;">BAZI PORTAL</div>
   <div class="logo-wrap" style="margin-bottom:20px;">
-    <img src="https://i.postimg.cc/SR1By1WK/Bara-Orange.png" alt="Bara" style="width:64px;height:64px;object-fit:contain;">
+    <img src="https://i.postimg.cc/Px5KwMj4/Rose-Thao-Dien-07-25-25-2.png" alt="Bazi" style="width:64px;height:64px;object-fit:contain; filter:drop-shadow(0 0 12px rgba(255,100,150,0.5));">
   </div>
 
   <div class="cards">
@@ -2152,8 +2292,8 @@ html, body {
       <div class="card-arrow">›</div>
     </div>
 
-    <!-- 3.2: 2Hs Subportal (moved from screen-b3) -->
-    <div class="card" onclick="goTo('screen-2hs')">
+    <!-- 3.2: 2Hs Subportal (moved from screen-B1-3) -->
+    <div class="card" onclick="goTo('screen-B3-3-1')">
       <div class="card-icon" style="display:flex;flex-direction:column;align-items:center;gap:4px;">
         <img src="https://i.postimg.cc/MZsnjcLC/Blue_Orchid_Web_Email.png" alt="2Hs" style="width:36px;height:36px;object-fit:contain;">
         <img src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png" alt="Kisuge" style="width:28px;height:28px;object-fit:contain;">
@@ -2178,9 +2318,9 @@ html, body {
 <!-- ============================================================
      SCREEN B3.2: 2Hs HOME
      ============================================================ -->
-<div id="screen-2hs" class="screen" style="background:radial-gradient(ellipse at 50% 30%,rgba(0,191,255,0.12) 0%,transparent 65%),linear-gradient(180deg,#000073 0%,#00004a 100%); justify-content:center;">
+<div id="screen-B3-3-1" class="screen" style="background:radial-gradient(ellipse at 50% 30%,rgba(0,191,255,0.12) 0%,transparent 65%),linear-gradient(180deg,#000073 0%,#00004a 100%); justify-content:center;">
   <div class="inner-header" style="max-width:420px; width:100%; position:absolute; top:0;">
-    <button class="back-btn" onclick="goTo('screen-b3')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B1-3')">‹</button>
     <span class="inner-title">Individual Life Study</span>
   </div>
   <div style="display:flex; flex-direction:column; align-items:center; padding-top:80px; width:100%;">
@@ -2190,7 +2330,7 @@ html, body {
       <img src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png" alt="Kisuge" style="width:60px; height:60px; object-fit:contain; filter:drop-shadow(0 0 14px rgba(0,191,255,0.4));">
     </div>
     <div class="cards">
-      <div class="card" onclick="goTo('screen-2hs-quick')">
+      <div class="card" onclick="goTo('screen-B3-3-1-quick')">
         <div class="card-icon">⚡</div>
         <div class="card-text">
           <div class="card-title">Quickly Locate Your 2Hs</div>
@@ -2198,7 +2338,7 @@ html, body {
         </div>
         <div class="card-arrow">›</div>
       </div>
-      <div class="card" onclick="goTo('screen-2hs-find')">
+      <div class="card" onclick="goTo('screen-B3-3-1-find')">
         <div class="card-icon">🔍</div>
         <div class="card-text">
           <div class="card-title">Find Your 2Hs</div>
@@ -2206,7 +2346,7 @@ html, body {
         </div>
         <div class="card-arrow">›</div>
       </div>
-      <div class="card" onclick="goTo('screen-2hs-dir')">
+      <div class="card" onclick="goTo('screen-B3-3-1-dir')">
         <div class="card-icon">📁</div>
         <div class="card-text">
           <div class="card-title">Directory</div>
@@ -2228,9 +2368,9 @@ html, body {
 <!-- ============================================================
      SCREEN B3.2a: 2Hs QUICK SEARCH
      ============================================================ -->
-<div id="screen-2hs-quick" class="screen" style="background:radial-gradient(ellipse at 50% 0%,rgba(0,191,255,0.08) 0%,transparent 60%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
+<div id="screen-B3-3-1-quick" class="screen" style="background:radial-gradient(ellipse at 50% 0%,rgba(0,191,255,0.08) 0%,transparent 60%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
   <div class="inner-header" style="max-width:520px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-2hs')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B3-3-1')">‹</button>
     <span class="inner-title">2Hs Subportal</span>
   </div>
   <div style="width:100%; max-width:480px;">
@@ -2262,9 +2402,9 @@ html, body {
      SCREEN B3.2b: 2Hs FIND BY DOB
      ============================================================ -->
 <!-- INPUT SCREEN -->
-<div id="screen-2hs-find" class="screen" style="background:radial-gradient(ellipse at 50% 0%,rgba(0,191,255,0.08) 0%,transparent 60%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
+<div id="screen-B3-3-1-find" class="screen" style="background:radial-gradient(ellipse at 50% 0%,rgba(0,191,255,0.08) 0%,transparent 60%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
   <div class="inner-header" style="max-width:520px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-2hs')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B3-3-1')">‹</button>
     <span class="inner-title">2Hs Subportal</span>
   </div>
   <div style="width:100%; max-width:480px;">
@@ -2305,9 +2445,9 @@ html, body {
 </div>
 
 <!-- RESULT SCREEN -->
-<div id="screen-2hs-result" class="screen" style="background:radial-gradient(ellipse at 50% 0%,rgba(0,191,255,0.08) 0%,transparent 60%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
+<div id="screen-B3-3-1-result" class="screen" style="background:radial-gradient(ellipse at 50% 0%,rgba(0,191,255,0.08) 0%,transparent 60%),linear-gradient(180deg,#000073 0%,#00004a 100%);">
   <div class="inner-header" style="max-width:520px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-2hs-find')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B3-3-1-find')">‹</button>
     <span class="inner-title">Find Your 2Hs</span>
   </div>
   <div style="width:100%; max-width:480px; display:flex; flex-direction:column; align-items:center;">
@@ -2373,15 +2513,15 @@ html, body {
 <!-- ============================================================
      SCREEN B3.2c: 2Hs DIRECTORY
      ============================================================ -->
-<div id="screen-2hs-dir" class="screen">
+<div id="screen-B3-3-1-dir" class="screen">
   <div class="inner-header" style="max-width:520px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-2hs')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B3-3-1')">‹</button>
     <span class="inner-title">2Hs Subportal</span>
   </div>
   <div style="text-align:center; margin-bottom:24px;"><img src="https://i.postimg.cc/hvw4ZmWx/MOTH-orchid-WHITE-web-email.png" style="width:70px; height:70px; object-fit:contain;"></div>
   <div style="font-size:12px; color:#ff0000; text-align:center; margin-bottom:28px; width:100%; max-width:400px;">⚠️ Accessing any site—except No. 3 (free demo)—requires a prior subscription.</div>
   <div class="cards">
-    <div class="card" onclick="goTo('screen-2hs-dir-ran')">
+    <div class="card" onclick="goTo('screen-B3-3-1-dir-ran')">
       <div class="card-icon"><img src="https://i.postimg.cc/MZsnjcLC/Blue-Orchid-Web-Email.png" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
         <div class="card-title">Bazi (ii) Ran — 100 2Hs</div>
@@ -2389,7 +2529,7 @@ html, body {
       </div>
       <div class="card-arrow">›</div>
     </div>
-    <div class="card" onclick="goTo('screen-2hs-dir-yuri')">
+    <div class="card" onclick="goTo('screen-B3-3-1-dir-yuri')">
       <div class="card-icon"><img src="https://i.postimg.cc/K8kWmKK7/Kisuge-single-web-email.png" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
         <div class="card-title">Bazi (iii) Yuri — 100 2Hs</div>
@@ -2401,9 +2541,9 @@ html, body {
 </div>
 
 <!-- DIRECTORY RAN -->
-<div id="screen-2hs-dir-ran" class="screen">
+<div id="screen-B3-3-1-dir-ran" class="screen">
   <div class="inner-header" style="max-width:520px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-2hs-dir')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B3-3-1-dir')">‹</button>
     <span class="inner-title">2Hs Directory</span>
   </div>
   <input type="number" min="1" max="100" placeholder="Filter by number..." oninput="hsFilterDir('hs-dir-ran-grid',this.value)" style="width:100%; max-width:520px; padding:14px 18px; font-size:16px; font-family:'Cinzel',serif; border-radius:10px; border:2px solid rgba(0,191,255,0.3); background:rgba(0,0,0,0.3); color:#fff; outline:none; margin-bottom:20px; -webkit-appearance:none;">
@@ -2411,9 +2551,9 @@ html, body {
 </div>
 
 <!-- DIRECTORY YURI -->
-<div id="screen-2hs-dir-yuri" class="screen">
+<div id="screen-B3-3-1-dir-yuri" class="screen">
   <div class="inner-header" style="max-width:520px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-2hs-dir')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B3-3-1-dir')">‹</button>
     <span class="inner-title">2Hs Directory</span>
   </div>
   <input type="number" min="1" max="100" placeholder="Filter by number..." oninput="hsFilterDir('hs-dir-yuri-grid',this.value)" style="width:100%; max-width:520px; padding:14px 18px; font-size:16px; font-family:'Cinzel',serif; border-radius:10px; border:2px solid rgba(0,191,255,0.3); background:rgba(0,0,0,0.3); color:#fff; outline:none; margin-bottom:20px; -webkit-appearance:none;">
@@ -2423,9 +2563,9 @@ html, body {
 <!-- ============================================================
      SCREEN B3.3: VEDIC ASTROLOGY
      ============================================================ -->
-<div id="screen-vedic" class="screen">
+<div id="screen-B2-3-2" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-b3')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B1-3')">‹</button>
     <span class="inner-title">Vedic Portal Fuki</span>
   </div>
 
@@ -2438,7 +2578,7 @@ html, body {
   <div style="width:100%; max-width:420px; height:1px; background:rgba(255,255,255,0.1); margin:0 0 8px;"></div>
 
   <div class="cards" style="margin-bottom:20px;">
-    <div class="card" onclick="goTo('screen-vedic-charts')">
+    <div class="card" onclick="goTo('screen-B3-3-2-T1')">
       <div class="card-icon"><img src="https://i.postimg.cc/bwm6CsPv/Fuki_1.png" alt="Charts" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
         <div class="card-title">Your Divisional Chart Data</div>
@@ -2480,9 +2620,9 @@ html, body {
 <!-- ============================================================
      SCREEN B3.3.1: VEDIC CHART DATA
      ============================================================ -->
-<div id="screen-vedic-charts" class="screen">
+<div id="screen-B3-3-2-T1" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-vedic')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B2-3-2')">‹</button>
     <span class="inner-title">VA (i) Fuki</span>
   </div>
 
@@ -2516,9 +2656,9 @@ html, body {
 </div>
 
 <!-- Vedic chart data detail screen -->
-<div id="screen-vedic-data" class="screen">
+<div id="screen-B3-3-2-T1-data" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-vedic-charts')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B3-3-2-T1')">‹</button>
     <span class="inner-title">VA (i) Fuki</span>
   </div>
   <div style="width:100%; max-width:420px;">
@@ -2537,27 +2677,24 @@ html, body {
 <!-- ============================================================
      SCREEN B4: FENGSHUI
      ============================================================ -->
-<div id="screen-b4" class="screen">
+<div id="screen-B1-4" class="screen">
   <div class="inner-header">
-    <button class="back-btn" onclick="goTo('screen-home')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B0')">‹</button>
     <span class="inner-title">五 Go Main Menu</span>
   </div>
 
-  <div class="site-label" style="margin-bottom:12px;">YOUR FENGSHUI PORTAL</div>
-  <div class="logo-wrap" style="margin-bottom: 20px;">
-    <div style="display:flex;align-items:center;gap:14px;">
-      <img src="https://i.postimg.cc/13SDRFLD/FS-i-Manju.png" alt="FS" style="width:60px;height:60px;">
-      <img src="https://i.postimg.cc/VsSqKmq5/FS_ii_Shage.png" alt="Shage" style="width:52px;height:52px;object-fit:contain; filter:drop-shadow(0 0 10px rgba(0,191,255,0.4));">
-    </div>
-    <div class="logo-title" style="font-size:16px;">風水 Fengshui</div>
+  <div style="font-family:'Aleo',serif; font-size:20px; font-weight:400; color:var(--sky); text-align:center; letter-spacing:0.05em; margin-bottom:12px;">🏘️ Fengshui Portal</div>
+  <div style="margin-bottom:8px; display:flex; justify-content:center;">
+    <img src="https://i.postimg.cc/13SDRFLD/FS-i-Manju.png" alt="FS" style="width:70px;height:70px;object-fit:contain; filter:drop-shadow(0 0 12px rgba(0,191,255,0.4));">
   </div>
+  <div style="font-family:'Cinzel',serif; font-size:16px; color:#e0b0ff; text-align:center; letter-spacing:0.2em; margin-top:6px; margin-bottom:16px;">Manjushage</div>
 
   <div class="cards">
     <!-- TOOLS FIRST -->
     <div style="font-family:'Cinzel',serif; font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color:rgba(0,191,255,0.6); padding:6px 0 8px; width:100%; max-width:420px;">🛠️ Your Tools</div>
     <p class="fs-subscriber-note" style="display:none; font-size:12px; color:rgba(255,150,150,0.8); font-style:italic; margin-bottom:10px; padding:8px 12px; background:rgba(255,0,0,0.08); border:1px solid rgba(255,0,0,0.2); border-radius:8px;">For subscribers of FS (ii) Shage only</p>
 
-    <div class="card fs-tool-gated" onclick="goTo('screen-facing-ruler')">
+    <div class="card fs-tool-gated" onclick="goTo('screen-B2-4-T1')">
       <div class="card-icon"><img src="https://i.postimg.cc/VsSqKmq5/FS-ii-Shage.png" alt="Ruler"></div>
       <div class="card-text">
         <div class="card-title">🧭 House Facing Ruler</div>
@@ -2566,7 +2703,7 @@ html, body {
       <div class="card-arrow">›</div>
     </div>
 
-    <div class="card fs-tool-gated" onclick="goTo('screen-flying-star')">
+    <div class="card fs-tool-gated" onclick="goTo('screen-B2-4-T2')">
       <div class="card-icon"><img src="https://i.postimg.cc/nr5T0JbR/2NW1_1.png" alt="Flying Star" style="width:42px;height:42px;object-fit:contain;"></div>
       <div class="card-text">
         <div class="card-title">Flying Star Charts</div>
@@ -2601,6 +2738,36 @@ html, body {
       <div class="card-arrow">›</div>
     </div>
 
+    <div class="card external fs-tool-gated" onclick="window.open('https://sites.google.com/view/fsiiihiganbana/','_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/kG6tvH48/Higanbana.png" alt="Higanbana" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title">FS (iii) Higanbana</div>
+        <div class="card-desc">理氣 Fengshui charting techniques</div>
+        <div class="card-desc2">🌐 Go to site ↗</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card external fs-tool-gated" onclick="window.open('https://sites.google.com/view/fsivkurinso/','_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/d0dgkQvX/Primula-white.png" alt="Kurinso" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title">FS (iv) Kurinso</div>
+        <div class="card-desc">Fengshui Classics — full texts</div>
+        <div class="card-desc2">🌐 Go to site ↗</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
+    <div class="card external fs-tool-gated" onclick="window.open('https://sites.google.com/view/fsvikuchinashi','_blank')">
+      <div class="card-icon"><img src="https://i.postimg.cc/qqwDTzrF/Kuchinashi.png" alt="Kuchinashi" style="width:42px;height:42px;object-fit:contain;"></div>
+      <div class="card-text">
+        <div class="card-title">FS (vi) Kuchinashi</div>
+        <div class="card-desc">General Fengshui Portal</div>
+        <div class="card-desc2">🌐 Go to site ↗</div>
+      </div>
+      <div class="card-arrow">›</div>
+    </div>
+
     <div class="card external" onclick="window.open('https://sites.google.com/view/fsvsokei/', '_blank')">
       <div class="card-icon"><img src="https://i.postimg.cc/9M0MFXmG/FS-v-Sokei.png" alt="Sokei"></div>
       <div class="card-text">
@@ -2621,9 +2788,9 @@ html, body {
 <!-- ============================================================
      SCREEN B4.3: HOUSE FACING RULER (FINLAY + SK COMBINED)
      ============================================================ -->
-<div id="screen-facing-ruler" class="screen" style="padding-bottom: 80px;">
+<div id="screen-B2-4-T1" class="screen" style="padding-bottom: 80px;">
   <div class="inner-header" style="max-width:700px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-b4')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B1-4')">‹</button>
     <span class="inner-title">Fengshui Menu</span>
   </div>
 
@@ -2751,9 +2918,9 @@ html, body {
 <!-- ============================================================
      SCREEN B4.4: FLYING STAR CHART LOOKUP (standalone)
      ============================================================ -->
-<div id="screen-flying-star" class="screen">
+<div id="screen-B2-4-T2" class="screen">
   <div class="inner-header" style="max-width:420px; width:100%;">
-    <button class="back-btn" onclick="goTo('screen-b4')">‹</button>
+    <button class="back-btn" onclick="goTo('screen-B1-4')">‹</button>
     <span class="inner-title">Fengshui Menu</span>
   </div>
 
@@ -2898,7 +3065,7 @@ function checkOAuthReturn() {
         isGuest = false;
         setHomeState();
         updateProfileCorner();
-        goTo('screen-home');
+        goTo('screen-B0');
         // Re-fetch from GAS in background to refresh name/portal/tier
         gasJsonp('action=validateEmail&email=' + encodeURIComponent(s.email), function(data) {
           if (data.valid) {
@@ -2939,7 +3106,7 @@ function checkOAuthReturn() {
 async function validateWithToken(token) {
   // Show full-screen verifying state
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  const verifyScreen = document.getElementById('screen-verifying');
+  const verifyScreen = document.getElementById('screen-B0-verify');
   if (verifyScreen) verifyScreen.classList.add('active');
 
   try {
@@ -2950,7 +3117,7 @@ async function validateWithToken(token) {
     const email = userInfo.email;
 
     if (!email) {
-      goTo('screen-login');
+      goTo('screen-B0-login');
       showLoginError('Could not get your email from Google. Please try again.');
       return;
     }
@@ -2975,17 +3142,17 @@ async function validateWithToken(token) {
         } catch(e) {}
         setHomeState();
         updateProfileCorner();
-        goTo('screen-home');
+        goTo('screen-B0');
       } else {
-        goTo('screen-login');
+        goTo('screen-B0-login');
         showLoginError('Your account (' + email + ') is not registered. Please contact your administrator.');
       }
     }, function() {
-      goTo('screen-login');
+      goTo('screen-B0-login');
       showLoginError('Connection error. Check your internet and try again.');
     });
   } catch(e) {
-    goTo('screen-login');
+    goTo('screen-B0-login');
     showLoginError('Connection error. Check your internet and try again.');
   }
 }
@@ -3049,7 +3216,7 @@ function doLogout() {
   document.getElementById('profile-corner').style.display = 'none';
   currentUser = null; currentUserName = 'Guest';
   currentFsSubscriber = false; currentHasPortal = false; isGuest = false;
-  goTo('screen-login');
+  goTo('screen-B0-login');
 }
 
 // Close popup when clicking elsewhere
@@ -3075,7 +3242,7 @@ function guestLogin() {
   try { localStorage.removeItem('go_saved_user'); } catch(e) {}
   setHomeState();
   updateProfileCorner();
-  goTo('screen-home');
+  goTo('screen-B0');
 }
 
 function getTimeGreeting() {
@@ -3703,15 +3870,19 @@ function copyDiceResultImage() {
     let rep = '', val = '', marker = '';
     r.querySelectorAll('span').forEach(s => {
       const ff = s.style.fontFamily || '', col = s.style.color || '';
-      if (ff.includes('Beau Rivage')) rep = s.textContent.trim();
-      if (col.includes('204, 255, 0') || col === '#ccff00') val = s.textContent.trim();
+      if (ff.includes('Beau Rivage') || ff.includes('Corinthia')) rep = s.textContent.trim();
+      if (col.includes('204, 255, 0') || col === '#ccff00' || col.includes('183,183,183') || col === '#b7b7b7') val = s.textContent.trim();
+      if (col.includes('204, 255, 0') || col === '#ccff00') marker = 'top';
+    });
+    // Re-read color for the number span
+    r.querySelectorAll('span').forEach(s => {
+      const col = s.style.color || '';
       const t = s.textContent.trim();
-      if (t === '\u2728' || t === '\u2b50' || t === '\u274c') marker = t;
+      if (t === '\u2728' || t === '\u2b50') marker = t;
     });
     results.push({ idx: idx + 1, rep, val, marker });
   });
 
-  // d6 = double dice image, d8 and d10 use single
   const DIE_IMGS_MAP = {
     6:  'https://i.postimg.cc/2Sw1KPTF/2_d6.png',
     8:  'https://i.postimg.cc/W3JfNR9G/d8_white_3.png',
@@ -3721,117 +3892,162 @@ function copyDiceResultImage() {
   const diceImgUrl = DIE_IMGS_MAP[dieType] || DIE_IMGS_MAP[6];
   const tsutsujiUrl = 'https://i.postimg.cc/Qd3Ts8C0/tsutsuji_2.png';
   const profileUrl = currentUser ? ('https://raw.githubusercontent.com/dsiiiajisai/Go5/main/Profile%20Pix/' + encodeURIComponent(currentUser) + '-Profile-Pic-R.png') : null;
-  const descText = (document.getElementById('dice-description') || {}).value || '';
+  const descText = ((document.getElementById('dice-description') || {}).value || '').trim();
 
-  const W = 560, rowH = 58, topSection = 230;
-  const H = topSection + results.length * rowH + 110;
+  // === 2x scale for sharpness, same width as screen ===
+  const SCALE = 2;
+  const SW = 420;
+  const W = SW * SCALE;
+
+  // Pre-measure description height
+  const tmpC = document.createElement('canvas'); tmpC.width = W;
+  const tmpCtx = tmpC.getContext('2d');
+  const descFont = Math.round(26 * SCALE) + 'px Corinthia, cursive';
+  const descLineH = Math.round(34 * SCALE);
+  let descH = 0;
+  if (descText) {
+    tmpCtx.font = descFont;
+    const dWords = descText.split(' '); let dLine = '', dLines = 1;
+    const dMaxW = W - 2 * Math.round(24 * SCALE);
+    for (let i = 0; i < dWords.length; i++) {
+      const t = dLine + dWords[i] + ' ';
+      if (tmpCtx.measureText(t).width > dMaxW && i > 0) { dLine = dWords[i] + ' '; dLines++; } else dLine = t;
+    }
+    descH = dLines * descLineH + Math.round(16 * SCALE);
+  }
+
+  // Layout (all in canvas pixels = screen px * SCALE)
+  function px(n) { return Math.round(n * SCALE); }
+  const titleY    = px(80);
+  const subtitleY = px(104);
+  const descStartY = descText ? px(128) : 0;
+  const diceImgTop = descText ? (descStartY + descH) : px(118);
+  const diceImgH   = px(72);
+  const dateY      = diceImgTop + diceImgH + px(22);
+  const dividerY   = dateY + px(18);
+  const rowH       = px(54);
+  const rowsTop    = dividerY + px(12);
+  const flowerY    = rowsTop + results.length * rowH + px(24);
+  const footerY    = flowerY + px(54);
+  const H          = footerY + px(24);
+
   const canvas = document.createElement('canvas');
   canvas.width = W; canvas.height = H;
   const ctx = canvas.getContext('2d');
 
-  const bgGrad = ctx.createLinearGradient(0,0,0,H);
-  bgGrad.addColorStop(0,'#000073'); bgGrad.addColorStop(1,'#00004a');
-  ctx.fillStyle = bgGrad; ctx.fillRect(0,0,W,H);
-  const glow = ctx.createRadialGradient(W/2,90,0,W/2,90,260);
-  glow.addColorStop(0,'rgba(0,191,255,0.14)'); glow.addColorStop(1,'rgba(0,0,0,0)');
-  ctx.fillStyle = glow; ctx.fillRect(0,0,W,H);
+  // Background
+  const bg = ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#000073'); bg.addColorStop(1,'#00004a');
+  ctx.fillStyle = bg; ctx.fillRect(0,0,W,H);
 
   let diceImg=null, tsutsujiImg=null, profileImg=null;
   const totalToLoad = profileUrl ? 3 : 2;
   let loaded = 0;
+  function onLoaded() { loaded++; if (loaded >= totalToLoad) draw(); }
 
-  function onLoaded() { loaded++; if (loaded >= totalToLoad) drawAll(); }
+  function draw() {
+    const mid = W / 2;
 
-  function drawAll() {
-    // Profile pic top-right — same as kwanyin
-    const pSize = 50, pX = W-40, pY = 46;
-    if (profileImg && currentUser) {
-      ctx.save();
-      ctx.beginPath(); ctx.arc(pX, pY, pSize/2, 0, Math.PI*2); ctx.clip();
-      ctx.drawImage(profileImg, pX-pSize/2, pY-pSize/2, pSize, pSize);
-      ctx.restore();
-      ctx.strokeStyle='rgba(0,191,255,0.6)'; ctx.lineWidth=2;
-      ctx.beginPath(); ctx.arc(pX, pY, pSize/2+1, 0, Math.PI*2); ctx.stroke();
+    // Profile corner
+    const pR = px(25), pX = W - px(40), pY = px(46);
+    if (profileImg) {
+      ctx.save(); ctx.beginPath(); ctx.arc(pX,pY,pR,0,Math.PI*2); ctx.clip();
+      ctx.drawImage(profileImg, pX-pR, pY-pR, pR*2, pR*2); ctx.restore();
+      ctx.strokeStyle='rgba(0,191,255,0.6)'; ctx.lineWidth=px(1);
+      ctx.beginPath(); ctx.arc(pX,pY,pR+px(1),0,Math.PI*2); ctx.stroke();
     }
     if (currentUser) {
-      ctx.fillStyle='rgba(0,191,255,0.75)'; ctx.font='bold 10px serif'; ctx.textAlign='center';
-      ctx.fillText(currentUser, pX, pY+pSize/2+14);
-      if (currentTier > 0) { ctx.fillStyle='rgba(0,191,255,0.5)'; ctx.font='9px serif'; ctx.fillText('Tier '+currentTier, pX, pY+pSize/2+26); }
+      ctx.fillStyle='rgba(0,191,255,0.75)'; ctx.font='bold '+px(10)+'px serif'; ctx.textAlign='center';
+      ctx.fillText(currentUser, pX, pY+pR+px(14));
+      if (currentTier>0) { ctx.fillStyle='rgba(0,191,255,0.5)'; ctx.font=px(9)+'px serif'; ctx.fillText('Tier '+currentTier+(currentTier===1?' \uD83D\uDC8E':''), pX, pY+pR+px(25)); }
     }
 
-    // Title — dimmer, lower to clear profile pic
-    ctx.fillStyle='rgba(255,255,255,0.42)'; ctx.font='bold 20px serif'; ctx.textAlign='center';
-    ctx.fillText('Divination (i) Tsutsuji', W/2, 84);
+    // Title
+    ctx.fillStyle='rgba(255,255,255,0.88)'; ctx.font='bold '+px(18)+'px Cinzel, serif'; ctx.textAlign='center';
+    ctx.fillText('Divination (i) Tsutsuji', mid, titleY);
+    ctx.fillStyle='rgba(0,191,255,0.72)'; ctx.font=px(14)+'px Cinzel, serif';
+    ctx.fillText('Dice Roller', mid, subtitleY);
 
-    // "Dice Roller" label
-    ctx.fillStyle='rgba(0,191,255,0.72)'; ctx.font='15px serif';
-    ctx.fillText('Dice Roller', W/2, 112);
-
-    // Description below "Dice Roller"
-    let diceImageY = 122;
-    if (descText.trim()) {
-      ctx.fillStyle='#00E5FF'; ctx.font='italic 22px Corinthia, serif';
-      // No quotation marks on image (same as screen display)
-      const descWrapped = descText.trim();
-      kwWrapText(ctx, descWrapped, 40, 138, W-80, 28);
-      // Estimate lines for Y offset
-      ctx.font='italic 22px Corinthia, serif';
-      const descLines = Math.ceil(ctx.measureText(descWrapped).width / (W-80)) + 1;
-      diceImageY = 138 + descLines * 28 + 8;
+    // Description — Corinthia upright (no italic)
+    if (descText) {
+      ctx.fillStyle='#00E5FF'; ctx.font=descFont; ctx.textAlign='center';
+      // wrap centered
+      const dMaxW = W - 2*px(24);
+      const dWords = descText.split(' '); let dLine='', dY=descStartY+descLineH*0.8;
+      for (let i=0; i<dWords.length; i++) {
+        const t = dLine+dWords[i]+' ';
+        if (ctx.measureText(t).width > dMaxW && i>0) { ctx.fillText(dLine.trim(), mid, dY); dLine=dWords[i]+' '; dY+=descLineH; }
+        else dLine=t;
+      }
+      ctx.fillText(dLine.trim(), mid, dY);
     }
 
     // Dice image
     if (diceImg) {
-      const dH=76, dW=diceImg.width*(dH/diceImg.height);
-      ctx.drawImage(diceImg, W/2-dW/2, diceImageY, dW, dH);
+      const dH=diceImgH, dW=diceImg.width*(dH/diceImg.height);
+      ctx.drawImage(diceImg, mid-dW/2, diceImgTop, dW, dH);
     }
 
-    // Date/time — lots of space after dice image
-    ctx.fillStyle='rgba(255,255,255,0.48)'; ctx.font='13px serif';
-    ctx.fillText(dt, W/2, diceImageY + 90);
+    // Date
+    ctx.fillStyle='rgba(255,255,255,0.5)'; ctx.font=px(12)+'px Cinzel, serif'; ctx.textAlign='center';
+    ctx.fillText(dt, mid, dateY);
 
     // Divider
-    ctx.strokeStyle='rgba(0,191,255,0.3)'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(40,230); ctx.lineTo(W-40,230); ctx.stroke();
+    ctx.strokeStyle='rgba(0,191,255,0.3)'; ctx.lineWidth=px(1);
+    ctx.beginPath(); ctx.moveTo(px(30),dividerY); ctx.lineTo(W-px(30),dividerY); ctx.stroke();
 
-    // Result rows
+    // Result rows — exactly matching screen
     results.forEach((r,i) => {
-      const y = topSection + i*rowH - 12;
-      ctx.fillStyle = i%2===0?'rgba(255,255,255,0.05)':'rgba(255,255,255,0.02)';
-      ctx.fillRect(30, y-4, W-60, rowH-4);
-      ctx.fillStyle='rgba(0,191,255,0.8)'; ctx.font='12px serif'; ctx.textAlign='left';
-      ctx.fillText(r.idx, 44, y+34);
-      ctx.fillStyle='#ffffff'; ctx.font='italic 18px serif';
-      const repMax = W - 140;
-      ctx.fillText((r.rep||'(unnamed)').substring(0, 28), 68, y+36);
-      const ms = r.marker ? r.marker+' ' : '';
-      ctx.fillStyle = r.marker ? '#ccff00' : '#b7b7b7';
-      ctx.font='bold 28px serif'; ctx.textAlign='right';
-      ctx.fillText(ms+r.val, W-44, y+38);
+      const y = rowsTop + i*rowH;
+      ctx.fillStyle = i%2===0 ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.02)';
+      ctx.fillRect(px(20), y, W-px(40), rowH-px(2));
+
+      // Die index number
+      ctx.fillStyle='rgba(0,191,255,0.8)'; ctx.font=px(12)+'px Cinzel, serif'; ctx.textAlign='left';
+      ctx.fillText(r.idx, px(34), y+rowH*0.62);
+
+      // Rep name — Corinthia upright (not italic)
+      ctx.fillStyle='#ffffff'; ctx.font=px(22)+'px Corinthia, cursive'; ctx.textAlign='left';
+      ctx.fillText(r.rep || '(unnamed)', px(60), y+rowH*0.65);
+
+      // Value + marker right-aligned
+      // Determine color from results data
+      const isTop = r.marker === '\u2728' || r.marker === '\u2b50';
+      const numColor = isTop ? '#ccff00' : '#b7b7b7';
+      ctx.fillStyle = numColor;
+      ctx.font = 'bold '+px(28)+'px Cormorant Garamond, serif';
+      ctx.textAlign = 'right';
+      const markerStr = (r.marker === '\u2728' || r.marker === '\u2b50') ? r.marker+' ' : '';
+      ctx.fillText(markerStr + r.val, W-px(34), y+rowH*0.7);
     });
 
-    // Tsutsuji flower anchored above footer
+    // Tsutsuji flower
     if (tsutsujiImg) {
-      const tH=52, tW=tsutsujiImg.width*(tH/tsutsujiImg.height);
-      ctx.drawImage(tsutsujiImg, W/2-tW/2, H-86, tW, tH);
+      const tH=px(46), tW=tsutsujiImg.width*(tH/tsutsujiImg.height);
+      ctx.globalAlpha=0.85; ctx.drawImage(tsutsujiImg, mid-tW/2, flowerY, tW, tH); ctx.globalAlpha=1;
     }
-    ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.font='11px serif'; ctx.textAlign='center';
-    ctx.fillText("You\u2019re using Super Portal \u4e94 Go", W/2, H-18);
 
-    const link=document.createElement('a');
-    link.download='dice-roller-'+dt.replace(/[: ,]/g,'-')+'.png';
-    link.href=canvas.toDataURL('image/png'); link.click();
+    // Footer
+    ctx.fillStyle='rgba(255,255,255,0.18)'; ctx.font=px(11)+'px Cinzel, serif'; ctx.textAlign='center';
+    ctx.fillText("You\u2019re using Super Portal \u4E94 Go", mid, footerY);
+
+    // Download
+    const link = document.createElement('a');
+    link.download = 'Dice-Roller-'+dt.replace(/[: ,]/g,'-')+'.png';
+    link.href = canvas.toDataURL('image/png'); link.click();
   }
 
   const di=new Image(); di.crossOrigin='anonymous';
-  di.onload=function(){diceImg=di;onLoaded();}; di.onerror=function(){onLoaded();}; di.src=diceImgUrl;
+  di.onload=()=>{diceImg=di;onLoaded();}; di.onerror=()=>onLoaded(); di.src=diceImgUrl;
   const ti=new Image(); ti.crossOrigin='anonymous';
-  ti.onload=function(){tsutsujiImg=ti;onLoaded();}; ti.onerror=function(){onLoaded();}; ti.src=tsutsujiUrl;
+  ti.onload=()=>{tsutsujiImg=ti;onLoaded();}; ti.onerror=()=>onLoaded(); ti.src=tsutsujiUrl;
   if (profileUrl) {
     const pi=new Image(); pi.crossOrigin='anonymous';
-    pi.onload=function(){profileImg=pi;onLoaded();}; pi.onerror=function(){onLoaded();}; pi.src=profileUrl;
+    pi.onload=()=>{profileImg=pi;onLoaded();}; pi.onerror=()=>onLoaded(); pi.src=profileUrl;
   }
 }
+
+
 
 function copyDiceResult() {
   const rows = document.getElementById('dice-result-rows');
@@ -4045,7 +4261,7 @@ function kwCopyResultImage() {
   const tmpC = document.createElement('canvas'); tmpC.width = W;
   const tmpCtx = tmpC.getContext('2d');
   const qFontSize = 28 * SCALE;
-  const qFont = 'italic ' + qFontSize + 'px Corinthia, cursive';
+  const qFont = '' + qFontSize + 'px Corinthia, cursive';
   tmpCtx.font = qFont;
   const boxPad = 22 * SCALE;
   const boxInnerW = W - 2 * (20 * SCALE) - 2 * boxPad;
@@ -4316,7 +4532,7 @@ function haircutFormatDate(d) {
 }
 
 function haircutSplashContinue() {
-  goTo('screen-haircut');
+  goTo('screen-B2-1-T5');
 }
 
 function loadTodayHaircut() {
@@ -4388,7 +4604,7 @@ function applyHaircutAdvice(el, text) {
 // ============================================================
 // NAVIGATION HISTORY + BROWSER BACK + SWIPE
 // ============================================================
-const navStack = ['screen-login'];
+const navStack = ['screen-B0-login'];
 
 function goTo(screenId) {
   const current = navStack[navStack.length - 1];
@@ -4404,12 +4620,12 @@ function goTo(screenId) {
   // Push browser history state
   history.pushState({ screenId }, '', '#' + screenId);
 
-  if (screenId === 'screen-facing-ruler') initMap();
-  if (screenId === 'screen-haircut-splash') {
+  if (screenId === 'screen-B2-4-T1') initMap();
+  if (screenId === 'screen-B2-1-T5-splash') {
     // Start loading haircut data in background while on splash
     loadTodayHaircut();
   }
-  if (screenId === 'screen-haircut') {
+  if (screenId === 'screen-B2-1-T5') {
     // Reset custom date picker and result when returning
     const picker = document.getElementById('haircut-date-picker');
     if (picker) picker.value = '';
@@ -4420,13 +4636,13 @@ function goTo(screenId) {
     const customDate = document.getElementById('haircut-custom-date-label');
     if (customDate) customDate.textContent = '';
   }
-  if (screenId === 'screen-b4') applyFsSubscriberGating();
-  if (screenId === 'screen-vedic-charts') loadVedicCharts();
-  if (screenId === 'screen-kwanyin') {
+  if (screenId === 'screen-B1-4') applyFsSubscriberGating();
+  if (screenId === 'screen-B3-3-2-T1') loadVedicCharts();
+  if (screenId === 'screen-B2-2-2-T2') {
     // Reset kwanyin to fresh draw screen
     resetKwanyin();
   }
-  if (screenId === 'screen-dice') {
+  if (screenId === 'screen-B2-2-2-T1') {
     // Reset dice to fresh setup screen
     resetDiceToSetup();
     const diceDesc = document.getElementById('dice-description');
@@ -4436,7 +4652,7 @@ function goTo(screenId) {
     if (descDisplay) descDisplay.style.display = 'none';
     if (descLabel) descLabel.style.display = 'none';
   }
-  if (screenId === 'screen-2hs-find') {
+  if (screenId === 'screen-B3-3-1-find') {
     // Clear old entries so user always starts fresh
     ['hs-dob-day','hs-dob-month','hs-dob-year','hs-dob-time'].forEach(id => {
       const el = document.getElementById(id); if (el) el.value = '';
@@ -4446,17 +4662,17 @@ function goTo(screenId) {
     const btn = document.getElementById('hs-gen-btn');
     if (btn) { btn.disabled = false; btn.textContent = 'Generate'; }
   }
-  if (screenId === 'screen-login') {
+  if (screenId === 'screen-B0-login') {
     // Clear saved login so user can switch accounts
     try { localStorage.removeItem('go_saved_user'); } catch(e) {}
     currentUser = null; currentUserName = 'Guest'; isGuest = false;
     currentFsSubscriber = false; currentHasPortal = false;
   }
   // Item 32: Reset flying star when leaving the screen
-  if (screenId === 'screen-b4' || (current === 'screen-flying-star' && screenId !== 'screen-flying-star')) {
+  if (screenId === 'screen-B1-4' || (current === 'screen-B2-4-T2' && screenId !== 'screen-B2-4-T2')) {
     resetFlyingStarScreen();
   }
-  if (screenId === 'screen-flying-star') {
+  if (screenId === 'screen-B2-4-T2') {
     resetFlyingStarScreen();
   }
 }
@@ -4499,7 +4715,7 @@ document.addEventListener('touchend', e => {
   if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 2) {
     // Don't trigger swipe on map canvas
     const active = document.querySelector('.screen.active');
-    if (active && active.id === 'screen-facing-ruler') return;
+    if (active && active.id === 'screen-B2-4-T1') return;
     if (dx > 0) goBack(); // swipe right = back
     // swipe left = forward (re-enter last screen if available) — noop for now, standard Android behaviour
   }
@@ -4508,7 +4724,7 @@ document.addEventListener('touchend', e => {
 // Push initial state so back button works from the start
 // BUT only if NOT returning from Google OAuth (which puts access_token in the hash)
 if (!window.location.hash.includes('access_token')) {
-  history.replaceState({ screenId: 'screen-login' }, '', '#screen-login');
+  history.replaceState({ screenId: 'screen-B0-login' }, '', '#screen-B0-login');
 }
 
 // ============================================================
@@ -4777,7 +4993,7 @@ function hsCalculateDOB() {
     // Show 4Cs and Structure
     showFcsResults(data);
     // Navigate to result screen
-    goTo('screen-2hs-result');
+    goTo('screen-B3-3-1-result');
   };
   script.onerror = function() { cleanup(); errEl.textContent = 'Error. Try again.'; errEl.style.display = 'block'; btn.disabled = false; btn.textContent = 'Generate'; };
   script.src = url; document.head.appendChild(script);
@@ -4814,7 +5030,7 @@ function hs2HsCopyText() {
 
 function hs2HsCopyImage() {
   // Capture the result screen as canvas image
-  const resultEl = document.querySelector('#screen-2hs-result');
+  const resultEl = document.querySelector('#screen-B3-3-1-result');
   if (!resultEl) { hs2HsCopyText(); return; }
   // Use html2canvas if available, otherwise fall back to text copy
   if (typeof html2canvas !== 'undefined') {
@@ -5160,7 +5376,7 @@ function loadVedicChart(chartName) {
   if (btn) { btn.textContent = 'Copy All'; btn.style.background = 'var(--sky)'; }
   vedicCurrentData = '';
   // Navigate to data detail screen
-  goTo('screen-vedic-data');
+  goTo('screen-B3-3-2-T1-data');
 
   gasJsonp('action=vedicData&idCode=' + encodeURIComponent(currentUser) + '&chart=' + encodeURIComponent(chartName), function(data) {
     vedicCurrentData = data.data || '';
